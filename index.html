@@ -201,7 +201,10 @@
   </div>
 
   <script>
-    const API_BASE = 'http://localhost:3001/api/metrics';
+    // API URL - will be replaced when deployed to cloud
+    const API_BASE = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001/api/metrics'
+      : 'https://gstudio-metrics-api.onrender.com/api/metrics';
 
     async function loadMetrics() {
       try {
