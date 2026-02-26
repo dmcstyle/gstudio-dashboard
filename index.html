@@ -493,6 +493,46 @@
   </div>
 
   <script>
+    // API Configuration
+    const API_BASE = 'https://gstudio-dashboard.onrender.com/api/metrics';
+
+    // Load metrics from API on page load
+    async function loadMetrics() {
+      try {
+        const response = await fetch(API_BASE);
+        const data = await response.json();
+        updateDashboard(data);
+      } catch (error) {
+        console.log('Using sample data (API not available yet)');
+      }
+    }
+
+    function updateDashboard(data) {
+      // Update all metric values from API
+      if (data.personal?.instagram) {
+        document.getElementById('ig-personal-views').value = data.personal.instagram.views || 1200;
+        document.getElementById('ig-personal-likes').value = data.personal.instagram.likes || 340;
+        document.getElementById('ig-personal-shares').value = data.personal.instagram.shares || 45;
+      }
+      // ... update other platforms similarly
+      updateTimestamp();
+    }
+
+    function updateTimestamp() {
+      const now = new Date();
+      document.getElementById('timestamp').textContent = now.toLocaleString('en-GB', {
+        timeZone: 'Asia/Dubai',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) + ' GMT+4';
+    }
+
+    // Refresh data every 30 seconds
+    loadMetrics();
+    setInterval(loadMetrics, 30000);
+
     // Performance Chart
     const performanceCtx = document.getElementById('performanceChart').getContext('2d');
     new Chart(performanceCtx, {
