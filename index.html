@@ -277,6 +277,60 @@
       <p class="subtitle">Real-time social media metrics dashboard</p>
     </header>
 
+    <!-- Revenue Summary -->
+    <div style="background: white; padding: 30px 20px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+      <h2 style="font-size: 22px; color: #667eea; margin-bottom: 25px; font-weight: 700;">💰 Revenue Tracking</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" style="color: #27ae60;">3,000</div>
+          <div class="stat-label">Today (AED)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #667eea;">18,500</div>
+          <div class="stat-label">This Month (AED)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #764ba2;">2.5K</div>
+          <div class="stat-label">Sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color: #e74c3c;">4</div>
+          <div class="stat-label">Service Types</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Service Revenue Breakdown -->
+    <div style="background: white; padding: 30px 20px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);">
+      <h2 style="font-size: 22px; color: #667eea; margin-bottom: 25px; font-weight: 700;">📊 Service Breakdown (Today)</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="background: #f8f9ff; padding: 20px; border-radius: 15px; border-left: 4px solid #667eea;">
+          <div style="font-size: 20px; font-weight: 700; color: #667eea; margin-bottom: 5px;">🎤</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 10px; text-transform: uppercase;">Hourly Recording</div>
+          <div style="font-size: 24px; font-weight: 700; color: #333;">1,200 AED</div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">2 sessions</div>
+        </div>
+        <div style="background: #f8f9ff; padding: 20px; border-radius: 15px; border-left: 4px solid #764ba2;">
+          <div style="font-size: 20px; font-weight: 700; color: #764ba2; margin-bottom: 5px;">🎵</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 10px; text-transform: uppercase;">Full Song Production</div>
+          <div style="font-size: 24px; font-weight: 700; color: #333;">1,500 AED</div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">1 project</div>
+        </div>
+        <div style="background: #f8f9ff; padding: 20px; border-radius: 15px; border-left: 4px solid #27ae60;">
+          <div style="font-size: 20px; font-weight: 700; color: #27ae60; margin-bottom: 5px;">🎙️</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 10px; text-transform: uppercase;">Karaoke Sessions</div>
+          <div style="font-size: 24px; font-weight: 700; color: #333;">200 AED</div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">3 sessions</div>
+        </div>
+        <div style="background: #f8f9ff; padding: 20px; border-radius: 15px; border-left: 4px solid #e74c3c;">
+          <div style="font-size: 20px; font-weight: 700; color: #e74c3c; margin-bottom: 5px;">💿</div>
+          <div style="font-size: 12px; color: #999; margin-bottom: 10px; text-transform: uppercase;">Beat Sales</div>
+          <div style="font-size: 24px; font-weight: 700; color: #333;">100 AED</div>
+          <div style="font-size: 11px; color: #999; margin-top: 8px;">5 beats sold</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Summary Stats -->
     <div class="stats-grid">
       <div class="stat-card">
@@ -306,6 +360,11 @@
     <div class="chart-container">
       <h3>📈 Platform Comparison</h3>
       <canvas id="comparisonChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+      <h3>💰 Revenue by Service (This Month)</h3>
+      <canvas id="revenueChart"></canvas>
     </div>
 
     <!-- Personal Accounts Section -->
@@ -615,6 +674,37 @@
         scales: {
           y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
           x: { grid: { color: '#f0f0f0' } }
+        }
+      }
+    });
+
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Hourly Recording', 'Full Song Production', 'Karaoke Sessions', 'Beat Sales'],
+        datasets: [{
+          data: [8400, 12000, 1200, 600],
+          backgroundColor: [
+            '#667eea',
+            '#764ba2',
+            '#27ae60',
+            '#e74c3c'
+          ],
+          borderColor: 'white',
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { padding: 20, font: { size: 12, weight: 600 } }
+          }
         }
       }
     });
