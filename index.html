@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>G Studio Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>G Studio Analytics</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -60,20 +59,6 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    .metric-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 13px;
-    }
-    .metric-label { color: #666; }
-    .metric-value { font-weight: 600; color: #333; }
-    .input-block {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
     .input-group {
       margin-bottom: 12px;
     }
@@ -100,21 +85,30 @@
       cursor: pointer;
       font-weight: 600;
       width: 100%;
-      margin-top: 10px;
+      margin-top: 15px;
     }
     button:hover { background: #5568d3; }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .metric-label { color: #666; }
+    .metric-value { font-weight: 600; color: #333; }
     .update-time {
       text-align: center;
       color: rgba(255,255,255,0.8);
       margin-top: 20px;
       font-size: 12px;
     }
+    .loading { color: #999; padding: 20px; text-align: center; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🎵 G Studio Analytics Dashboard</h1>
+      <h1>🎵 G Studio Analytics</h1>
       <p class="subtitle">Real-time social media metrics</p>
     </header>
 
@@ -122,279 +116,201 @@
       <!-- Personal Account -->
       <div class="card">
         <h2>👤 Georgiy Yukhanov</h2>
-        <div class="input-block">
+        
+        <div class="platform-block">
+          <div class="platform-name">Instagram (@dmcstyle)</div>
           <div class="input-group">
-            <label>Instagram (@dmcstyle) Views</label>
+            <label>Views</label>
             <input type="number" id="ig-personal-views" placeholder="0">
           </div>
           <div class="input-group">
-            <label>Instagram Likes</label>
+            <label>Likes</label>
             <input type="number" id="ig-personal-likes" placeholder="0">
           </div>
           <div class="input-group">
-            <label>Instagram Shares</label>
+            <label>Shares</label>
             <input type="number" id="ig-personal-shares" placeholder="0">
           </div>
+        </div>
+
+        <div class="platform-block">
+          <div class="platform-name">YouTube (@georgeyukhanov)</div>
           <div class="input-group">
-            <label>YouTube (@georgeyukhanov) Views</label>
+            <label>Views</label>
             <input type="number" id="yt-personal-views" placeholder="0">
           </div>
           <div class="input-group">
-            <label>YouTube Likes</label>
+            <label>Likes</label>
             <input type="number" id="yt-personal-likes" placeholder="0">
           </div>
           <div class="input-group">
-            <label>YouTube Shares</label>
+            <label>Shares</label>
             <input type="number" id="yt-personal-shares" placeholder="0">
           </div>
-          <button onclick="savePersonal()">Save Personal Metrics</button>
         </div>
 
+        <button onclick="savePersonal()">Save Personal Metrics</button>
         <div id="personal-display"></div>
       </div>
 
       <!-- Studio Account -->
       <div class="card">
         <h2>🎵 G Studio (@dubaimusicstudio)</h2>
-        <div class="input-block">
-          <div class="input-group">
-            <label>Instagram Views</label>
-            <input type="number" id="ig-studio-views" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>Instagram Likes</label>
-            <input type="number" id="ig-studio-likes" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>Instagram Shares</label>
-            <input type="number" id="ig-studio-shares" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>TikTok Views</label>
-            <input type="number" id="tt-studio-views" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>TikTok Likes</label>
-            <input type="number" id="tt-studio-likes" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>TikTok Shares</label>
-            <input type="number" id="tt-studio-shares" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>YouTube Views</label>
-            <input type="number" id="yt-studio-views" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>YouTube Likes</label>
-            <input type="number" id="yt-studio-likes" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>X (@gstudiodubai) Views</label>
-            <input type="number" id="x-studio-views" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>X Likes</label>
-            <input type="number" id="x-studio-likes" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>Threads Views</label>
-            <input type="number" id="threads-studio-views" placeholder="0">
-          </div>
-          <div class="input-group">
-            <label>Threads Likes</label>
-            <input type="number" id="threads-studio-likes" placeholder="0">
-          </div>
-          <button onclick="saveStudio()">Save Studio Metrics</button>
+        
+        <div class="platform-block">
+          <div class="platform-name">Instagram</div>
+          <div class="input-group"><label>Views</label><input type="number" id="ig-studio-views" placeholder="0"></div>
+          <div class="input-group"><label>Likes</label><input type="number" id="ig-studio-likes" placeholder="0"></div>
+          <div class="input-group"><label>Shares</label><input type="number" id="ig-studio-shares" placeholder="0"></div>
         </div>
 
+        <div class="platform-block">
+          <div class="platform-name">TikTok</div>
+          <div class="input-group"><label>Views</label><input type="number" id="tt-studio-views" placeholder="0"></div>
+          <div class="input-group"><label>Likes</label><input type="number" id="tt-studio-likes" placeholder="0"></div>
+          <div class="input-group"><label>Shares</label><input type="number" id="tt-studio-shares" placeholder="0"></div>
+        </div>
+
+        <div class="platform-block">
+          <div class="platform-name">YouTube</div>
+          <div class="input-group"><label>Views</label><input type="number" id="yt-studio-views" placeholder="0"></div>
+          <div class="input-group"><label>Likes</label><input type="number" id="yt-studio-likes" placeholder="0"></div>
+          <div class="input-group"><label>Shares</label><input type="number" id="yt-studio-shares" placeholder="0"></div>
+        </div>
+
+        <div class="platform-block">
+          <div class="platform-name">X (@gstudiodubai)</div>
+          <div class="input-group"><label>Views</label><input type="number" id="x-studio-views" placeholder="0"></div>
+          <div class="input-group"><label>Likes</label><input type="number" id="x-studio-likes" placeholder="0"></div>
+        </div>
+
+        <div class="platform-block">
+          <div class="platform-name">Threads</div>
+          <div class="input-group"><label>Views</label><input type="number" id="threads-studio-views" placeholder="0"></div>
+          <div class="input-group"><label>Likes</label><input type="number" id="threads-studio-likes" placeholder="0"></div>
+        </div>
+
+        <button onclick="saveStudio()">Save Studio Metrics</button>
         <div id="studio-display"></div>
       </div>
     </div>
 
     <div class="update-time">
-      Last updated: <span id="timestamp">Never</span>
+      Last updated: <span id="timestamp">--:-- GMT+4</span>
     </div>
   </div>
 
   <script>
-    function savePersonal() {
-      const data = {
-        instagram: {
-          views: document.getElementById('ig-personal-views').value || 0,
-          likes: document.getElementById('ig-personal-likes').value || 0,
-          shares: document.getElementById('ig-personal-shares').value || 0
-        },
-        youtube: {
-          views: document.getElementById('yt-personal-views').value || 0,
-          likes: document.getElementById('yt-personal-likes').value || 0,
-          shares: document.getElementById('yt-personal-shares').value || 0
-        }
-      };
-      localStorage.setItem('personal', JSON.stringify(data));
-      displayPersonal();
-      updateTimestamp();
-      alert('Personal metrics saved!');
+    const API_BASE = 'http://localhost:3001/api/metrics';
+
+    async function loadMetrics() {
+      try {
+        const res = await fetch(API_BASE);
+        const data = await res.json();
+        populateForm(data);
+        displayMetrics(data);
+      } catch (e) {
+        console.error('Load error:', e);
+        document.getElementById('personal-display').innerHTML = '<div class="loading">⚠️ API not available. Using local storage.</div>';
+      }
     }
 
-    function saveStudio() {
-      const data = {
-        instagram: {
-          views: document.getElementById('ig-studio-views').value || 0,
-          likes: document.getElementById('ig-studio-likes').value || 0,
-          shares: document.getElementById('ig-studio-shares').value || 0
-        },
-        tiktok: {
-          views: document.getElementById('tt-studio-views').value || 0,
-          likes: document.getElementById('tt-studio-likes').value || 0,
-          shares: document.getElementById('tt-studio-shares').value || 0
-        },
-        youtube: {
-          views: document.getElementById('yt-studio-views').value || 0,
-          likes: document.getElementById('yt-studio-likes').value || 0,
-          shares: document.getElementById('yt-studio-shares').value || 0
-        },
-        x: {
-          views: document.getElementById('x-studio-views').value || 0,
-          likes: document.getElementById('x-studio-likes').value || 0
-        },
-        threads: {
-          views: document.getElementById('threads-studio-views').value || 0,
-          likes: document.getElementById('threads-studio-likes').value || 0
-        }
-      };
-      localStorage.setItem('studio', JSON.stringify(data));
-      displayStudio();
-      updateTimestamp();
-      alert('Studio metrics saved!');
+    function populateForm(data) {
+      if (data.personal?.instagram) {
+        document.getElementById('ig-personal-views').value = data.personal.instagram.views || 0;
+        document.getElementById('ig-personal-likes').value = data.personal.instagram.likes || 0;
+        document.getElementById('ig-personal-shares').value = data.personal.instagram.shares || 0;
+      }
+      if (data.personal?.youtube) {
+        document.getElementById('yt-personal-views').value = data.personal.youtube.views || 0;
+        document.getElementById('yt-personal-likes').value = data.personal.youtube.likes || 0;
+        document.getElementById('yt-personal-shares').value = data.personal.youtube.shares || 0;
+      }
+      if (data.studio?.instagram) {
+        document.getElementById('ig-studio-views').value = data.studio.instagram.views || 0;
+        document.getElementById('ig-studio-likes').value = data.studio.instagram.likes || 0;
+        document.getElementById('ig-studio-shares').value = data.studio.instagram.shares || 0;
+      }
+      if (data.studio?.tiktok) {
+        document.getElementById('tt-studio-views').value = data.studio.tiktok.views || 0;
+        document.getElementById('tt-studio-likes').value = data.studio.tiktok.likes || 0;
+        document.getElementById('tt-studio-shares').value = data.studio.tiktok.shares || 0;
+      }
+      if (data.studio?.youtube) {
+        document.getElementById('yt-studio-views').value = data.studio.youtube.views || 0;
+        document.getElementById('yt-studio-likes').value = data.studio.youtube.likes || 0;
+        document.getElementById('yt-studio-shares').value = data.studio.youtube.shares || 0;
+      }
+      if (data.studio?.x) {
+        document.getElementById('x-studio-views').value = data.studio.x.views || 0;
+        document.getElementById('x-studio-likes').value = data.studio.x.likes || 0;
+      }
+      if (data.studio?.threads) {
+        document.getElementById('threads-studio-views').value = data.studio.threads.views || 0;
+        document.getElementById('threads-studio-likes').value = data.studio.threads.likes || 0;
+      }
     }
 
-    function displayPersonal() {
-      const data = JSON.parse(localStorage.getItem('personal') || '{}');
-      if (!data.instagram) return;
-
-      let html = `
-        <div class="platform-block">
-          <div class="platform-name">Instagram (@dmcstyle)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.instagram.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.instagram.likes.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Shares</span>
-            <span class="metric-value">${data.instagram.shares.toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="platform-block">
-          <div class="platform-name">YouTube (@georgeyukhanov)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.youtube.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.youtube.likes.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Shares</span>
-            <span class="metric-value">${data.youtube.shares.toLocaleString()}</span>
-          </div>
-        </div>
-      `;
-      document.getElementById('personal-display').innerHTML = html;
+    function displayMetrics(data) {
+      updateTimestamp(data.lastUpdated);
     }
 
-    function displayStudio() {
-      const data = JSON.parse(localStorage.getItem('studio') || '{}');
-      if (!data.instagram) return;
-
-      let html = `
-        <div class="platform-block">
-          <div class="platform-name">Instagram (@dubaimusicstudio)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.instagram.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.instagram.likes.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Shares</span>
-            <span class="metric-value">${data.instagram.shares.toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="platform-block">
-          <div class="platform-name">TikTok (@dubaimusicstudio)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.tiktok.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.tiktok.likes.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Shares</span>
-            <span class="metric-value">${data.tiktok.shares.toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="platform-block">
-          <div class="platform-name">YouTube (@dubaimusicstudio)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.youtube.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.youtube.likes.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Shares</span>
-            <span class="metric-value">${data.youtube.shares.toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="platform-block">
-          <div class="platform-name">X (@gstudiodubai)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.x.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.x.likes.toLocaleString()}</span>
-          </div>
-        </div>
-        <div class="platform-block">
-          <div class="platform-name">Threads (@dubaimusicstudio)</div>
-          <div class="metric-row">
-            <span class="metric-label">Views</span>
-            <span class="metric-value">${data.threads.views.toLocaleString()}</span>
-          </div>
-          <div class="metric-row">
-            <span class="metric-label">Likes</span>
-            <span class="metric-value">${data.threads.likes.toLocaleString()}</span>
-          </div>
-        </div>
-      `;
-      document.getElementById('studio-display').innerHTML = html;
+    async function savePersonal() {
+      const updates = [
+        fetch(`${API_BASE}/personal/instagram`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            views: document.getElementById('ig-personal-views').value || 0,
+            likes: document.getElementById('ig-personal-likes').value || 0,
+            shares: document.getElementById('ig-personal-shares').value || 0
+          })
+        }),
+        fetch(`${API_BASE}/personal/youtube`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            views: document.getElementById('yt-personal-views').value || 0,
+            likes: document.getElementById('yt-personal-likes').value || 0,
+            shares: document.getElementById('yt-personal-shares').value || 0
+          })
+        })
+      ];
+      
+      try {
+        await Promise.all(updates);
+        loadMetrics();
+        alert('✅ Personal metrics saved!');
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
     }
 
-    function updateTimestamp() {
-      const now = new Date();
-      document.getElementById('timestamp').textContent = now.toLocaleString('en-GB', {timeZone: 'Asia/Dubai'});
+    async function saveStudio() {
+      const updates = [
+        fetch(`${API_BASE}/studio/instagram`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({views: document.getElementById('ig-studio-views').value || 0, likes: document.getElementById('ig-studio-likes').value || 0, shares: document.getElementById('ig-studio-shares').value || 0})}),
+        fetch(`${API_BASE}/studio/tiktok`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({views: document.getElementById('tt-studio-views').value || 0, likes: document.getElementById('tt-studio-likes').value || 0, shares: document.getElementById('tt-studio-shares').value || 0})}),
+        fetch(`${API_BASE}/studio/youtube`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({views: document.getElementById('yt-studio-views').value || 0, likes: document.getElementById('yt-studio-likes').value || 0, shares: document.getElementById('yt-studio-shares').value || 0})}),
+        fetch(`${API_BASE}/studio/x`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({views: document.getElementById('x-studio-views').value || 0, likes: document.getElementById('x-studio-likes').value || 0})}),
+        fetch(`${API_BASE}/studio/threads`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({views: document.getElementById('threads-studio-views').value || 0, likes: document.getElementById('threads-studio-likes').value || 0})})
+      ];
+      
+      try {
+        await Promise.all(updates);
+        loadMetrics();
+        alert('✅ Studio metrics saved!');
+      } catch (e) {
+        alert('❌ Error: ' + e.message);
+      }
     }
 
-    // Load on page load
-    window.addEventListener('load', () => {
-      displayPersonal();
-      displayStudio();
-      updateTimestamp();
-    });
+    function updateTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      document.getElementById('timestamp').textContent = date.toLocaleString('en-GB', {timeZone: 'Asia/Dubai'});
+    }
+
+    window.addEventListener('load', loadMetrics);
+    setInterval(loadMetrics, 30000); // Refresh every 30 seconds
   </script>
 </body>
 </html>
