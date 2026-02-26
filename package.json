@@ -1,0 +1,16 @@
+{
+  "name": "g-studio-dashboard",
+  "version": "1.0.0",
+  "description": "G Studio Social Media Dashboard",
+  "main": "dashboard-server.js",
+  "scripts": {
+    "start": "node dashboard-server.js",
+    "dev": "node dashboard-server.js"
+  },
+  "keywords": ["dashboard", "social-media"],
+  "author": "Georgiy Yukhanov",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

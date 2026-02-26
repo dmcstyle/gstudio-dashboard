@@ -1,0 +1,10 @@
+services:
+- type: web
+  name: gstudio-metrics-api
+  runtime: node
+  plan: free
+  buildCommand: npm install
+  startCommand: node metrics-api.js
+  envVars:
+    - key: PORT
+      value: 3001
