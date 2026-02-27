@@ -25,27 +25,27 @@
 <body>
     <div class="container">
         <header>
-            <h1>рџЋµ G Studio Analytics</h1>
+            <h1>&#127925; G Studio Analytics</h1>
             <div class="subtitle">Real-time Social Media & Studio Metrics Dashboard</div>
         </header>
 
         <!-- Personal Metrics -->
         <div class="section">
-            <div class="section-title">рџ‘¤ Personal (@dmcstyle / @georgeyukhanov)</div>
+            <div class="section-title">&#128100; Personal (@dmcstyle / @georgeyukhanov)</div>
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value" data-metric="personal-instagram-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="personal-instagram-followers">—</div>
                     <div class="platform">@dmcstyle</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value" data-metric="personal-youtube-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="personal-youtube-followers">—</div>
                     <div class="platform">@georgeyukhanov</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Views</div>
-                    <div class="metric-value" data-metric="personal-youtube-views">вЂ”</div>
+                    <div class="metric-value" data-metric="personal-youtube-views">—</div>
                     <div class="platform">@georgeyukhanov</div>
                 </div>
             </div>
@@ -53,38 +53,38 @@
 
         <!-- G Studio Metrics -->
         <div class="section">
-            <div class="section-title">рџЏў G Studio (@dubaimusicstudio / @gstudiodubai)</div>
+            <div class="section-title">&#127970; G Studio (@dubaimusicstudio / @gstudiodubai)</div>
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value" data-metric="studio-instagram-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="studio-instagram-followers">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">TikTok Followers</div>
-                    <div class="metric-value" data-metric="studio-tiktok-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="studio-tiktok-followers">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value" data-metric="studio-youtube-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="studio-youtube-followers">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">X (Twitter) Followers</div>
-                    <div class="metric-value" data-metric="studio-x-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="studio-x-followers">—</div>
                     <div class="platform">@gstudiodubai</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Threads Followers</div>
-                    <div class="metric-value" data-metric="studio-threads-followers">вЂ”</div>
+                    <div class="metric-value" data-metric="studio-threads-followers">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
             </div>
         </div>
 
         <div class="last-update">
-            Last updated: <span data-metric="last-updated">вЂ”</span>
+            Last updated: <span data-metric="last-updated">—</span>
         </div>
     </div>
 
@@ -111,9 +111,9 @@
                 // Last updated
                 document.querySelector('[data-metric="last-updated"]').textContent = new Date(data.lastUpdated).toLocaleString('ru-RU');
                 
-                console.log('вњ… Metrics loaded:', data);
+                console.log('✅ Metrics loaded:', data);
             } catch (error) {
-                console.error('вќЊ Failed to load metrics:', error);
+                console.error('❌ Failed to load metrics:', error);
             }
         }
 
@@ -122,3 +122,4 @@
     </script>
 </body>
 </html>
+
