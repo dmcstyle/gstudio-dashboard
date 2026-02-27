@@ -1,16 +1,17 @@
 {
   "name": "g-studio-dashboard",
   "version": "1.0.0",
-  "description": "G Studio Social Media Dashboard",
-  "main": "dashboard-server.js",
+  "description": "G Studio Social Media Dashboard with YouTube OAuth",
+  "main": "metrics-api.js",
   "scripts": {
-    "start": "node dashboard-server.js",
-    "dev": "node dashboard-server.js"
+    "start": "node metrics-api.js",
+    "dev": "node metrics-api.js"
   },
-  "keywords": ["dashboard", "social-media"],
+  "keywords": ["dashboard", "social-media", "youtube", "instagram"],
   "author": "Georgiy Yukhanov",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "googleapis": "^144.0.0"
   }
 }
