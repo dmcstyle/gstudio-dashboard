@@ -303,6 +303,71 @@ app.get('/api/finance', (req, res) => {
 });
 
 
+
+// Clients API - РґРѕР±Р°РІРёС‚СЊ РїРѕСЃР»Рµ finance endpoints
+
+// POST /api/finance/client - РґРѕР±Р°РІРёС‚СЊ РїР»Р°С‚С‘Р¶ РєР»РёРµРЅС‚Р°
+app.post('/api/finance/client', (req, res) => {
+  try {
+    const { name, amount, service, date } = req.body;
+    const paymentDate = date || new Date().toISOString().split('T')[0];
+    
+    const metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
+    if (!metrics.finance) metrics.finance = {};
+    if (!metrics.finance.clients) metrics.finance.clients = {};
+    
+    if (!metrics.finance.clients[name]) {
+      metrics.finance.clients[name] = {
+        total: 0,
+        payments: [],
+        services: {}
+      };
+    }
+    
+    metrics.finance.clients[name].total += parseInt(amount);
+    metrics.finance.clients[name].payments.push({
+      amount: parseInt(amount),
+      service,
+      date: paymentDate
+    });
+    
+    if (!metrics.finance.clients[name].services[service]) {
+      metrics.finance.clients[name].services[service] = 0;
+    }
+    metrics.finance.clients[name].services[service] += parseInt(amount);
+    
+    metrics.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(metrics, null, 2));
+    
+    res.json({ success: true, client: metrics.finance.clients[name] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/finance/clients - С‚РѕРї РєР»РёРµРЅС‚С‹
+app.get('/api/finance/clients', (req, res) => {
+  try {
+    const metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
+    const clients = metrics.finance?.clients || {};
+    
+    const sorted = Object.entries(clients)
+      .map(([name, data]) => ({
+        name,
+        total: data.total,
+        lastPayment: data.payments[data.payments.length - 1]?.date,
+        services: data.services
+      }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 10);
+    
+    res.json(sorted);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 // Health check
 app.get('/api/health', (req, res) => {
   const authStatus = fs.existsSync(AUTH_FILE) ? 'authenticated' : 'not authenticated';
@@ -339,5 +404,6 @@ app.listen(PORT, () => {
     `);
   }
 });
+
 
 
