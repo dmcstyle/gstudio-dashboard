@@ -12,12 +12,19 @@
         h1 { font-size: 2em; margin-bottom: 5px; }
         .subtitle { opacity: 0.9; font-size: 0.9em; }
         .section { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section.finance { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; }
         .section-title { font-size: 1.5em; margin-bottom: 20px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .section.finance .section-title { color: white; border-color: rgba(255,255,255,0.3); }
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .metric-card { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
+        .section.finance .metric-card { background: rgba(255,255,255,0.15); border-left: 4px solid #4ade80; backdrop-filter: blur(10px); }
         .metric-label { font-size: 0.85em; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .section.finance .metric-label { color: rgba(255,255,255,0.8); }
         .metric-value { font-size: 2em; font-weight: bold; color: #333; }
+        .section.finance .metric-value { color: white; }
         .platform { font-size: 0.9em; color: #888; margin-top: 5px; }
+        .section.finance .platform { color: rgba(255,255,255,0.7); }
+        .currency { font-size: 0.6em; opacity: 0.8; }
         .last-update { text-align: center; color: #888; margin-top: 30px; font-size: 0.9em; }
         @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } }
     </style>
@@ -26,8 +33,48 @@
     <div class="container">
         <header>
             <h1>&#127925; G Studio Analytics</h1>
-            <div class="subtitle">Real-time Social Media & Studio Metrics Dashboard</div>
+            <div class="subtitle">Real-time Financial, Social Media & Studio Metrics Dashboard</div>
         </header>
+
+        <!-- Financial Metrics -->
+        <div class="section finance">
+            <div class="section-title">&#128176; Финансовая отчетность</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Доход за сегодня</div>
+                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-today">—</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Доход за неделю</div>
+                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-week">—</span></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Доход за месяц</div>
+                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-month">—</span></div>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 15px;">Разбивка по услугам (текущий месяц):</div>
+                <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                    <div class="metric-card">
+                        <div class="metric-label">Почасовая запись</div>
+                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-hourly">—</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Песня под ключ</div>
+                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-turnkey">—</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Караоке</div>
+                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-karaoke">—</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Продажа битов</div>
+                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-beats">—</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Personal Metrics -->
         <div class="section">
@@ -96,6 +143,15 @@
                 const response = await fetch(`${API_BASE}/metrics`);
                 const data = await response.json();
                 
+                // Financial (placeholder - пока нули, потом добавим API)
+                document.querySelector('[data-metric="finance-today"]').textContent = (data.finance?.today || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-week"]').textContent = (data.finance?.week || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-month"]').textContent = (data.finance?.month || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-hourly"]').textContent = (data.finance?.services?.hourly || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-turnkey"]').textContent = (data.finance?.services?.turnkey || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-karaoke"]').textContent = (data.finance?.services?.karaoke || 0).toLocaleString();
+                document.querySelector('[data-metric="finance-beats"]').textContent = (data.finance?.services?.beats || 0).toLocaleString();
+                
                 // Personal
                 document.querySelector('[data-metric="personal-instagram-followers"]').textContent = (data.personal?.instagram?.followers || 0).toLocaleString();
                 document.querySelector('[data-metric="personal-youtube-followers"]').textContent = (data.personal?.youtube?.followers || 0).toLocaleString();
@@ -118,8 +174,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', loadMetrics);
-        setInterval(loadMetrics, 2 * 60 * 1000); // Reload every 2 min
+        setInterval(loadMetrics, 2 * 60 * 1000);
     </script>
 </body>
 </html>
-
