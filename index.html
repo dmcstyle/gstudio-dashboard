@@ -76,6 +76,15 @@
             </div>
         </div>
 
+        
+        <!-- Top Clients -->
+        <div class="section">
+            <div class="section-title">👥 Топ клиенты (текущий месяц)</div>
+            <div id="clients-list" style="display: grid; gap: 15px;">
+                <div style="color: #999; text-align: center;">Загрузка...</div>
+            </div>
+        </div>
+
         <!-- Personal Metrics -->
         <div class="section">
             <div class="section-title">&#128100; Personal (@dmcstyle / @georgeyukhanov)</div>
@@ -168,6 +177,32 @@
                 document.querySelector('[data-metric="last-updated"]').textContent = new Date(data.lastUpdated).toLocaleString('ru-RU');
                 
                 console.log('✅ Metrics loaded:', data);
+                
+                // Load clients
+                fetch(`${API_BASE}/finance/clients`)
+                  .then(r => r.json())
+                  .then(clients => {
+                    const list = document.getElementById('clients-list');
+                    if (clients.length === 0) {
+                      list.innerHTML = '<div style="color: #999; text-align: center;">Данных пока нет</div>';
+                      return;
+                    }
+                    list.innerHTML = clients.map(c => `
+                      <div class="metric-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                          <div>
+                            <div style="font-weight: bold; font-size: 1.1em;">${c.name}</div>
+                            <div class="platform">Последняя оплата: ${new Date(c.lastPayment).toLocaleDateString('ru-RU')}</div>
+                          </div>
+                          <div style="text-align: right;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #667eea;">${c.total.toLocaleString()} AED</div>
+                            <div style="font-size: 0.85em; color: #888;">${Object.entries(c.services).map(([k,v]) => k).join(', ')}</div>
+                          </div>
+                        </div>
+                      </div>
+                    `).join('');
+                  })
+                  .catch(e => console.error('Failed to load clients:', e));
             } catch (error) {
                 console.error('❌ Failed to load metrics:', error);
             }
@@ -178,4 +213,5 @@
     </script>
 </body>
 </html>
+
 
