@@ -240,6 +240,69 @@ app.post('/api/update-all-youtube', async (req, res) => {
   }
 });
 
+
+// Financial API endpoints - РґРѕР±Р°РІРёС‚СЊ РІ metrics-api.js РїРѕСЃР»Рµ POST /api/metrics/:account/:platform
+
+// POST /api/finance/daily - РѕР±РЅРѕРІРёС‚СЊ РґРЅРµРІРЅРѕР№ РґРѕС…РѕРґ
+app.post('/api/finance/daily', (req, res) => {
+  try {
+    const { amount } = req.body;
+    const today = new Date().toISOString().split('T')[0];
+    
+    const metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
+    if (!metrics.finance) metrics.finance = { daily: {}, services: {} };
+    metrics.finance.daily = metrics.finance.daily || {};
+    metrics.finance.daily[today] = parseInt(amount) || 0;
+    
+    // Calculate totals
+    const dates = Object.keys(metrics.finance.daily).sort().reverse();
+    metrics.finance.today = metrics.finance.daily[today] || 0;
+    metrics.finance.week = dates.slice(0, 7).reduce((sum, d) => sum + (metrics.finance.daily[d] || 0), 0);
+    
+    const currentMonth = today.substring(0, 7);
+    metrics.finance.month = dates.filter(d => d.startsWith(currentMonth)).reduce((sum, d) => sum + (metrics.finance.daily[d] || 0), 0);
+    
+    metrics.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(metrics, null, 2));
+    
+    res.json({ success: true, finance: metrics.finance });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/finance/service - РѕР±РЅРѕРІРёС‚СЊ РґРѕС…РѕРґ РїРѕ СѓСЃР»СѓРіРµ
+app.post('/api/finance/service', (req, res) => {
+  try {
+    const { service, amount } = req.body;
+    const currentMonth = new Date().toISOString().substring(0, 7);
+    
+    const metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
+    if (!metrics.finance) metrics.finance = { daily: {}, services: {} };
+    metrics.finance.services = metrics.finance.services || {};
+    metrics.finance.services[currentMonth] = metrics.finance.services[currentMonth] || {};
+    metrics.finance.services[currentMonth][service] = parseInt(amount) || 0;
+    
+    metrics.lastUpdated = new Date().toISOString();
+    fs.writeFileSync(METRICS_FILE, JSON.stringify(metrics, null, 2));
+    
+    res.json({ success: true, service, amount: metrics.finance.services[currentMonth][service] });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/finance - РїРѕР»СѓС‡РёС‚СЊ РІСЃРµ С„РёРЅР°РЅСЃРѕРІС‹Рµ РґР°РЅРЅС‹Рµ
+app.get('/api/finance', (req, res) => {
+  try {
+    const metrics = JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
+    res.json(metrics.finance || { today: 0, week: 0, month: 0, services: {} });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to read finance data' });
+  }
+});
+
+
 // Health check
 app.get('/api/health', (req, res) => {
   const authStatus = fs.existsSync(AUTH_FILE) ? 'authenticated' : 'not authenticated';
@@ -276,4 +339,5 @@ app.listen(PORT, () => {
     `);
   }
 });
+
 
