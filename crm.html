@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G Studio CRM — Клиенты и Лиды</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 { font-size: 2em; }
+        .back-btn { 
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        /* Client Card Styles */
+        .client-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .client-card:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+        
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 12px;
+        }
+        
+        .client-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .client-type {
+            display: inline-block;
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .client-type.client {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .client-type.lead {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .client-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            font-size: 0.9em;
+        }
+        
+        .detail-label {
+            color: #999;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.75em;
+            margin-bottom: 3px;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .detail-value.phone {
+            color: #667eea;
+            direction: ltr;
+        }
+        
+        .client-income {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 12px;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .income-label {
+            font-size: 0.8em;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .income-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .badge {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: #666;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .comments {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .clients-grid { grid-template-columns: 1fr; }
+            .client-details { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👥 CRM — Клиенты & Лиды</h1>
+            <a href="index.html" class="back-btn">← Вернуться на дашборд</a>
+        </header>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="client">Клиенты</button>
+            <button class="filter-btn" data-filter="lead">Лиды</button>
+        </div>
+        
+        <div class="clients-grid" id="clients-grid">
+            <div style="color: #999; text-align: center; grid-column: 1/-1; padding: 40px;">Загрузка клиентов...</div>
+        </div>
+    </div>
+    
+    <script>
+        const sampleClients = [
+            {
+                id: 1,
+                name: "Syed",
+                phone: "+44 7432 795003",
+                type: "Client",
+                totalIncome: 4350,
+                level: "Professional",
+                indCompany: "Individual",
+                source: "Google Maps",
+                services: "Recording: 3 hours",
+                mapsReview: "Yes"
+            },
+            {
+                id: 2,
+                name: "Chai",
+                phone: "+65 9270 7532",
+                type: "Client",
+                totalIncome: 405,
+                level: "Professional",
+                indCompany: "Individual",
+                source: "Google",
+                services: "Recording: 1 hour"
+            },
+            {
+                id: 3,
+                name: "Мария Боровик",
+                phone: "+7 925 748-95-85",
+                type: "Client",
+                totalIncome: 7000,
+                level: "New",
+                indCompany: "Individual",
+                source: "от Наташи Боровик",
+                comments: "Doesn't live in Dubai"
+            }
+        ];
+        
+        function renderClientCard(client) {
+            return `
+                <div class="client-card" data-type="${client.type.toLowerCase()}">
+                    <div class="client-header">
+                        <div>
+                            <div class="client-name">${client.name}</div>
+                            <div style="font-size: 0.85em; color: #999; margin-top: 3px;">ID: #${client.id}</div>
+                        </div>
+                        <span class="client-type ${client.type.toLowerCase()}">${client.type}</span>
+                    </div>
+                    
+                    <div class="client-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value phone">${client.phone}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Level</div>
+                            <div class="detail-value">${client.level}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Type</div>
+                            <div class="detail-value">${client.indCompany}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Source</div>
+                            <div class="detail-value">${client.source}</div>
+                        </div>
+                    </div>
+                    
+                    ${client.totalIncome ? `
+                    <div class="client-income">
+                        <div class="income-label">Total Income</div>
+                        <div class="income-value">${client.totalIncome.toLocaleString()} <span style="font-size: 0.6em;">AED</span></div>
+                    </div>
+                    ` : ''}
+                    
+                    ${client.services ? `<div style="margin-bottom: 12px;"><span class="badge">${client.services}</span></div>` : ''}
+                    ${client.comments ? `<div class="comments">${client.comments}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        function initCRM() {
+            const grid = document.getElementById('clients-grid');
+            grid.innerHTML = sampleClients.map(renderClientCard).join('');
+            
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    document.querySelectorAll('.client-card').forEach(card => {
+                        if (filter === 'all' || card.dataset.type === filter) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', initCRM);
+    </script>
+</body>
+</html>
