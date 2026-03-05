@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>G Studio CRM — Клиенты и Лиды</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
@@ -21,17 +22,40 @@
         }
         
         h1 { font-size: 2em; }
-        .back-btn { 
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4ade80;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #22c55e;
+        }
+        
+        .btn-secondary {
             background: rgba(255,255,255,0.2);
             color: white;
-            padding: 10px 20px;
             border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 6px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background 0.3s;
         }
-        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
         
         .filters {
             background: white;
@@ -65,7 +89,6 @@
             gap: 20px;
         }
         
-        /* Client Card Styles */
         .client-card {
             background: white;
             border: 1px solid #e0e0e0;
@@ -73,11 +96,36 @@
             padding: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: box-shadow 0.3s ease;
+            position: relative;
         }
         
         .client-card:hover {
             box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
             border-color: #667eea;
+        }
+        
+        .card-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .card-actions button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            background: #f0f0f0;
+            transition: background 0.3s;
+        }
+        
+        .card-actions button:hover {
+            background: #667eea;
+            color: white;
         }
         
         .client-header {
@@ -87,6 +135,7 @@
             margin-bottom: 15px;
             border-bottom: 1px solid #f0f0f0;
             padding-bottom: 12px;
+            padding-right: 50px;
         }
         
         .client-name {
@@ -163,25 +212,96 @@
             color: #667eea;
         }
         
-        .badge {
-            background: #f0f0f0;
-            padding: 4px 10px;
-            border-radius: 4px;
-            color: #666;
-            font-size: 0.8em;
-            display: inline-block;
-            margin-right: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .comments {
-            margin-top: 12px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 4px;
+        .last-purchase {
             font-size: 0.85em;
             color: #666;
-            font-style: italic;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
         }
         
         @media (max-width: 768px) {
@@ -194,7 +314,10 @@
     <div class="container">
         <header>
             <h1>👥 CRM — Клиенты & Лиды</h1>
-            <a href="index.html" class="back-btn">← Вернуться на дашборд</a>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="openAddClientModal()">+ Добавить клиента</button>
+                <a href="index.html" class="btn btn-secondary">← Дашборд</a>
+            </div>
         </header>
         
         <div class="filters">
@@ -204,114 +327,238 @@
         </div>
         
         <div class="clients-grid" id="clients-grid">
-            <div style="color: #999; text-align: center; grid-column: 1/-1; padding: 40px;">Загрузка клиентов...</div>
+            <div class="loading">⏳ Загрузка клиентов...</div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Client Modal -->
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalTitle">Добавить клиента</span>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="clientForm" onsubmit="saveClient(event)">
+                <div class="form-group">
+                    <label>Имя *</label>
+                    <input type="text" id="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="clientPhone">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="clientEmail">
+                </div>
+                <div class="form-group">
+                    <label>Тип *</label>
+                    <select id="clientType" required>
+                        <option value="client">Клиент</option>
+                        <option value="lead">Лид</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Уровень</label>
+                    <input type="text" id="clientLevel" placeholder="e.g. Professional, New">
+                </div>
+                <div class="form-group">
+                    <label>Источник</label>
+                    <input type="text" id="clientSource" placeholder="Google Maps, Instagram, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Комментарии</label>
+                    <textarea id="clientComments"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
         </div>
     </div>
     
     <script>
-        const sampleClients = [
-            {
-                id: 1,
-                name: "Syed",
-                phone: "+44 7432 795003",
-                type: "Client",
-                totalIncome: 4350,
-                level: "Professional",
-                indCompany: "Individual",
-                source: "Google Maps",
-                services: "Recording: 3 hours",
-                mapsReview: "Yes"
-            },
-            {
-                id: 2,
-                name: "Chai",
-                phone: "+65 9270 7532",
-                type: "Client",
-                totalIncome: 405,
-                level: "Professional",
-                indCompany: "Individual",
-                source: "Google",
-                services: "Recording: 1 hour"
-            },
-            {
-                id: 3,
-                name: "Мария Боровик",
-                phone: "+7 925 748-95-85",
-                type: "Client",
-                totalIncome: 7000,
-                level: "New",
-                indCompany: "Individual",
-                source: "от Наташи Боровик",
-                comments: "Doesn't live in Dubai"
-            }
-        ];
+        const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_mqrVhh4fVtdk24SDIT1Fvg_ulYhrMIC';
         
-        function renderClientCard(client) {
-            return `
-                <div class="client-card" data-type="${client.type.toLowerCase()}">
+        const { createClient } = supabase;
+        const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let currentEditingId = null;
+        let allClients = [];
+        
+        async function loadClients() {
+            try {
+                const { data, error } = await client
+                    .from('clients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                allClients = data || [];
+                renderClients(allClients);
+            } catch (err) {
+                console.error('Error loading clients:', err);
+                document.getElementById('clients-grid').innerHTML = '<div class="loading">❌ Ошибка загрузки данных</div>';
+            }
+        }
+        
+        function renderClients(clients) {
+            const grid = document.getElementById('clients-grid');
+            if (clients.length === 0) {
+                grid.innerHTML = '<div class="loading">Нет клиентов. Добавьте первого! 🎯</div>';
+                return;
+            }
+            
+            grid.innerHTML = clients.map(client => `
+                <div class="client-card" data-type="${client.type}">
+                    <div class="card-actions">
+                        <button onclick="editClient(${client.id})" title="Редактировать">✏️</button>
+                        <button onclick="deleteClient(${client.id})" title="Удалить">🗑️</button>
+                    </div>
+                    
                     <div class="client-header">
                         <div>
                             <div class="client-name">${client.name}</div>
                             <div style="font-size: 0.85em; color: #999; margin-top: 3px;">ID: #${client.id}</div>
                         </div>
-                        <span class="client-type ${client.type.toLowerCase()}">${client.type}</span>
+                        <span class="client-type ${client.type}">${client.type === 'client' ? 'Клиент' : 'Лид'}</span>
                     </div>
                     
                     <div class="client-details">
+                        ${client.phone ? `
                         <div class="detail-item">
-                            <div class="detail-label">Phone</div>
+                            <div class="detail-label">Телефон</div>
                             <div class="detail-value phone">${client.phone}</div>
                         </div>
+                        ` : ''}
+                        ${client.level ? `
                         <div class="detail-item">
-                            <div class="detail-label">Level</div>
+                            <div class="detail-label">Уровень</div>
                             <div class="detail-value">${client.level}</div>
                         </div>
+                        ` : ''}
+                        ${client.source ? `
                         <div class="detail-item">
-                            <div class="detail-label">Type</div>
-                            <div class="detail-value">${client.indCompany}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Source</div>
+                            <div class="detail-label">Источник</div>
                             <div class="detail-value">${client.source}</div>
                         </div>
+                        ` : ''}
                     </div>
                     
-                    ${client.totalIncome ? `
-                    <div class="client-income">
-                        <div class="income-label">Total Income</div>
-                        <div class="income-value">${client.totalIncome.toLocaleString()} <span style="font-size: 0.6em;">AED</span></div>
+                    ${client.last_purchase ? `
+                    <div class="last-purchase">
+                        📅 Последняя покупка: ${new Date(client.last_purchase).toLocaleDateString('ru-RU')}
                     </div>
                     ` : ''}
                     
-                    ${client.services ? `<div style="margin-bottom: 12px;"><span class="badge">${client.services}</span></div>` : ''}
-                    ${client.comments ? `<div class="comments">${client.comments}</div>` : ''}
+                    ${client.comments ? `
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0; font-size: 0.85em; color: #666; font-style: italic;">
+                        ${client.comments}
+                    </div>
+                    ` : ''}
                 </div>
-            `;
+            `).join('');
         }
         
-        function initCRM() {
-            const grid = document.getElementById('clients-grid');
-            grid.innerHTML = sampleClients.map(renderClientCard).join('');
+        function openAddClientModal() {
+            currentEditingId = null;
+            document.getElementById('modalTitle').textContent = 'Добавить клиента';
+            document.getElementById('clientForm').reset();
+            document.getElementById('clientModal').classList.add('active');
+        }
+        
+        async function editClient(id) {
+            const client = allClients.find(c => c.id === id);
+            if (!client) return;
             
-            // Filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const filter = this.dataset.filter;
-                    document.querySelectorAll('.client-card').forEach(card => {
-                        if (filter === 'all' || card.dataset.type === filter) {
-                            card.style.display = '';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
+            currentEditingId = id;
+            document.getElementById('modalTitle').textContent = 'Редактировать клиента';
+            document.getElementById('clientName').value = client.name;
+            document.getElementById('clientPhone').value = client.phone || '';
+            document.getElementById('clientEmail').value = client.email || '';
+            document.getElementById('clientType').value = client.type;
+            document.getElementById('clientLevel').value = client.level || '';
+            document.getElementById('clientSource').value = client.source || '';
+            document.getElementById('clientComments').value = client.comments || '';
+            
+            document.getElementById('clientModal').classList.add('active');
         }
         
-        document.addEventListener('DOMContentLoaded', initCRM);
+        async function saveClient(event) {
+            event.preventDefault();
+            
+            const clientData = {
+                name: document.getElementById('clientName').value,
+                phone: document.getElementById('clientPhone').value || null,
+                email: document.getElementById('clientEmail').value || null,
+                type: document.getElementById('clientType').value,
+                level: document.getElementById('clientLevel').value || null,
+                source: document.getElementById('clientSource').value || null,
+                comments: document.getElementById('clientComments').value || null,
+                last_purchase: new Date().toISOString()
+            };
+            
+            try {
+                if (currentEditingId) {
+                    const { error } = await client
+                        .from('clients')
+                        .update(clientData)
+                        .eq('id', currentEditingId);
+                    
+                    if (error) throw error;
+                } else {
+                    const { error } = await client
+                        .from('clients')
+                        .insert([clientData]);
+                    
+                    if (error) throw error;
+                }
+                
+                closeModal();
+                loadClients();
+            } catch (err) {
+                alert('Ошибка сохранения: ' + err.message);
+            }
+        }
+        
+        async function deleteClient(id) {
+            if (!confirm('Удалить клиента? Это действие необратимо.')) return;
+            
+            try {
+                const { error } = await client
+                    .from('clients')
+                    .delete()
+                    .eq('id', id);
+                
+                if (error) throw error;
+                loadClients();
+            } catch (err) {
+                alert('Ошибка удаления: ' + err.message);
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('clientModal').classList.remove('active');
+            currentEditingId = null;
+        }
+        
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const filtered = filter === 'all' ? allClients : allClients.filter(c => c.type === filter);
+                renderClients(filtered);
+            });
+        });
+        
+        // Load clients on page load
+        document.addEventListener('DOMContentLoaded', loadClients);
     </script>
 </body>
 </html>
