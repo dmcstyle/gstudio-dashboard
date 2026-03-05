@@ -498,11 +498,14 @@
             const tbody = document.getElementById('clients-table');
             
             if (clients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="loading">No clients yet</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="loading">No clients yet</td></tr>';
                 return;
             }
             
-            tbody.innerHTML = clients.map(client => `
+            // Sort by ID ascending
+            const sorted = clients.sort((a, b) => a.id - b.id);
+            
+            tbody.innerHTML = sorted.map(client => `
                 <tr onclick="showClientDetails(${client.id})">
                     <td style="font-weight: 600; color: #667eea;">#${client.id}</td>
                     <td>
