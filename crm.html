@@ -334,6 +334,7 @@
             <table>
                 <thead>
                     <tr>
+                        <th style="width: 60px;">ID</th>
                         <th>Name</th>
                         <th>Type</th>
                         <th>Phone</th>
@@ -503,6 +504,7 @@
             
             tbody.innerHTML = clients.map(client => `
                 <tr onclick="showClientDetails(${client.id})">
+                    <td style="font-weight: 600; color: #667eea;">#${client.id}</td>
                     <td>
                         <span class="client-name">${client.name}</span>
                     </td>
