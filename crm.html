@@ -325,6 +325,9 @@
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="client">Clients</button>
             <button class="filter-btn" data-filter="lead">Leads</button>
+            <span style="margin-left: 20px; border-left: 1px solid #ddd; padding-left: 20px;"></span>
+            <button class="filter-btn" data-filter="ru">🇷🇺 Russian</button>
+            <button class="filter-btn" data-filter="int">🌍 International</button>
         </div>
         
         <div class="table-container">
@@ -332,6 +335,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Type</th>
                         <th>Phone</th>
                         <th>Source</th>
                         <th>Total Income</th>
@@ -501,6 +505,8 @@
                 <tr onclick="showClientDetails(${client.id})">
                     <td>
                         <span class="client-name">${client.name}</span>
+                    </td>
+                    <td>
                         <span class="client-type ${client.type}">${client.type === 'client' ? 'Client' : 'Lead'}</span>
                     </td>
                     <td>${client.phone || '—'}</td>
@@ -697,7 +703,20 @@
                 this.classList.add('active');
                 
                 const filter = this.dataset.filter;
-                const filtered = filter === 'all' ? allClients : allClients.filter(c => c.type === filter);
+                let filtered = allClients;
+                
+                if (filter === 'all') {
+                    filtered = allClients;
+                } else if (filter === 'client') {
+                    filtered = allClients.filter(c => c.type === 'client');
+                } else if (filter === 'lead') {
+                    filtered = allClients.filter(c => c.type === 'lead');
+                } else if (filter === 'ru') {
+                    filtered = allClients.filter(c => c.comments && c.comments.includes('RU'));
+                } else if (filter === 'int') {
+                    filtered = allClients.filter(c => c.comments && c.comments.includes('Int'));
+                }
+                
                 renderTable(filtered);
             });
         });
