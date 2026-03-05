@@ -481,6 +481,14 @@
         let sortColumn = 'id';
         let sortDirection = 'asc';
         
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
         async function loadData() {
             try {
                 const [clientsData, transData] = await Promise.all([
@@ -570,7 +578,7 @@
                     <td>${client.phone || '—'}</td>
                     <td>${client.source || '—'}</td>
                     <td class="income">${client.type === 'lead' ? '—' : getClientIncome(client.id).toFixed(0) + ' AED'}</td>
-                    <td>${new Date(client.date_added).toLocaleDateString('en-US')}</td>
+                    <td>${formatDate(client.date_added)}</td>
                     <td>
                         <div class="actions" onclick="event.stopPropagation()">
                             <button onclick="editClient(${client.id})" title="Edit">✏️</button>
@@ -618,7 +626,7 @@
             } else {
                 transHTML = clientTransactions.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)).map(t => `
                     <div class="transaction-row">
-                        <div><strong>${new Date(t.transaction_date).toLocaleDateString('en-US')}</strong></div>
+                        <div><strong>${formatDate(t.transaction_date)}</strong></div>
                         <div>${t.service}</div>
                         <div style="text-align: right;"><strong>${t.amount} AED</strong></div>
                     </div>
