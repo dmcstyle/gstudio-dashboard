@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G Studio CRM — Клиенты и Лиды</title>
+    <title>G Studio CRM — Clients & Leads</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,12 +30,13 @@
         }
         
         .btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            font-size: 14px;
         }
         
         .btn-primary {
@@ -45,12 +46,15 @@
         
         .btn-primary:hover {
             background: #22c55e;
+            transform: translateY(-2px);
         }
         
         .btn-secondary {
             background: rgba(255,255,255,0.2);
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
+            text-decoration: none;
+            display: inline-block;
         }
         
         .btn-secondary:hover {
@@ -113,12 +117,12 @@
         }
         
         .card-actions button {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             background: #f0f0f0;
             transition: background 0.3s;
         }
@@ -189,27 +193,6 @@
         .detail-value.phone {
             color: #667eea;
             direction: ltr;
-        }
-        
-        .client-income {
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            padding: 12px;
-            border-left: 4px solid #667eea;
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
-        
-        .income-label {
-            font-size: 0.8em;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        
-        .income-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #667eea;
         }
         
         .last-purchase {
@@ -313,21 +296,21 @@
 <body>
     <div class="container">
         <header>
-            <h1>👥 CRM — Клиенты & Лиды</h1>
+            <h1>👥 CRM — Clients & Leads</h1>
             <div class="header-actions">
-                <button class="btn btn-primary" onclick="openAddClientModal()">+ Добавить клиента</button>
-                <a href="index.html" class="btn btn-secondary">← Дашборд</a>
+                <button class="btn btn-primary" onclick="openAddClientModal()">+ Add Client</button>
+                <a href="index.html" class="btn btn-secondary">← Dashboard</a>
             </div>
         </header>
         
         <div class="filters">
-            <button class="filter-btn active" data-filter="all">Все</button>
-            <button class="filter-btn" data-filter="client">Клиенты</button>
-            <button class="filter-btn" data-filter="lead">Лиды</button>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="client">Clients</button>
+            <button class="filter-btn" data-filter="lead">Leads</button>
         </div>
         
         <div class="clients-grid" id="clients-grid">
-            <div class="loading">⏳ Загрузка клиентов...</div>
+            <div class="loading">⏳ Loading clients...</div>
         </div>
     </div>
     
@@ -335,16 +318,16 @@
     <div id="clientModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span id="modalTitle">Добавить клиента</span>
+                <span id="modalTitle">Add Client</span>
                 <button class="modal-close" onclick="closeModal()">&times;</button>
             </div>
             <form id="clientForm" onsubmit="saveClient(event)">
                 <div class="form-group">
-                    <label>Имя *</label>
+                    <label>Name *</label>
                     <input type="text" id="clientName" required>
                 </div>
                 <div class="form-group">
-                    <label>Телефон</label>
+                    <label>Phone</label>
                     <input type="tel" id="clientPhone">
                 </div>
                 <div class="form-group">
@@ -352,27 +335,27 @@
                     <input type="email" id="clientEmail">
                 </div>
                 <div class="form-group">
-                    <label>Тип *</label>
+                    <label>Type *</label>
                     <select id="clientType" required>
-                        <option value="client">Клиент</option>
-                        <option value="lead">Лид</option>
+                        <option value="client">Client</option>
+                        <option value="lead">Lead</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Уровень</label>
+                    <label>Level</label>
                     <input type="text" id="clientLevel" placeholder="e.g. Professional, New">
                 </div>
                 <div class="form-group">
-                    <label>Источник</label>
+                    <label>Source</label>
                     <input type="text" id="clientSource" placeholder="Google Maps, Instagram, etc.">
                 </div>
                 <div class="form-group">
-                    <label>Комментарии</label>
+                    <label>Comments</label>
                     <textarea id="clientComments"></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -383,14 +366,14 @@
         const SUPABASE_KEY = 'sb_publishable_mqrVhh4fVtdk24SDIT1Fvg_ulYhrMIC';
         
         const { createClient } = supabase;
-        const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let currentEditingId = null;
         let allClients = [];
         
         async function loadClients() {
             try {
-                const { data, error } = await client
+                const { data, error } = await supabaseClient
                     .from('clients')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -401,22 +384,22 @@
                 renderClients(allClients);
             } catch (err) {
                 console.error('Error loading clients:', err);
-                document.getElementById('clients-grid').innerHTML = '<div class="loading">❌ Ошибка загрузки данных</div>';
+                document.getElementById('clients-grid').innerHTML = '<div class="loading">❌ Error loading data</div>';
             }
         }
         
         function renderClients(clients) {
             const grid = document.getElementById('clients-grid');
             if (clients.length === 0) {
-                grid.innerHTML = '<div class="loading">Нет клиентов. Добавьте первого! 🎯</div>';
+                grid.innerHTML = '<div class="loading">No clients yet. Add one! 🎯</div>';
                 return;
             }
             
             grid.innerHTML = clients.map(client => `
                 <div class="client-card" data-type="${client.type}">
                     <div class="card-actions">
-                        <button onclick="editClient(${client.id})" title="Редактировать">✏️</button>
-                        <button onclick="deleteClient(${client.id})" title="Удалить">🗑️</button>
+                        <button onclick="editClient(${client.id})" title="Edit">✏️</button>
+                        <button onclick="deleteClient(${client.id})" title="Delete">🗑️</button>
                     </div>
                     
                     <div class="client-header">
@@ -424,25 +407,25 @@
                             <div class="client-name">${client.name}</div>
                             <div style="font-size: 0.85em; color: #999; margin-top: 3px;">ID: #${client.id}</div>
                         </div>
-                        <span class="client-type ${client.type}">${client.type === 'client' ? 'Клиент' : 'Лид'}</span>
+                        <span class="client-type ${client.type}">${client.type === 'client' ? 'Client' : 'Lead'}</span>
                     </div>
                     
                     <div class="client-details">
                         ${client.phone ? `
                         <div class="detail-item">
-                            <div class="detail-label">Телефон</div>
+                            <div class="detail-label">Phone</div>
                             <div class="detail-value phone">${client.phone}</div>
                         </div>
                         ` : ''}
                         ${client.level ? `
                         <div class="detail-item">
-                            <div class="detail-label">Уровень</div>
+                            <div class="detail-label">Level</div>
                             <div class="detail-value">${client.level}</div>
                         </div>
                         ` : ''}
                         ${client.source ? `
                         <div class="detail-item">
-                            <div class="detail-label">Источник</div>
+                            <div class="detail-label">Source</div>
                             <div class="detail-value">${client.source}</div>
                         </div>
                         ` : ''}
@@ -450,7 +433,7 @@
                     
                     ${client.last_purchase ? `
                     <div class="last-purchase">
-                        📅 Последняя покупка: ${new Date(client.last_purchase).toLocaleDateString('ru-RU')}
+                        📅 Last purchase: ${new Date(client.last_purchase).toLocaleDateString('en-US')}
                     </div>
                     ` : ''}
                     
@@ -465,7 +448,7 @@
         
         function openAddClientModal() {
             currentEditingId = null;
-            document.getElementById('modalTitle').textContent = 'Добавить клиента';
+            document.getElementById('modalTitle').textContent = 'Add Client';
             document.getElementById('clientForm').reset();
             document.getElementById('clientModal').classList.add('active');
         }
@@ -475,7 +458,7 @@
             if (!client) return;
             
             currentEditingId = id;
-            document.getElementById('modalTitle').textContent = 'Редактировать клиента';
+            document.getElementById('modalTitle').textContent = 'Edit Client';
             document.getElementById('clientName').value = client.name;
             document.getElementById('clientPhone').value = client.phone || '';
             document.getElementById('clientEmail').value = client.email || '';
@@ -503,14 +486,14 @@
             
             try {
                 if (currentEditingId) {
-                    const { error } = await client
+                    const { error } = await supabaseClient
                         .from('clients')
                         .update(clientData)
                         .eq('id', currentEditingId);
                     
                     if (error) throw error;
                 } else {
-                    const { error } = await client
+                    const { error } = await supabaseClient
                         .from('clients')
                         .insert([clientData]);
                     
@@ -520,15 +503,15 @@
                 closeModal();
                 loadClients();
             } catch (err) {
-                alert('Ошибка сохранения: ' + err.message);
+                alert('Error: ' + err.message);
             }
         }
         
         async function deleteClient(id) {
-            if (!confirm('Удалить клиента? Это действие необратимо.')) return;
+            if (!confirm('Delete this client? This action cannot be undone.')) return;
             
             try {
-                const { error } = await client
+                const { error } = await supabaseClient
                     .from('clients')
                     .delete()
                     .eq('id', id);
@@ -536,7 +519,7 @@
                 if (error) throw error;
                 loadClients();
             } catch (err) {
-                alert('Ошибка удаления: ' + err.message);
+                alert('Error: ' + err.message);
             }
         }
         
