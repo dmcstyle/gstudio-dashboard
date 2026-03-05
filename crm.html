@@ -107,6 +107,16 @@
             color: #666;
             text-transform: uppercase;
             font-size: 12px;
+            user-select: none;
+        }
+        
+        th:not(:last-child) {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        th:not(:last-child):hover {
+            background: #f0f0f0;
         }
         
         tbody tr {
@@ -334,13 +344,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 60px;">ID</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Phone</th>
-                        <th>Source</th>
-                        <th>Total Income</th>
-                        <th>Date Added</th>
+                        <th style="width: 60px; cursor: pointer;" onclick="sortBy('id')">ID</th>
+                        <th style="cursor: pointer;" onclick="sortBy('name')">Name</th>
+                        <th style="cursor: pointer;" onclick="sortBy('type')">Type</th>
+                        <th style="cursor: pointer;" onclick="sortBy('phone')">Phone</th>
+                        <th style="cursor: pointer;" onclick="sortBy('source')">Source</th>
+                        <th style="cursor: pointer;" onclick="sortBy('income')">Total Income</th>
+                        <th style="cursor: pointer;" onclick="sortBy('date_added')">Date Added</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -468,6 +478,8 @@
         let allTransactions = [];
         let currentClientId = null;
         let currentEditingId = null;
+        let sortColumn = 'id';
+        let sortDirection = 'asc';
         
         async function loadData() {
             try {
@@ -494,16 +506,57 @@
                 .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
         }
         
+        function sortBy(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+            renderTable(allClients.filter(c => {
+                const filter = document.querySelector('.filter-btn.active')?.dataset.filter;
+                if (filter === 'all') return true;
+                if (filter === 'client') return c.type === 'client';
+                if (filter === 'lead') return c.type === 'lead';
+                if (filter === 'ru') return c.comments && c.comments.includes('RU');
+                if (filter === 'int') return c.comments && c.comments.includes('Int');
+                return true;
+            }));
+        }
+        
         function renderTable(clients) {
             const tbody = document.getElementById('clients-table');
             
             if (clients.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="loading">No clients yet</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="loading">No clients yet</td></tr>';
                 return;
             }
             
-            // Sort by ID ascending
-            const sorted = clients.sort((a, b) => a.id - b.id);
+            // Sort by selected column
+            let sorted = [...clients];
+            sorted.sort((a, b) => {
+                let aVal = a[sortColumn];
+                let bVal = b[sortColumn];
+                
+                // Special handling for income
+                if (sortColumn === 'income') {
+                    aVal = getClientIncome(a.id);
+                    bVal = getClientIncome(b.id);
+                }
+                
+                // Handle null/undefined
+                if (aVal == null) aVal = '';
+                if (bVal == null) bVal = '';
+                
+                // Convert to strings for comparison (except numbers)
+                if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+                if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+                
+                // Compare
+                if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
             
             tbody.innerHTML = sorted.map(client => `
                 <tr onclick="showClientDetails(${client.id})">
@@ -722,6 +775,8 @@
                     filtered = allClients.filter(c => c.comments && c.comments.includes('Int'));
                 }
                 
+                sortColumn = 'id';
+                sortDirection = 'asc';
                 renderTable(filtered);
             });
         });
