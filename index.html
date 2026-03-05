@@ -143,3 +143,56 @@
     </div>
 
     
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Monthly income chart
+const incomeChartCanvas = document.getElementById('income-chart');
+if (incomeChartCanvas) {
+    // Sample data for current month
+    const monthlyData = {
+        labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+        datasets: [{
+            label: 'Доход (AED)',
+            data: [1225, 0, 450, 0, 800, 1050, 0, 0, 650, 1200, 0, 500, 800, 0, 0, 1100, 0, 950, 600, 0, 0, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            backgroundColor: 'rgba(102, 126, 234, 0.15)',
+            borderColor: '#667eea',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#667eea',
+            pointHoverRadius: 6
+        }]
+    };
+    
+    const ctx = incomeChartCanvas.getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: monthlyData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: { color: 'rgba(255,255,255,0.8)', font: { size: 12 } }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: 'rgba(255,255,255,0.6)' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: {
+                    ticks: { color: 'rgba(255,255,255,0.6)' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            }
+        }
+    });
+}
+</script>
