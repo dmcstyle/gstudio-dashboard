@@ -26,7 +26,6 @@
         .header-actions {
             display: flex;
             gap: 15px;
-            align-items: center;
         }
         
         .btn {
@@ -46,7 +45,6 @@
         
         .btn-primary:hover {
             background: #22c55e;
-            transform: translateY(-2px);
         }
         
         .btn-secondary {
@@ -54,7 +52,6 @@
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
             text-decoration: none;
-            display: inline-block;
         }
         
         .btn-secondary:hover {
@@ -69,7 +66,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             display: flex;
             gap: 15px;
-            align-items: center;
         }
         
         .filter-btn {
@@ -87,63 +83,59 @@
             border-color: #667eea;
         }
         
-        .clients-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 20px;
-        }
-        
-        .client-card {
+        .table-container {
             background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: box-shadow 0.3s ease;
-            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         
-        .client-card:hover {
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
-            border-color: #667eea;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
         
-
-        
-        .card-actions {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
+        thead {
+            background: #f5f7fa;
+            border-bottom: 2px solid #e0e0e0;
         }
         
-        .card-actions button {
-            width: 28px;
-            height: 28px;
-            border: none;
-            background: none;
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
             cursor: pointer;
-            font-size: 16px;
-            opacity: 0.6;
-            transition: opacity 0.2s;
-            padding: 0;
         }
         
-        .card-actions button:hover {
-            opacity: 1;
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+        
+        td {
+            padding: 16px;
+            font-size: 14px;
         }
         
         .client-name {
-            font-size: 1.3em;
             font-weight: 600;
             color: #333;
         }
         
         .client-type {
             display: inline-block;
-            font-size: 0.75em;
-            padding: 4px 12px;
+            font-size: 11px;
+            padding: 4px 8px;
             border-radius: 12px;
             font-weight: 600;
+            margin-left: 8px;
         }
         
         .client-type.client {
@@ -156,44 +148,32 @@
             color: #f57c00;
         }
         
-        .client-details {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .detail-item {
-            font-size: 0.9em;
-        }
-        
-        .detail-label {
-            color: #999;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.75em;
-            margin-bottom: 3px;
-        }
-        
-        .detail-value {
-            color: #333;
+        .income {
             font-weight: 600;
-        }
-        
-        .detail-value.phone {
             color: #667eea;
-            direction: ltr;
+            font-size: 16px;
         }
         
-        .last-purchase {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #e0e0e0;
+        .actions {
+            display: flex;
+            gap: 8px;
         }
         
-        /* Modal Styles */
+        .actions button {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        
+        .actions button:hover {
+            opacity: 1;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -215,7 +195,7 @@
             background: white;
             padding: 30px;
             border-radius: 10px;
-            max-width: 500px;
+            max-width: 600px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -237,6 +217,52 @@
             cursor: pointer;
         }
         
+        .client-details {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .transactions {
+            margin-top: 20px;
+        }
+        
+        .transactions h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .transaction-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        
+        .transaction-row strong {
+            color: #667eea;
+        }
+        
         .form-group {
             margin-bottom: 15px;
         }
@@ -248,9 +274,9 @@
             color: #333;
         }
         
+        .form-group select,
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -261,7 +287,7 @@
         
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 60px;
         }
         
         .form-actions {
@@ -277,9 +303,11 @@
             color: #999;
         }
         
-        @media (max-width: 768px) {
-            .clients-grid { grid-template-columns: 1fr; }
-            .client-details { grid-template-columns: 1fr; }
+        .no-transactions {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -299,12 +327,26 @@
             <button class="filter-btn" data-filter="lead">Leads</button>
         </div>
         
-        <div class="clients-grid" id="clients-grid">
-            <div class="loading">⏳ Loading clients...</div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Source</th>
+                        <th>Total Income</th>
+                        <th>Date Added</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table">
+                    <tr><td colspan="6" class="loading">⏳ Loading clients...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
     
-    <!-- Add/Edit Client Modal -->
+    <!-- Client Modal -->
     <div id="clientModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -333,11 +375,11 @@
                 </div>
                 <div class="form-group">
                     <label>Level</label>
-                    <input type="text" id="clientLevel" placeholder="e.g. Professional, New">
+                    <input type="text" id="clientLevel">
                 </div>
                 <div class="form-group">
                     <label>Source</label>
-                    <input type="text" id="clientSource" placeholder="Google Maps, Instagram, etc.">
+                    <input type="text" id="clientSource">
                 </div>
                 <div class="form-group">
                     <label>Comments</label>
@@ -351,6 +393,65 @@
         </div>
     </div>
     
+    <!-- Client Details Modal -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="detailsTitle">Client Details</span>
+                <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+            </div>
+            
+            <div class="client-details" id="clientDetailsContent"></div>
+            
+            <div class="transactions">
+                <h3>Transaction History</h3>
+                <button class="btn btn-primary" onclick="openAddTransactionModal()" style="margin-bottom: 15px;">+ Add Transaction</button>
+                <div id="transactionsContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Add Transaction</span>
+                <button class="modal-close" onclick="closeTransactionModal()">&times;</button>
+            </div>
+            <form id="transactionForm" onsubmit="saveTransaction(event)">
+                <input type="hidden" id="transClientId">
+                <div class="form-group">
+                    <label>Service *</label>
+                    <select id="transService" required>
+                        <option value="">Select service...</option>
+                        <option value="Recording">Recording (hourly)</option>
+                        <option value="Full Song">Full Song Production</option>
+                        <option value="Mix/Master">Mix/Master</option>
+                        <option value="Karaoke">Karaoke</option>
+                        <option value="Beat Sale">Beat Sale</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount (AED) *</label>
+                    <input type="number" id="transAmount" step="0.01" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="transDate">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="transNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeTransactionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script>
         const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_mqrVhh4fVtdk24SDIT1Fvg_ulYhrMIC';
@@ -358,21 +459,27 @@
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        let currentEditingId = null;
         let allClients = [];
         let allTransactions = [];
+        let currentClientId = null;
+        let currentEditingId = null;
         
-
-        async function loadTransactions() {
+        async function loadData() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('transactions')
-                    .select('*');
+                const [clientsData, transData] = await Promise.all([
+                    supabaseClient.from('clients').select('*').order('created_at', { ascending: false }),
+                    supabaseClient.from('transactions').select('*')
+                ]);
                 
-                if (error) throw error;
-                allTransactions = data || [];
+                if (clientsData.error) throw clientsData.error;
+                if (transData.error) throw transData.error;
+                
+                allClients = clientsData.data || [];
+                allTransactions = transData.data || [];
+                renderTable(allClients);
             } catch (err) {
-                console.error('Error loading transactions:', err);
+                console.error('Error:', err);
+                document.getElementById('clients-table').innerHTML = '<tr><td colspan="6" class="loading">❌ Error loading data</td></tr>';
             }
         }
         
@@ -382,129 +489,80 @@
                 .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
         }
         
-        function openAddTransactionModal(clientId) {
-            document.getElementById('transClientId').value = clientId;
-            document.getElementById('transService').value = '';
-            document.getElementById('transAmount').value = '';
-            document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('transNotes').value = '';
-            document.getElementById('transactionModal').classList.add('active');
-        }
-        
-        function closeTransactionModal() {
-            document.getElementById('transactionModal').classList.remove('active');
-        }
-        
-        async function saveTransaction(event) {
-            event.preventDefault();
+        function renderTable(clients) {
+            const tbody = document.getElementById('clients-table');
             
-            const clientId = parseInt(document.getElementById('transClientId').value);
-            const transData = {
-                client_id: clientId,
-                service: document.getElementById('transService').value,
-                amount: parseFloat(document.getElementById('transAmount').value),
-                transaction_date: document.getElementById('transDate').value,
-                notes: document.getElementById('transNotes').value || null
-            };
-            
-            try {
-                const { error } = await supabaseClient
-                    .from('transactions')
-                    .insert([transData]);
-                
-                if (error) throw error;
-                
-                closeTransactionModal();
-                loadTransactions();
-                renderClients(allClients);
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        }
-        
-        async function loadClients() {
-            await loadTransactions();
-            try {
-                const { data, error } = await supabaseClient
-                    .from('clients')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                allClients = data || [];
-                renderClients(allClients);
-            } catch (err) {
-                console.error('Error loading clients:', err);
-                document.getElementById('clients-grid').innerHTML = '<div class="loading">❌ Error loading data</div>';
-            }
-        }
-        
-        function renderClients(clients) {
-            const grid = document.getElementById('clients-grid');
             if (clients.length === 0) {
-                grid.innerHTML = '<div class="loading">No clients yet. Add one! 🎯</div>';
+                tbody.innerHTML = '<tr><td colspan="6" class="loading">No clients yet</td></tr>';
                 return;
             }
             
-            grid.innerHTML = clients.map(client => `
-                <div class="client-card" data-type="${client.type}">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px;">
-                        <div>
-                            <div class="client-name">${client.name}</div>
-                            <div style="font-size: 0.85em; color: #999; margin-top: 3px;">ID: #${client.id}</div>
+            tbody.innerHTML = clients.map(client => `
+                <tr onclick="showClientDetails(${client.id})">
+                    <td>
+                        <span class="client-name">${client.name}</span>
+                        <span class="client-type ${client.type}">${client.type === 'client' ? 'Client' : 'Lead'}</span>
+                    </td>
+                    <td>${client.phone || '—'}</td>
+                    <td>${client.source || '—'}</td>
+                    <td class="income">${getClientIncome(client.id).toFixed(0)} AED</td>
+                    <td>${new Date(client.date_added).toLocaleDateString('en-US')}</td>
+                    <td>
+                        <div class="actions" onclick="event.stopPropagation()">
+                            <button onclick="editClient(${client.id})" title="Edit">✏️</button>
+                            <button onclick="deleteClient(${client.id})" title="Delete">🗑️</button>
                         </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span class="client-type ${client.type}" style="white-space: nowrap;">${client.type === 'client' ? 'Client' : 'Lead'}</span>
-                            <div class="card-actions">
-                                <button onclick="editClient(${client.id})" title="Edit">✏️</button>
-                                <button onclick="deleteClient(${client.id})" title="Delete">🗑️</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="client-details">
-                        ${client.phone ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Phone</div>
-                            <div class="detail-value phone">${client.phone}</div>
-                        </div>
-                        ` : ''}
-                        ${client.level ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Level</div>
-                            <div class="detail-value">${client.level}</div>
-                        </div>
-                        ` : ''}
-                        ${client.source ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Source</div>
-                            <div class="detail-value">${client.source}</div>
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    <div style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 12px; border-left: 4px solid #667eea; border-radius: 4px; margin: 15px 0; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <div style="color: #666; font-weight: 500; text-transform: uppercase; font-size: 0.75em; margin-bottom: 5px;">Total Income</div>
-                            <div style="font-size: 1.8em; font-weight: bold; color: #667eea;">${getClientIncome(client.id).toFixed(0)} <span style="font-size: 0.6em;">AED</span></div>
-                        </div>
-                        <button onclick="openAddTransactionModal(${client.id})" style="padding: 8px 12px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; white-space: nowrap;">+ Add Txn</button>
-                    </div>
-                    
-                    ${client.last_purchase ? `
-                    <div style="font-size: 0.85em; color: #666; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
-                        📅 Last purchase: ${new Date(client.last_purchase).toLocaleDateString('en-US')}
-                    </div>
-                    ` : ''}
-                    
-                    ${client.comments ? `
-                    <div style="margin-top: 12px; padding: 10px; background: #f9f9f9; border-radius: 4px; font-size: 0.85em; color: #666; font-style: italic;">
-                        💬 ${client.comments}
-                    </div>
-                    ` : ''}
-                </div>
+                    </td>
+                </tr>
             `).join('');
+        }
+        
+        function showClientDetails(clientId) {
+            const client = allClients.find(c => c.id === clientId);
+            if (!client) return;
+            
+            currentClientId = clientId;
+            
+            // Client info
+            const detailsHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Name</span>
+                    <span class="detail-value">${client.name}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">${client.phone || '—'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Type</span>
+                    <span class="detail-value">${client.type === 'client' ? 'Client' : 'Lead'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Income</span>
+                    <span class="detail-value" style="color: #667eea; font-size: 18px;">${getClientIncome(client.id).toFixed(0)} AED</span>
+                </div>
+            `;
+            document.getElementById('clientDetailsContent').innerHTML = detailsHTML;
+            document.getElementById('detailsTitle').textContent = client.name;
+            
+            // Transactions
+            const clientTransactions = allTransactions.filter(t => t.client_id === clientId);
+            let transHTML = '';
+            
+            if (clientTransactions.length === 0) {
+                transHTML = '<div class="no-transactions">No transactions yet</div>';
+            } else {
+                transHTML = clientTransactions.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)).map(t => `
+                    <div class="transaction-row">
+                        <div><strong>${new Date(t.transaction_date).toLocaleDateString('en-US')}</strong></div>
+                        <div>${t.service}</div>
+                        <div style="text-align: right;"><strong>${t.amount} AED</strong></div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('transactionsContent').innerHTML = transHTML;
+            
+            document.getElementById('detailsModal').classList.add('active');
         }
         
         function openAddClientModal() {
@@ -515,6 +573,7 @@
         }
         
         async function editClient(id) {
+            event.stopPropagation();
             const client = allClients.find(c => c.id === id);
             if (!client) return;
             
@@ -541,8 +600,7 @@
                 type: document.getElementById('clientType').value,
                 level: document.getElementById('clientLevel').value || null,
                 source: document.getElementById('clientSource').value || null,
-                comments: document.getElementById('clientComments').value || null,
-                last_purchase: new Date().toISOString()
+                comments: document.getElementById('clientComments').value || null
             };
             
             try {
@@ -551,25 +609,24 @@
                         .from('clients')
                         .update(clientData)
                         .eq('id', currentEditingId);
-                    
                     if (error) throw error;
                 } else {
                     const { error } = await supabaseClient
                         .from('clients')
-                        .insert([clientData]);
-                    
+                        .insert([{ ...clientData, date_added: new Date().toISOString() }]);
                     if (error) throw error;
                 }
                 
                 closeModal();
-                loadClients();
+                loadData();
             } catch (err) {
                 alert('Error: ' + err.message);
             }
         }
         
         async function deleteClient(id) {
-            if (!confirm('Delete this client? This action cannot be undone.')) return;
+            event.stopPropagation();
+            if (!confirm('Delete this client?')) return;
             
             try {
                 const { error } = await supabaseClient
@@ -578,7 +635,7 @@
                     .eq('id', id);
                 
                 if (error) throw error;
-                loadClients();
+                loadData();
             } catch (err) {
                 alert('Error: ' + err.message);
             }
@@ -589,7 +646,51 @@
             currentEditingId = null;
         }
         
-        // Filter buttons
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+            currentClientId = null;
+        }
+        
+        function openAddTransactionModal() {
+            document.getElementById('transClientId').value = currentClientId;
+            document.getElementById('transService').value = '';
+            document.getElementById('transAmount').value = '';
+            document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('transNotes').value = '';
+            document.getElementById('transactionModal').classList.add('active');
+        }
+        
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.remove('active');
+        }
+        
+        async function saveTransaction(event) {
+            event.preventDefault();
+            
+            const transData = {
+                client_id: parseInt(document.getElementById('transClientId').value),
+                service: document.getElementById('transService').value,
+                amount: parseFloat(document.getElementById('transAmount').value),
+                transaction_date: document.getElementById('transDate').value,
+                notes: document.getElementById('transNotes').value || null
+            };
+            
+            try {
+                const { error } = await supabaseClient
+                    .from('transactions')
+                    .insert([transData]);
+                
+                if (error) throw error;
+                
+                closeTransactionModal();
+                loadData();
+                showClientDetails(currentClientId);
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+        
+        // Filters
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -597,12 +698,12 @@
                 
                 const filter = this.dataset.filter;
                 const filtered = filter === 'all' ? allClients : allClients.filter(c => c.type === filter);
-                renderClients(filtered);
+                renderTable(filtered);
             });
         });
         
-        // Load clients on page load
-        document.addEventListener('DOMContentLoaded', loadClients);
+        // Init
+        document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
 </html>
