@@ -134,6 +134,46 @@
             </div>
         </div>
 
+        <!-- SEO Metrics -->
+        <div class="section">
+            <div class="section-title">🔍 SEO Dashboard (dubaimusicstudio.com)</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Total Keywords</div>
+                    <div class="metric-value" data-metric="seo-total-keywords">—</div>
+                    <div class="platform">Last 28 days</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Clicks</div>
+                    <div class="metric-value" data-metric="seo-total-clicks">—</div>
+                    <div class="platform">Last 28 days</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Total Impressions</div>
+                    <div class="metric-value" data-metric="seo-total-impressions">—</div>
+                    <div class="platform">Last 28 days</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg CTR</div>
+                    <div class="metric-value" data-metric="seo-avg-ctr">—</div>
+                    <div class="platform">Click-through rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg Position</div>
+                    <div class="metric-value" data-metric="seo-avg-position">—</div>
+                    <div class="platform">SERP rank</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Top Query</div>
+                    <div class="metric-value" style="font-size: 1.2em;" data-metric="seo-top-query">—</div>
+                    <div class="platform">By clicks</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; font-size: 0.9em; color: #888;">
+                📊 Updated: <span data-metric="seo-last-updated">—</span>
+            </div>
+        </div>
+
         <div class="last-update">
             Last updated: <span data-metric="last-updated">—</span>
         </div>
@@ -143,6 +183,48 @@
 
 <!-- Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Supabase Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// Supabase config
+const SUPABASE_URL = 'https://ffxuwfkgaujkecnjynwg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeHV3ZmtnYXVqa2Vjbmp5bndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTA1NDI4NjIsImV4cCI6MTk4NjE0Mjg2Mn0.4p6JcJLqwEz8j9lUcR5qI5PZzxFSqzR0Vq3ZqYJpXKw';
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Load SEO metrics from Supabase
+async function loadSEOMetrics() {
+  try {
+    const { data, error } = await supabase
+      .from('seo_metrics')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1);
+
+    if (error) {
+      console.error('Error loading SEO metrics:', error);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const metrics = data[0];
+      document.querySelector('[data-metric="seo-total-keywords"]').textContent = metrics.total_keywords || 0;
+      document.querySelector('[data-metric="seo-total-clicks"]').textContent = metrics.total_clicks || 0;
+      document.querySelector('[data-metric="seo-total-impressions"]').textContent = metrics.total_impressions || 0;
+      document.querySelector('[data-metric="seo-avg-ctr"]').textContent = (metrics.avg_ctr * 100).toFixed(1) + '%' || '—';
+      document.querySelector('[data-metric="seo-avg-position"]').textContent = (metrics.avg_position).toFixed(1) || '—';
+      document.querySelector('[data-metric="seo-top-query"]').textContent = metrics.top_query || '—';
+      document.querySelector('[data-metric="seo-last-updated"]').textContent = new Date(metrics.created_at).toLocaleDateString('ru-RU');
+    }
+  } catch (err) {
+    console.error('Error in loadSEOMetrics:', err);
+  }
+}
+
+// Load SEO metrics on page load
+document.addEventListener('DOMContentLoaded', loadSEOMetrics);
+</script>
 
 <script>
 // Monthly income chart
