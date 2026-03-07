@@ -140,37 +140,37 @@
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Total Keywords</div>
-                    <div class="metric-value" data-metric="seo-total-keywords">—</div>
+                    <div class="metric-value">184</div>
                     <div class="platform">Last 28 days</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Total Clicks</div>
-                    <div class="metric-value" data-metric="seo-total-clicks">—</div>
+                    <div class="metric-value">22</div>
                     <div class="platform">Last 28 days</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Total Impressions</div>
-                    <div class="metric-value" data-metric="seo-total-impressions">—</div>
+                    <div class="metric-value">1939</div>
                     <div class="platform">Last 28 days</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Avg CTR</div>
-                    <div class="metric-value" data-metric="seo-avg-ctr">—</div>
+                    <div class="metric-value">1.13%</div>
                     <div class="platform">Click-through rate</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Avg Position</div>
-                    <div class="metric-value" data-metric="seo-avg-position">—</div>
+                    <div class="metric-value">15.21</div>
                     <div class="platform">SERP rank</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Top Query</div>
-                    <div class="metric-value" style="font-size: 1.2em;" data-metric="seo-top-query">—</div>
+                    <div class="metric-value" style="font-size: 1.1em; word-break: break-word;">music recording<br>studio dubai</div>
                     <div class="platform">By clicks</div>
                 </div>
             </div>
             <div style="margin-top: 20px; font-size: 0.9em; color: #888;">
-                📊 Updated: <span data-metric="seo-last-updated">—</span>
+                📊 Updated: 7 Mar 2026
             </div>
         </div>
 
@@ -193,33 +193,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const { createClient } = window.supabase;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Load SEO metrics - hardcoded data (GSC live metrics)
-function loadSEOMetrics() {
-  // Real data from Google Search Console
-  const seoMetrics = {
-    total_keywords: 184,
-    total_clicks: 22,
-    total_impressions: 1939,
-    avg_ctr: 0.0113,  // 1.13%
-    avg_position: 15.21,
-    top_query: 'music recording studio dubai',
-    last_updated: new Date().toLocaleDateString('ru-RU')
-  };
-
-  document.querySelector('[data-metric="seo-total-keywords"]').textContent = seoMetrics.total_keywords;
-  document.querySelector('[data-metric="seo-total-clicks"]').textContent = seoMetrics.total_clicks;
-  document.querySelector('[data-metric="seo-total-impressions"]').textContent = seoMetrics.total_impressions;
-  document.querySelector('[data-metric="seo-avg-ctr"]').textContent = (seoMetrics.avg_ctr * 100).toFixed(2) + '%';
-  document.querySelector('[data-metric="seo-avg-position"]').textContent = seoMetrics.avg_position.toFixed(2);
-  document.querySelector('[data-metric="seo-top-query"]').textContent = seoMetrics.top_query;
-  document.querySelector('[data-metric="seo-last-updated"]').textContent = seoMetrics.last_updated;
-}
-
-// Load metrics on page load
-document.addEventListener('DOMContentLoaded', function() {
-  loadSEOMetrics();
-  console.log('SEO metrics loaded!');
-});
+// SEO metrics are hardcoded in HTML (embedded directly)
 </script>
 
 <script>
