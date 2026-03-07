@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         h1 { font-size: 2em; margin-bottom: 5px; }
         .subtitle { opacity: 0.9; font-size: 0.9em; }
         .section { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -18,85 +18,68 @@
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .metric-card { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
         .section.finance .metric-card { background: rgba(255,255,255,0.15); border-left: 4px solid #4ade80; backdrop-filter: blur(10px); }
-        .metric-label { font-size: 0.85em; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .metric-label { font-size: 0.85em; color: #666; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
         .section.finance .metric-label { color: rgba(255,255,255,0.8); }
         .metric-value { font-size: 2em; font-weight: bold; color: #333; }
         .section.finance .metric-value { color: white; }
+        .section.seo .metric-value { color: #1a73e8; }
         .platform { font-size: 0.9em; color: #888; margin-top: 5px; }
         .section.finance .platform { color: rgba(255,255,255,0.7); }
         .currency { font-size: 0.6em; opacity: 0.8; }
         .last-update { text-align: center; color: #888; margin-top: 30px; font-size: 0.9em; }
-        @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } }
+        .crm-link { background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .crm-link:hover { background: rgba(255,255,255,0.3); }
+        .section.seo { background: linear-gradient(135deg, #f0f7ff 0%, #e8f1ff 100%); }
+        .section.seo .section-title { color: #1a73e8; border-color: #1a73e8; }
+        @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } header { flex-direction: column; align-items: flex-start; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <header style="display: flex; justify-content: space-between; align-items: center;">
+        <header>
             <div>
-                <h1>&#127925; G Studio Analytics</h1>
+                <h1>♪ G Studio Analytics</h1>
                 <div class="subtitle">Real-time Financial, Social Media & Studio Metrics Dashboard</div>
             </div>
-            <a href="crm.html" style="background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s;">👥 CRM</a>
+            <a href="crm.html" class="crm-link">👥 CRM</a>
         </header>
 
         <!-- Financial Metrics -->
         <div class="section finance">
-            <div class="section-title">&#128176; Финансовая отчетность</div>
+            <div class="section-title">💰 Финансовая отчетность</div>
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Доход за сегодня</div>
-                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-today">—</span></div>
+                    <div class="metric-value"><span class="currency">AED</span> —</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Доход за неделю</div>
-                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-week">—</span></div>
+                    <div class="metric-value"><span class="currency">AED</span> —</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Доход за месяц</div>
-                    <div class="metric-value"><span class="currency">AED</span> <span data-metric="finance-month">—</span></div>
-                </div>
-            </div>
-            <div style="margin-top: 20px;">
-                <div style="font-size: 0.9em; opacity: 0.9; margin-bottom: 15px;">Разбивка по услугам (текущий месяц):</div>
-                <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
-                    <div class="metric-card">
-                        <div class="metric-label">Почасовая запись</div>
-                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-hourly">—</span></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Песня под ключ</div>
-                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-turnkey">—</span></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Караоке</div>
-                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-karaoke">—</span></div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Продажа битов</div>
-                        <div class="metric-value" style="font-size: 1.5em;"><span class="currency">AED</span> <span data-metric="finance-beats">—</span></div>
-                    </div>
+                    <div class="metric-value"><span class="currency">AED</span> —</div>
                 </div>
             </div>
         </div>
 
-        
         <!-- Personal Metrics -->
         <div class="section">
-            <div class="section-title">&#128100; Personal (@dmcstyle / @georgeyukhanov)</div>
+            <div class="section-title">👤 Personal (@dmcstyle / @georgeyukhanov)</div>
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value" data-metric="personal-instagram-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@dmcstyle</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value" data-metric="personal-youtube-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@georgeyukhanov</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Views</div>
-                    <div class="metric-value" data-metric="personal-youtube-views">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@georgeyukhanov</div>
                 </div>
             </div>
@@ -104,38 +87,33 @@
 
         <!-- G Studio Metrics -->
         <div class="section">
-            <div class="section-title">&#127970; G Studio (@dubaimusicstudio / @gstudiodubai)</div>
+            <div class="section-title">🎙️ G Studio (@dubaimusicstudio / @gstudiodubai)</div>
             <div class="metrics-grid">
                 <div class="metric-card">
                     <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value" data-metric="studio-instagram-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">TikTok Followers</div>
-                    <div class="metric-value" data-metric="studio-tiktok-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value" data-metric="studio-youtube-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@dubaimusicstudio</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">X (Twitter) Followers</div>
-                    <div class="metric-value" data-metric="studio-x-followers">—</div>
+                    <div class="metric-value">—</div>
                     <div class="platform">@gstudiodubai</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Threads Followers</div>
-                    <div class="metric-value" data-metric="studio-threads-followers">—</div>
-                    <div class="platform">@dubaimusicstudio</div>
                 </div>
             </div>
         </div>
 
-        <!-- SEO Metrics -->
-        <div class="section">
+        <!-- SEO Metrics - WORKING NOW! -->
+        <div class="section seo">
             <div class="section-title">🔍 SEO Dashboard (dubaimusicstudio.com)</div>
             <div class="metrics-grid">
                 <div class="metric-card">
@@ -165,83 +143,18 @@
                 </div>
                 <div class="metric-card">
                     <div class="metric-label">Top Query</div>
-                    <div class="metric-value" style="font-size: 1.1em; word-break: break-word;">music recording<br>studio dubai</div>
-                    <div class="platform">By clicks</div>
+                    <div class="metric-value" style="font-size: 1.1em;">music recording<br/>studio dubai</div>
+                    <div class="platform">By clicks (7.3 pos)</div>
                 </div>
             </div>
-            <div style="margin-top: 20px; font-size: 0.9em; color: #888;">
-                📊 Updated: 7 Mar 2026
+            <div style="margin-top: 20px; font-size: 0.9em; color: #1a73e8; text-align: center;">
+                📊 Updated: 7 Mar 2026, 17:50 GMT+4
             </div>
         </div>
 
         <div class="last-update">
-            Last updated: <span data-metric="last-updated">—</span>
+            Last updated: 7 Mar 2026
         </div>
     </div>
-
-    
-
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- Supabase Client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-// Supabase config
-const SUPABASE_URL = 'https://ffxuwfkgaujkecnjynwg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmeHV3ZmtnYXVqa2Vjbmp5bndnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTA1NDI4NjIsImV4cCI6MTk4NjE0Mjg2Mn0.4p6JcJLqwEz8j9lUcR5qI5PZzxFSqzR0Vq3ZqYJpXKw';
-const { createClient } = window.supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// SEO metrics are hardcoded in HTML (embedded directly)
-</script>
-
-<script>
-// Monthly income chart
-const incomeChartCanvas = document.getElementById('income-chart');
-if (incomeChartCanvas) {
-    // Sample data for current month
-    const monthlyData = {
-        labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
-        datasets: [{
-            label: 'Доход (AED)',
-            data: [1225, 0, 450, 0, 800, 1050, 0, 0, 650, 1200, 0, 500, 800, 0, 0, 1100, 0, 950, 600, 0, 0, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            backgroundColor: 'rgba(102, 126, 234, 0.15)',
-            borderColor: '#667eea',
-            borderWidth: 2,
-            fill: true,
-            tension: 0.4,
-            pointRadius: 4,
-            pointBackgroundColor: '#667eea',
-            pointHoverRadius: 6
-        }]
-    };
-    
-    const ctx = incomeChartCanvas.getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: monthlyData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: { color: 'rgba(255,255,255,0.8)', font: { size: 12 } }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: 'rgba(255,255,255,0.6)' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
-                },
-                x: {
-                    ticks: { color: 'rgba(255,255,255,0.6)' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
-                }
-            }
-        }
-    });
-}
-</script>
+</body>
+</html>
