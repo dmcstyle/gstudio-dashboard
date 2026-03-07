@@ -215,8 +215,11 @@ function loadSEOMetrics() {
   document.querySelector('[data-metric="seo-last-updated"]').textContent = seoMetrics.last_updated;
 }
 
-// Load SEO metrics on page load
-document.addEventListener('DOMContentLoaded', loadSEOMetrics);
+// Load metrics on page load
+document.addEventListener('DOMContentLoaded', function() {
+  loadSEOMetrics();
+  console.log('SEO metrics loaded!');
+});
 </script>
 
 <script>
