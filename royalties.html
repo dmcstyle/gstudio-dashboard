@@ -69,6 +69,7 @@
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('songs')">📝 Songs</button>
             <button class="tab-btn" onclick="switchTab('organizations')">🏢 Organizations</button>
+            <button class="tab-btn" onclick="switchTab('labels')">🏷️ Releasing Labels</button>
             <button class="tab-btn" onclick="switchTab('payments')">💰 Payments</button>
         </div>
         
@@ -113,6 +114,30 @@
                     </thead>
                     <tbody id="orgs-table">
                         <tr><td colspan="6" style="text-align: center; color: #999;">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Releasing Labels Tab -->
+        <div id="labels-tab" class="tab-content">
+            <div class="section">
+                <h2 style="margin-bottom: 20px;">Releasing Labels</h2>
+                <button class="btn btn-primary" onclick="openAddLabelModal()" style="margin-bottom: 15px;">+ Add Label</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Label Name</th>
+                            <th>Artist Name</th>
+                            <th>Platform</th>
+                            <th>Royalty %</th>
+                            <th>Advance</th>
+                            <th>Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="labels-table">
+                        <tr><td colspan="7" style="text-align: center; color: #999;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -235,6 +260,64 @@
         </div>
     </div>
     
+    <!-- Add Label Modal -->
+    <div id="label-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px;">Add Releasing Label</h2>
+            <form onsubmit="saveLabel(event)">
+                <div class="form-group">
+                    <label>Label Name *</label>
+                    <input type="text" id="label-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Distribution Platform *</label>
+                    <select id="label-platform" required>
+                        <option value="">Select...</option>
+                        <option value="DistroKid">DistroKid</option>
+                        <option value="TuneCore">TuneCore</option>
+                        <option value="CD Baby">CD Baby</option>
+                        <option value="Stem">Stem</option>
+                        <option value="Routenote">Routenote</option>
+                        <option value="Believe">Believe</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Artist Name</label>
+                    <input type="text" id="label-artist">
+                </div>
+                <div class="form-group">
+                    <label>Royalty Percentage %</label>
+                    <input type="number" id="label-royalty" step="0.1" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Advance Amount (AED)</label>
+                    <input type="number" id="label-advance" step="0.01" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Contract Terms</label>
+                    <textarea id="label-terms" style="resize: vertical; min-height: 60px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contact Email</label>
+                    <input type="email" id="label-email">
+                </div>
+                <div class="form-group">
+                    <label>Portal URL</label>
+                    <input type="url" id="label-url">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="label-notes" style="resize: vertical; min-height: 60px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeLabelModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <!-- Add Payment Modal -->
     <div id="payment-modal" class="modal">
         <div class="modal-content">
@@ -293,6 +376,7 @@
         
         let allSongs = [];
         let allOrgs = [];
+        let allLabels = [];
         let allPayments = [];
         
         // Tab switching
@@ -306,22 +390,46 @@
         // Load data
         async function loadData() {
             try {
-                const [songsRes, orgsRes, paymentsRes] = await Promise.all([
+                const [songsRes, orgsRes, labelsRes, paymentsRes] = await Promise.all([
                     supabaseClient.from('songs').select('*'),
                     supabaseClient.from('royalty_organizations').select('*'),
+                    supabaseClient.from('releasing_labels').select('*'),
                     supabaseClient.from('royalty_payments').select('*')
                 ]);
                 
                 allSongs = songsRes.data || [];
                 allOrgs = orgsRes.data || [];
+                allLabels = labelsRes.data || [];
                 allPayments = paymentsRes.data || [];
                 
                 renderSongs();
                 renderOrgs();
+                renderLabels();
                 renderPayments();
             } catch (err) {
                 console.error('Error loading:', err);
             }
+        }
+        
+        // Render Labels
+        function renderLabels() {
+            const tbody = document.getElementById('labels-table');
+            if (allLabels.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #999;">No labels yet</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = allLabels.map(label => `
+                <tr>
+                    <td><strong>${label.name}</strong></td>
+                    <td>${label.artist_name || '—'}</td>
+                    <td>${label.distribution_platform || '—'}</td>
+                    <td>${label.royalty_percentage ? label.royalty_percentage + '%' : '—'}</td>
+                    <td>${label.advance_amount ? label.advance_amount + ' AED' : '—'}</td>
+                    <td>${label.contact_email ? `<a href="mailto:${label.contact_email}" style="color: #667eea;">📧</a>` : '—'}</td>
+                    <td><button onclick="deleteLabel(${label.id})" style="background: none; border: none; cursor: pointer; color: red;">🗑️</button></td>
+                </tr>
+            `).join('');
         }
         
         // Render Songs
@@ -394,6 +502,8 @@
         function closeSongModal() { document.getElementById('song-modal').classList.remove('active'); }
         function openAddOrgModal() { document.getElementById('org-modal').classList.add('active'); }
         function closeOrgModal() { document.getElementById('org-modal').classList.remove('active'); }
+        function openAddLabelModal() { document.getElementById('label-modal').classList.add('active'); }
+        function closeLabelModal() { document.getElementById('label-modal').classList.remove('active'); }
         function openAddPaymentModal() { 
             document.getElementById('payment-modal').classList.add('active');
             // Populate dropdowns
@@ -440,6 +550,36 @@
                 loadData();
             } else {
                 alert('Error: ' + error.message);
+            }
+        }
+        
+        async function saveLabel(event) {
+            event.preventDefault();
+            const data = {
+                name: document.getElementById('label-name').value,
+                distribution_platform: document.getElementById('label-platform').value,
+                artist_name: document.getElementById('label-artist').value || null,
+                royalty_percentage: document.getElementById('label-royalty').value ? parseFloat(document.getElementById('label-royalty').value) : null,
+                advance_amount: document.getElementById('label-advance').value ? parseFloat(document.getElementById('label-advance').value) : null,
+                contract_terms: document.getElementById('label-terms').value || null,
+                contact_email: document.getElementById('label-email').value || null,
+                portal_url: document.getElementById('label-url').value || null,
+                notes: document.getElementById('label-notes').value || null
+            };
+            
+            const { error } = await supabaseClient.from('releasing_labels').insert([data]);
+            if (!error) {
+                closeLabelModal();
+                loadData();
+            } else {
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        async function deleteLabel(id) {
+            if (confirm('Delete this label?')) {
+                await supabaseClient.from('releasing_labels').delete().eq('id', id);
+                loadData();
             }
         }
         
