@@ -1,0 +1,39 @@
+name: 📊 Sync SEO Metrics Weekly
+
+on:
+  schedule:
+    # Every Monday at 10:00 AM UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  sync-seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Setup GSC credentials
+        env:
+          GSC_KEY_JSON: ${{ secrets.GSC_KEY_JSON }}
+        run: |
+          mkdir -p config
+          echo "$GSC_KEY_JSON" > config/gsc-key.json
+      
+      - name: Run SEO Sync
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: node scripts/sync-seo-to-supabase.js
+      
+      - name: Notify Slack (Optional)
+        if: always()
+        run: echo "SEO sync completed"

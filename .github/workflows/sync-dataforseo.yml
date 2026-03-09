@@ -1,0 +1,35 @@
+name: 🔍 Sync DataForSEO Keywords Weekly
+
+on:
+  schedule:
+    # Every Tuesday at 12:00 PM UTC (after SEO sync on Monday)
+    - cron: '0 12 * * 2'
+  workflow_dispatch:
+
+jobs:
+  sync-keywords:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Setup GSC credentials
+        env:
+          GSC_KEY_JSON: ${{ secrets.GSC_KEY_JSON }}
+        run: |
+          mkdir -p config
+          echo "$GSC_KEY_JSON" > config/gsc-key.json
+      
+      - name: Sync DataForSEO Keywords
+        env:
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          DATAFORSEO_EMAIL: ${{ secrets.DATAFORSEO_EMAIL }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: node scripts/sync-dataforseo.js
