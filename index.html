@@ -134,6 +134,34 @@
             </div>
         </div>
 
+        <!-- Royalties Section -->
+        <div class="section" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+            <div class="section-title" style="color: white; border-color: rgba(255,255,255,0.3);">🎵 Royalties & Publishing</div>
+            <div class="metrics-grid">
+                <div class="metric-card" style="background: rgba(255,255,255,0.15); border-left-color: #ffd89b;">
+                    <div class="metric-label" style="color: rgba(255,255,255,0.9);">Songs with Royalties</div>
+                    <div class="metric-value" style="color: white;"><span data-metric="royalty-songs-count">0</span></div>
+                </div>
+                <div class="metric-card" style="background: rgba(255,255,255,0.15); border-left-color: #ffd89b;">
+                    <div class="metric-label" style="color: rgba(255,255,255,0.9);">Organizations</div>
+                    <div class="metric-value" style="color: white;"><span data-metric="royalty-orgs-count">0</span></div>
+                </div>
+                <div class="metric-card" style="background: rgba(255,255,255,0.15); border-left-color: #ffd89b;">
+                    <div class="metric-label" style="color: rgba(255,255,255,0.9);">Total Expected</div>
+                    <div class="metric-value" style="color: white;">AED <span data-metric="royalty-expected">0</span></div>
+                </div>
+                <div class="metric-card" style="background: rgba(255,255,255,0.15); border-left-color: #ffd89b;">
+                    <div class="metric-label" style="color: rgba(255,255,255,0.9);">Total Received</div>
+                    <div class="metric-value" style="color: white;">AED <span data-metric="royalty-received">0</span></div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button onclick="openSongModal()" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; cursor: pointer; font-weight: 600;">+ Add Song</button>
+                <button onclick="openOrgModal()" style="background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; cursor: pointer; font-weight: 600;">+ Add Organization</button>
+                <a href="royalties.html" style="background: rgba(255,255,255,0.3); color: white; padding: 10px 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; text-decoration: none; font-weight: 600;">View Details →</a>
+            </div>
+        </div>
+
         <div class="last-update">
             Last updated: <span data-metric="last-updated">—</span>
         </div>
@@ -143,6 +171,12 @@
 
 <!-- Chart.js Library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+// Royalties stub functions
+function openSongModal() { alert('Song modal - coming soon'); }
+function openOrgModal() { alert('Organization modal - coming soon'); }
+</script>
 
 <script>
 // Monthly income chart
