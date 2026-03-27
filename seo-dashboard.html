@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEO Rank Tracker â G Studio Dashboard</title>
+  <title>SEO Rank Tracker — G Studio Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
- 2 * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4ff; color: #222; }
     a { text-decoration: none; }
 
-    /* âââ Header âââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Header ─────────────────────────────────────────── */
     header {
       background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
       color: white; padding: 20px 30px;
@@ -28,10 +28,10 @@
     .nav-links a:hover { background: rgba(255,255,255,0.28); }
     .nav-links a.active { background: rgba(255,255,255,0.3); font-weight: 700; }
 
-    /* âââ Container âââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Container ─────────────────────────────────────── */
     .container { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
 
-    /* âââ Loading ââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Loading ────────────────────────────────────────── */
     #loading-banner {
       background: #e8f0fe; border: 1px solid #1a73e8; border-radius: 8px;
       padding: 16px 20px; margin-bottom: 20px;
@@ -52,7 +52,7 @@
       background: #e8f0fe; border-color: #1a73e8; color: #174ea6;
     }
 
-    /* âââ Section ââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Section ────────────────────────────────────────── */
     .section {
       background: white; border-radius: 12px; padding: 24px;
       margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
@@ -64,7 +64,7 @@
     }
     .section-title span { font-size: 0.8em; font-weight: 400; color: #888; }
 
-    /* âââ Overview Grid ââââââââââââââââââââââââââââââââââââ */
+    /* ─── Overview Grid ──────────────────────────────────── */
     .metrics-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 16px;
     }
@@ -84,7 +84,7 @@
     .metric-card.purple .metric-value { color: #7c4dff; }
     .metric-sub { font-size: 0.8em; color: #888; margin-top: 4px; }
 
-    /* âââ Change badges (summary row) âââââââââââââââââââââ */
+    /* ─── Change badges (summary row) ───────────────────── */
     .change-summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 0; }
     .change-badge {
       display: flex; align-items: center; gap: 6px;
@@ -95,7 +95,7 @@
     .badge-new  { background: #e8f0fe; color: #1a73e8; }
     .badge-same { background: #f5f5f5; color: #666; }
 
-    /* âââ Filters ââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Filters ────────────────────────────────────────── */
     .filters {
       display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
       padding: 16px 0; margin-bottom: 4px;
@@ -118,7 +118,7 @@
     .btn-secondary:hover { background: #e8f0fe; }
     #kw-count { font-size: 0.85em; color: #888; margin-left: auto; }
 
-    /* âââ Table ââââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Table ──────────────────────────────────────────── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
     thead { position: sticky; top: 0; background: #e8f0fe; z-index: 1; }
@@ -148,14 +148,14 @@
     .num-cell { text-align: right; }
     .ctr-cell { text-align: right; font-size: 0.9em; color: #666; }
 
-    /* âââ Charts âââââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Charts ─────────────────────────────────────────── */
     .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
     .chart-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
     .chart-title { font-size: 1em; font-weight: 700; color: #333; margin-bottom: 16px; }
     .chart-canvas-wrap { position: relative; height: 220px; }
 
-    /* âââ Opportunities ââââââââââââââââââââââââââââââââââââ */
+    /* ─── Opportunities ──────────────────────────────────── */
     .opp-list { display: flex; flex-direction: column; gap: 8px; }
     .opp-item {
       display: flex; align-items: center; gap: 12px; padding: 12px 16px;
@@ -165,7 +165,7 @@
     .opp-kw   { flex: 1; font-weight: 600; color: #333; }
     .opp-stats { font-size: 0.82em; color: #666; text-align: right; }
 
-    /* âââ Sync info ââââââââââââââââââââââââââââââââââââââââ */
+    /* ─── Sync info ──────────────────────────────────────── */
     .sync-info {
       text-align: center; color: #888; font-size: 0.85em; margin-top: 30px;
       padding: 16px; background: white; border-radius: 10px; border: 1px dashed #d0d8e8;
@@ -184,14 +184,14 @@
 
 <header>
   <div class="header-left">
-    <h1>ð SEO Rank Tracker</h1>
-    <div class="sub">dubaimusicstudio.com Â· Google Search Console</div>
+    <h1>🔍 SEO Rank Tracker</h1>
+    <div class="sub">dubaimusicstudio.com · Google Search Console</div>
   </div>
   <nav class="nav-links">
-    <a href="index.html">ð Dashboard</a>
-    <a href="crm.html">ð¥ CRM</a>
-    <a href="royalties.html">ðµ Royalties</a>
-    <a href="seo-dashboard.html" class="active">ð SEO</a>
+    <a href="index.html">📊 Dashboard</a>
+    <a href="crm.html">👥 CRM</a>
+    <a href="royalties.html">🎵 Royalties</a>
+    <a href="seo-dashboard.html" class="active">🔍 SEO</a>
   </nav>
 </header>
 
@@ -200,57 +200,57 @@
   <!-- Loading / Error banners -->
   <div id="loading-banner">
     <div class="spinner"></div>
-    ÐÐ°Ð³ÑÑÐ¶Ð°ÐµÐ¼ Ð´Ð°Ð½Ð½ÑÐµ Ð¸Ð· Google Search Consoleâ¦
+    Загружаем данные из Google Search Console…
   </div>
   <div id="error-banner"></div>
 
   <!-- 1. Overview metrics -->
   <div class="section" id="section-overview" style="display:none">
     <div class="section-title">
-      ð ÐÐ±Ð·Ð¾Ñ Ð·Ð° Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ðµ 28 Ð´Ð½ÐµÐ¹
+      📈 Обзор за последние 28 дней
       <span id="last-updated-text"></span>
     </div>
     <div class="metrics-grid">
       <div class="metric-card">
-        <div class="metric-label">ÐÑÐµÐ³Ð¾ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð²</div>
-        <div class="metric-value" id="ov-keywords">â</div>
-        <div class="metric-sub">ÐÐ»ÑÑÐµÐ²ÑÐµ ÑÐ»Ð¾Ð²Ð° Ð² SERP</div>
+        <div class="metric-label">Всего запросов</div>
+        <div class="metric-value" id="ov-keywords">—</div>
+        <div class="metric-sub">Ключевые слова в SERP</div>
       </div>
       <div class="metric-card green">
-        <div class="metric-label">ÐÐ»Ð¸ÐºÐ¸</div>
-        <div class="metric-value" id="ov-clicks">â</div>
+        <div class="metric-label">Клики</div>
+        <div class="metric-value" id="ov-clicks">—</div>
         <div class="metric-sub" id="ov-clicks-delta"></div>
       </div>
       <div class="metric-card orange">
-        <div class="metric-label">ÐÐ¾ÐºÐ°Ð·Ñ</div>
-        <div class="metric-value" id="ov-impressions">â</div>
+        <div class="metric-label">Показы</div>
+        <div class="metric-value" id="ov-impressions">—</div>
         <div class="metric-sub" id="ov-impr-delta"></div>
       </div>
       <div class="metric-card">
-        <div class="metric-label">Ð¡ÑÐµÐ´Ð½Ð¸Ð¹ CTR</div>
-        <div class="metric-value" id="ov-ctr">â</div>
+        <div class="metric-label">Средний CTR</div>
+        <div class="metric-value" id="ov-ctr">—</div>
         <div class="metric-sub">Click-through rate</div>
       </div>
       <div class="metric-card purple">
-        <div class="metric-label">Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ</div>
-        <div class="metric-value" id="ov-position">â</div>
+        <div class="metric-label">Средняя позиция</div>
+        <div class="metric-value" id="ov-position">—</div>
         <div class="metric-sub" id="ov-pos-delta"></div>
       </div>
       <div class="metric-card green">
-        <div class="metric-label">Ð ÑÐ¾Ð¿-10</div>
-        <div class="metric-value" id="ov-top10">â</div>
-        <div class="metric-sub">ÐÐ°Ð¿ÑÐ¾ÑÐ¾Ð² Ð½Ð° 1-Ð¹ ÑÑÑ.</div>
+        <div class="metric-label">В топ-10</div>
+        <div class="metric-value" id="ov-top10">—</div>
+        <div class="metric-sub">Запросов на 1-й стр.</div>
       </div>
     </div>
 
     <!-- Position change summary -->
-  2 <div style="margin-top: 20px;">
-      <div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">ÐÐ·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¹ vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´</div>
+    <div style="margin-top: 20px;">
+      <div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">Изменения позиций vs прошлый период</div>
       <div class="change-summary">
-        <div class="change-badge badge-up">â <span id="sum-up">0</span> Ð²ÑÑÐ¾ÑÐ»Ð¸</div>
-        <div class="change-badge badge-down">â <span id="sum-down">0</span> ÑÐ¿Ð°Ð»Ð¸</div>
-        <div class="change-badge badge-new">â <span id="sum-new">0</span> Ð½Ð¾Ð²ÑÑ</div>
-        <div class="change-badge badge-same">â <span id="sum-same">0</span> Ð±ÐµÐ· Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹</div>
+        <div class="change-badge badge-up">↑ <span id="sum-up">0</span> выросли</div>
+        <div class="change-badge badge-down">↓ <span id="sum-down">0</span> упали</div>
+        <div class="change-badge badge-new">★ <span id="sum-new">0</span> новых</div>
+        <div class="change-badge badge-same">— <span id="sum-same">0</span> без изменений</div>
       </div>
     </div>
   </div>
@@ -258,11 +258,11 @@
   <!-- 2. Charts -->
   <div class="charts-grid" id="charts-grid" style="display:none">
     <div class="chart-box">
-      <div class="chart-title">ð ÐÐ»Ð¸ÐºÐ¸ Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ñ â Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ°</div>
+      <div class="chart-title">📊 Клики и показы — динамика</div>
       <div class="chart-canvas-wrap"><canvas id="chart-traffic"></canvas></div>
     </div>
     <div class="chart-box">
-      <div class="chart-title">ð¯ Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ â Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ°</div>
+      <div class="chart-title">🎯 Средняя позиция — динамика</div>
       <div class="chart-canvas-wrap"><canvas id="chart-position"></canvas></div>
     </div>
   </div>
@@ -270,27 +270,27 @@
   <!-- 3. Keyword Rankings Table -->
   <div class="section" id="section-keywords" style="display:none">
     <div class="section-title">
-      ðï¸ ÐÐ»ÑÑÐµÐ²ÑÐµ ÑÐ»Ð¾Ð²Ð°
+      🗝️ Ключевые слова
     </div>
 
     <!-- Filters -->
     <div class="filters">
-      <span class="filter-label">ÐÐ¾Ð¸ÑÐº:</span>
-      <input type="text" id="filter-search" placeholder="ÐÐ²ÐµÐ´Ð¸ÑÐµ ÐºÐ»ÑÑÐµÐ²Ð¾Ðµ ÑÐ»Ð¾Ð²Ð¾â¦" oninput="renderTable()">
-      <span class="filter-label">ÐÐ¾Ð·Ð¸ÑÐ¸Ñ:</span>
+      <span class="filter-label">Поиск:</span>
+      <input type="text" id="filter-search" placeholder="Введите ключевое слово…" oninput="renderTable()">
+      <span class="filter-label">Позиция:</span>
       <select id="filter-pos" onchange="renderTable()">
-        <option value="all">ÐÑÐµ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸</option>
-        <option value="top10">Ð¢Ð¾Ð¿ 10</option>
-        <option value="11-20">11 â 20</option>
-        <option value="21-50">21 â 50</option>
+        <option value="all">Все позиции</option>
+        <option value="top10">Топ 10</option>
+        <option value="11-20">11 – 20</option>
+        <option value="21-50">21 – 50</option>
         <option value="50+">50+</option>
       </select>
-      <span class="filter-label">Ð¡Ð¾ÑÑÐ¸ÑÐ¾Ð²ÐºÐ°:</span>
+      <span class="filter-label">Сортировка:</span>
       <select id="sort-by" onchange="renderTable()">
-        <option value="impressions">ÐÐ¾ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð¼</option>
-        <option value="clicks">ÐÐ¾ ÐºÐ»Ð¸ÐºÐ°Ð¼</option>
-        <option value="position">ÐÐ¾ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ â</option>
-        <option value="change">ÐÐ¾ ÑÐ¾ÑÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸</option>
+        <option value="impressions">По показам</option>
+        <option value="clicks">По кликам</option>
+        <option value="position">По позиции ↑</option>
+        <option value="change">По росту позиции</option>
       </select>
       <span id="kw-count"></span>
     </div>
@@ -299,11 +299,11 @@
       <table id="kw-table">
         <thead>
           <tr>
-     0      <th style="min-width:200px">ÐÐ°Ð¿ÑÐ¾Ñ</th>
-            <th style="text-align:center">ÐÐ¾Ð·Ð¸ÑÐ¸Ñ</th>
-            <th style="text-align:center">Î</th>
-            <th style="text-align:right">ÐÐ»Ð¸ÐºÐ¸</th>
-            <th style="text-align:right">ÐÐ¾ÐºÐ°Ð·Ñ</th>
+            <th style="min-width:200px">Запрос</th>
+            <th style="text-align:center">Позиция</th>
+            <th style="text-align:center">Δ</th>
+            <th style="text-align:right">Клики</th>
+            <th style="text-align:right">Показы</th>
             <th style="text-align:right">CTR</th>
           </tr>
         </thead>
@@ -314,22 +314,22 @@
 
   <!-- 4. Top Opportunities (pos 11-30, high impressions) -->
   <div class="section" id="section-opps" style="display:none">
-    <div class="section-title">ð ÐÐ¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑÐ¸ ÑÐ¾ÑÑÐ° <span>Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ 11â30 Ñ Ð²ÑÑÐ¾ÐºÐ¸Ð¼Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð¼Ð¸ â Ð¿Ð¾ÑÐµÐ½ÑÐ¸Ð°Ð» Ð´Ð»Ñ ÑÐ¾Ð¿-10</span></div>
+    <div class="section-title">🚀 Возможности роста <span>позиции 11–30 с высокими показами → потенциал для топ-10</span></div>
     <div class="opp-list" id="opp-list"></div>
   </div>
 
   <!-- Sync info -->
   <div class="sync-info" id="sync-info" style="display:none">
-    ÐÐ¾ÑÐ»ÐµÐ´Ð½ÐµÐµ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ: <strong id="sync-date">â</strong> &nbsp;Â·&nbsp;
-    ÐÐ°Ð½Ð½ÑÐµ: Google Search Console &nbsp;Â·&nbsp;
-    <a href="https://github.com/dmcstyle/gstudio-dashboard/actions" target="_blank">GitHub Actions â</a>
+    Последнее обновление: <strong id="sync-date">—</strong> &nbsp;·&nbsp;
+    Данные: Google Search Console &nbsp;·&nbsp;
+    <a href="https://github.com/dmcstyle/gstudio-dashboard/actions" target="_blank">GitHub Actions →</a>
   </div>
 
 </div><!-- /container -->
 
 <script>
 /* ============================================================
-   CONFIG â Ð¿ÑÑÐ¼Ð¾Ð¹ REST API, Ð±ÐµÐ· Supabase SDK
+   CONFIG — прямой REST API, без Supabase SDK
    ============================================================ */
 const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2eGtpaW14em1ubHlidnlhcG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2OTU1MDYsImV4cCI6MjA4ODI3MTUwNn0.xzJh-SbW9cqDTVsbumx2zPo5IkvJfLyrWa-339TBQl4';
@@ -351,7 +351,7 @@ async function sbFetch(table, params = '') {
 }
 
 /* ============================================================
-   DEMO DATA â Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÐ¼ ÐºÐ¾Ð³Ð´Ð° Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ (file://, CORS, offline)
+   DEMO DATA — показываем когда Supabase недоступен (file://, CORS, offline)
    ============================================================ */
 function buildDemoSnapshots() {
   const kws = [
@@ -398,18 +398,18 @@ async function init() {
   try {
     data = await sbFetch('seo_metrics', '?select=*&order=created_at.desc&limit=12');
   } catch (err) {
-    console.warn('Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½, Ð²ÐºÐ»ÑÑÐ°ÐµÐ¼ Ð´ÐµÐ¼Ð¾-ÑÐµÐ¶Ð¸Ð¼:', err.message);
+    console.warn('Supabase недоступен, включаем демо-режим:', err.message);
   }
 
-  // Fallback: Ð´ÐµÐ¼Ð¾-Ð´Ð°Ð½Ð½ÑÐµ ÐµÑÐ»Ð¸ Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ Ð¸Ð»Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° Ð¿ÑÑÑÐ°Ñ
+  // Fallback: демо-данные если Supabase недоступен или таблица пустая
   if (!data || data.length === 0) {
     isDemoMode = true;
     data = buildDemoSnapshots();
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
     eb.className = 'demo';
-    eb.innerHTML = `ð <strong>ÐÐµÐ¼Ð¾-ÑÐµÐ¶Ð¸Ð¼</strong> â Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ (CORS Ð¿ÑÐ¸ Ð¾ÑÐºÑÑÑÐ¸Ð¸ ÑÐµÑÐµÐ· file://, Ð¸Ð»Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° ÐµÑÑ Ð½Ðµ Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð°).<br>
-      <small>ÐÐ°Ð¿ÑÑÑÐ¸ <code>sync-seo-to-supabase.js</code> Ð¸Ð»Ð¸ Ð¾ÑÐºÑÐ¾Ð¹ ÑÐµÑÐµÐ· Ð»Ð¾ÐºÐ°Ð»ÑÐ½ÑÐ¹ ÑÐµÑÐ²ÐµÑ (<code>npx serve .</code>) Ð´Ð»Ñ ÑÐµÐ°Ð»ÑÐ½ÑÑ Ð´Ð°Ð½Ð½ÑÑ.</small>`;
+    eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
+      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальных данных.</small>`;
   }
 
   try {
@@ -451,7 +451,7 @@ async function init() {
     // Show sync date
     const dt = new Date(latest.created_at);
     const fmt = dt.toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    document.getElementById('last-updated-text').textContent = `ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾: ${fmt}`;
+    document.getElementById('last-updated-text').textContent = `Обновлено: ${fmt}`;
     document.getElementById('sync-date').textContent = fmt;
 
     // Show sections, hide loader
@@ -464,8 +464,8 @@ async function init() {
     document.getElementById('loading-banner').style.display = 'none';
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
-    eb.innerHTML = `â ï¸ <strong>ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð´Ð°Ð½Ð½ÑÑ:</strong> ${err.message}<br>
-      <small>ÐÑÐ¾Ð²ÐµÑÑ, ÑÑÐ¾ ÑÐºÑÐ¸Ð¿Ñ <code>sync-seo-to-supabase.js</code> Ð·Ð°Ð¿ÑÑÐºÐ°Ð»ÑÑ Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° <code>seo_metrics</code> ÑÑÑÐµÑÑÐ²ÑÐµÑ Ð² Supabase.</small>`;
+    eb.innerHTML = `⚠️ <strong>Ошибка загрузки данных:</strong> ${err.message}<br>
+      <small>Проверь, что скрипт <code>sync-seo-to-supabase.js</code> запускался и таблица <code>seo_metrics</code> существует в Supabase.</small>`;
   }
 }
 
@@ -490,14 +490,14 @@ function populateOverview(latest, previous) {
     const deltaImpr   = (latest.total_impressions||0) - (previous.total_impressions||0);
     const deltaPos    = (latest.avg_position||0) - (previous.avg_position||0);
     const arrow = (v, better='positive') => {
-      if (v === 0) return 'â';
+      if (v === 0) return '—';
       const sign = v > 0 ? '+' : '';
       const up = better === 'positive' ? v > 0 : v < 0;
       return `<span style="color:${up?'#1e8e3e':'#d93025'}">${sign}${v}</span>`;
     };
-    document.getElementById('ov-clicks-delta').innerHTML  = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaClicks)}`;
-    document.getElementById('ov-impr-delta').innerHTML    = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaImpr)}`;
-    document.getElementById('ov-pos-delta').innerHTML     = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaPos.toFixed(1), 'negative')}`;
+    document.getElementById('ov-clicks-delta').innerHTML  = `vs прошлый период: ${arrow(deltaClicks)}`;
+    document.getElementById('ov-impr-delta').innerHTML    = `vs прошлый период: ${arrow(deltaImpr)}`;
+    document.getElementById('ov-pos-delta').innerHTML     = `vs прошлый период: ${arrow(deltaPos.toFixed(1), 'negative')}`;
   }
 
   // Change summary
@@ -538,11 +538,11 @@ function renderTable() {
     return b.impressions - a.impressions; // default
   });
 
-  document.getElementById('kw-count').textContent = `ÐÐ¾ÐºÐ°Ð·Ð°Ð½Ð¾: ${list.length} Ð¸Ð· ${allKeywords.length}`;
+  document.getElementById('kw-count').textContent = `Показано: ${list.length} из ${allKeywords.length}`;
 
   const tbody = document.getElementById('kw-tbody');
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">ÐÐµÑ Ð´Ð°Ð½Ð½ÑÑ Ð¿Ð¾ ÑÐ¸Ð»ÑÑÑÐ°Ð¼</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных по фильтрам</td></tr>`;
     return;
   }
 
@@ -552,11 +552,11 @@ function renderTable() {
     if (k.isNew) {
       changeHtml = `<span class="change-new">NEW</span>`;
     } else if (k.delta === null || Math.abs(k.delta) < 0.5) {
-      changeHtml = `<span class="change-same">â</span>`;
+      changeHtml = `<span class="change-same">—</span>`;
     } else if (k.delta > 0) {
-      changeHtml = `<span class="change-up">â ${k.delta.toFixed(1)}</span>`;
+      changeHtml = `<span class="change-up">↑ ${k.delta.toFixed(1)}</span>`;
     } else {
-      changeHtml = `<span class="change-down">â ${Math.abs(k.delta).toFixed(1)}</span>`;
+      changeHtml = `<span class="change-down">↓ ${Math.abs(k.delta).toFixed(1)}</span>`;
     }
 
     const ctrPct = (k.ctr * 100).toFixed(1) + '%';
@@ -584,7 +584,7 @@ function renderOpportunities() {
 
   const list = document.getElementById('opp-list');
   if (opps.length === 0) {
-    list.innerHTML = '<p style="color:#888;padding:10px">ÐÐµÑ ÐºÐ»ÑÑÐµÐ²ÑÑ ÑÐ»Ð¾Ð² Ð² Ð·Ð¾Ð½Ðµ ÑÐ¾ÑÑÐ° (Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ 11â30)</p>';
+    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевых слов в зоне роста (позиции 11–30)</p>';
     return;
   }
 
@@ -593,8 +593,8 @@ function renderOpportunities() {
       <div class="opp-rank">${k.position.toFixed(0)}</div>
       <div class="opp-kw">${escHtml(k.keyword)}</div>
       <div class="opp-stats">
-        ${k.impressions} Ð¿Ð¾ÐºÐ°Ð·Ð¾Ð²<br>
-        ${k.clicks} ÐºÐ»Ð¸ÐºÐ¾Ð² &middot; CTR ${(k.ctr*100).toFixed(1)}%
+        ${k.impressions} показов<br>
+        ${k.clicks} кликов &middot; CTR ${(k.ctr*100).toFixed(1)}%
       </div>
     </div>
   `).join('');
@@ -610,7 +610,7 @@ function renderCharts() {
     return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
   });
 
-  // ââ Traffic chart ââ
+  // ── Traffic chart ──
   const ctxT = document.getElementById('chart-traffic').getContext('2d');
   if (chartTraffic) chartTraffic.destroy();
   chartTraffic = new Chart(ctxT, {
@@ -619,13 +619,13 @@ function renderCharts() {
       labels,
       datasets: [
         {
-          label: 'ÐÐ»Ð¸ÐºÐ¸',
+          label: 'Клики',
           data: history.map(s => s.total_clicks || 0),
           backgroundColor: 'rgba(26,115,232,0.7)',
           borderRadius: 4, yAxisID: 'y',
         },
         {
-          label: 'ÐÐ¾ÐºÐ°Ð·Ñ',
+          label: 'Показы',
           data: history.map(s => s.total_impressions || 0),
           type: 'line',
           borderColor: '#e37400', backgroundColor: 'rgba(227,116,0,0.1)',
@@ -638,13 +638,13 @@ function renderCharts() {
       interaction: { mode: 'index' },
       plugins: { legend: { labels: { font: { size: 11 } } } },
       scales: {
-        y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'ÐÐ»Ð¸ÐºÐ¸' } },
-        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'ÐÐ¾ÐºÐ°Ð·Ñ' }, grid: { drawOnChartArea: false } }
+        y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'Клики' } },
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Показы' }, grid: { drawOnChartArea: false } }
       }
     }
   });
 
-  // ââ Position chart ââ
+  // ── Position chart ──
   const ctxP = document.getElementById('chart-position').getContext('2d');
   if (chartPosition) chartPosition.destroy();
   chartPosition = new Chart(ctxP, {
@@ -652,7 +652,7 @@ function renderCharts() {
     data: {
       labels,
       datasets: [{
-        label: 'Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ',
+        label: 'Средняя позиция',
         data: history.map(s => parseFloat((s.avg_position||0).toFixed(2))),
         borderColor: '#7c4dff', backgroundColor: 'rgba(124,77,255,0.1)',
         tension: 0.3, fill: true, pointRadius: 4, pointBackgroundColor: '#7c4dff',
@@ -664,7 +664,7 @@ function renderCharts() {
       scales: {
         y: {
           reverse: true, // Lower = better
-          title: { display: true, text: 'ÐÐ¾Ð·Ð¸ÑÐ¸Ñ (Ð½Ð¸Ð¶Ðµ = Ð»ÑÑÑÐµ)' }
+          title: { display: true, text: 'Позиция (ниже = лучше)' }
         }
       }
     }
