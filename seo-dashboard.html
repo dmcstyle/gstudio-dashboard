@@ -1,251 +1,687 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G Studio Analytics Dashboard</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f7fa; color: #333; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        h1 { font-size: 2em; margin-bottom: 5px; }
-        .subtitle { opacity: 0.9; font-size: 0.9em; }
-        .section { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .section.finance { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; }
-        .section-title { font-size: 1.5em; margin-bottom: 20px; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
-        .section.finance .section-title { color: white; border-color: rgba(255,255,255,0.3); }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .metric-card { background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; }
-        .section.finance .metric-card { background: rgba(255,255,255,0.15); border-left: 4px solid #4ade80; backdrop-filter: blur(10px); }
-        .metric-label { font-size: 0.85em; color: #666; text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
-        .section.finance .metric-label { color: rgba(255,255,255,0.8); }
-        .metric-value { font-size: 2em; font-weight: bold; color: #333; }
-        .section.finance .metric-value { color: white; }
-        .section.seo .metric-value { color: #1a73e8; }
-        .platform { font-size: 0.9em; color: #888; margin-top: 5px; }
-        .section.finance .platform { color: rgba(255,255,255,0.7); }
-        .currency { font-size: 0.6em; opacity: 0.8; }
-        .last-update { text-align: center; color: #888; margin-top: 30px; font-size: 0.9em; }
-        .crm-link { background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; border: 1px solid rgba(255,255,255,0.3); transition: all 0.3s; }
-        .crm-link:hover { background: rgba(255,255,255,0.3); }
-        .section.seo { background: linear-gradient(135deg, #f0f7ff 0%, #e8f1ff 100%); }
-        .section.seo .section-title { color: #1a73e8; border-color: #1a73e8; }
-        @media (max-width: 768px) { .metrics-grid { grid-template-columns: 1fr; } header { flex-direction: column; align-items: flex-start; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Rank Tracker â G Studio Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+ 2 * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f4ff; color: #222; }
+    a { text-decoration: none; }
+
+    /* âââ Header âââââââââââââââââââââââââââââââââââââââââââ */
+    header {
+      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      color: white; padding: 20px 30px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 12px rgba(26,115,232,0.3);
+    }
+    .header-left h1 { font-size: 1.6em; margin-bottom: 3px; }
+    .header-left .sub { font-size: 0.85em; opacity: 0.85; }
+    .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .nav-links a {
+      background: rgba(255,255,255,0.15); color: white;
+      padding: 8px 16px; border-radius: 6px; font-size: 0.9em; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.25); transition: background 0.2s;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.28); }
+    .nav-links a.active { background: rgba(255,255,255,0.3); font-weight: 700; }
+
+    /* âââ Container âââââââââââââââââââââââââââââââââââââââ */
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
+
+    /* âââ Loading ââââââââââââââââââââââââââââââââââââââââââ */
+    #loading-banner {
+      background: #e8f0fe; border: 1px solid #1a73e8; border-radius: 8px;
+      padding: 16px 20px; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px; color: #1a73e8; font-weight: 500;
+    }
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid #1a73e8;
+      border-top-color: transparent; border-radius: 50%;
+      animation: spin 0.8s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #error-banner {
+      background: #fce8e6; border: 1px solid #d93025; border-radius: 8px;
+      padding: 16px 20px; margin-bottom: 20px; color: #c62828;
+      display: none;
+    }
+    #error-banner.demo {
+      background: #e8f0fe; border-color: #1a73e8; color: #174ea6;
+    }
+
+    /* âââ Section ââââââââââââââââââââââââââââââââââââââââââ */
+    .section {
+      background: white; border-radius: 12px; padding: 24px;
+      margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .section-title {
+      font-size: 1.15em; font-weight: 700; color: #1a73e8;
+      border-bottom: 2px solid #e8f0fe; padding-bottom: 12px; margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .section-title span { font-size: 0.8em; font-weight: 400; color: #888; }
+
+    /* âââ Overview Grid ââââââââââââââââââââââââââââââââââââ */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 16px;
+    }
+    .metric-card {
+      background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 100%);
+      border-radius: 10px; padding: 18px; border-left: 4px solid #1a73e8;
+    }
+    .metric-card.green  { border-left-color: #1e8e3e; background: linear-gradient(135deg, #e6f4ea 0%, #f0faf2 100%); }
+    .metric-card.orange { border-left-color: #e37400; background: linear-gradient(135deg, #fef3e2 0%, #fff8ec 100%); }
+    .metric-card.red    { border-left-color: #d93025; background: linear-gradient(135deg, #fce8e6 0%, #fff3f2 100%); }
+    .metric-card.purple { border-left-color: #7c4dff; background: linear-gradient(135deg, #ede7f6 0%, #f5f0ff 100%); }
+    .metric-label { font-size: 0.78em; color: #666; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.03em; }
+    .metric-value { font-size: 2em; font-weight: 800; color: #1a73e8; line-height: 1; }
+    .metric-card.green  .metric-value { color: #1e8e3e; }
+    .metric-card.orange .metric-value { color: #e37400; }
+    .metric-card.red    .metric-value { color: #d93025; }
+    .metric-card.purple .metric-value { color: #7c4dff; }
+    .metric-sub { font-size: 0.8em; color: #888; margin-top: 4px; }
+
+    /* âââ Change badges (summary row) âââââââââââââââââââââ */
+    .change-summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 0; }
+    .change-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 20px; font-size: 0.9em; font-weight: 600;
+    }
+    .badge-up   { background: #e6f4ea; color: #1e8e3e; }
+    .badge-down { background: #fce8e6; color: #d93025; }
+    .badge-new  { background: #e8f0fe; color: #1a73e8; }
+    .badge-same { background: #f5f5f5; color: #666; }
+
+    /* âââ Filters ââââââââââââââââââââââââââââââââââââââââââ */
+    .filters {
+      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+      padding: 16px 0; margin-bottom: 4px;
+    }
+    .filters input, .filters select {
+      padding: 8px 12px; border: 1.5px solid #d0d8e8; border-radius: 8px;
+      font-size: 0.9em; background: white; color: #333; outline: none;
+      transition: border-color 0.2s;
+    }
+    .filters input:focus, .filters select:focus { border-color: #1a73e8; }
+    .filters input { min-width: 220px; }
+    .filter-label { font-size: 0.85em; color: #666; font-weight: 500; }
+    .btn {
+      padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 0.9em; font-weight: 600; transition: all 0.2s;
+    }
+    .btn-primary { background: #1a73e8; color: white; }
+    .btn-primary:hover { background: #1557b0; }
+    .btn-secondary { background: #f0f4ff; color: #1a73e8; border: 1.5px solid #1a73e8; }
+    .btn-secondary:hover { background: #e8f0fe; }
+    #kw-count { font-size: 0.85em; color: #888; margin-left: auto; }
+
+    /* âââ Table ââââââââââââââââââââââââââââââââââââââââââââ */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+    thead { position: sticky; top: 0; background: #e8f0fe; z-index: 1; }
+    thead th {
+      padding: 12px 14px; text-align: left; color: #1a73e8; font-weight: 700;
+      font-size: 0.82em; text-transform: uppercase; letter-spacing: 0.04em;
+      white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    thead th:hover { background: #d2e3fc; }
+    thead th.sorted { color: #0d47a1; }
+    thead th .sort-icon { opacity: 0.4; margin-left: 4px; }
+    thead th.sorted .sort-icon { opacity: 1; }
+    tbody tr { border-bottom: 1px solid #f0f4ff; transition: background 0.1s; }
+    tbody tr:hover { background: #f8faff; }
+    tbody td { padding: 11px 14px; color: #333; }
+    .kw-cell { max-width: 280px; }
+    .kw-text { font-weight: 500; }
+    .pos-cell { text-align: center; font-weight: 700; font-size: 1.1em; }
+    .pos-top   { color: #1e8e3e; }
+    .pos-mid   { color: #e37400; }
+    .pos-low   { color: #888; }
+    .change-cell { text-align: center; white-space: nowrap; }
+    .change-up   { color: #1e8e3e; font-weight: 700; }
+    .change-down { color: #d93025; font-weight: 700; }
+    .change-new  { background: #1a73e8; color: white; font-size: 0.75em; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+    .change-same { color: #aaa; }
+    .num-cell { text-align: right; }
+    .ctr-cell { text-align: right; font-size: 0.9em; color: #666; }
+
+    /* âââ Charts âââââââââââââââââââââââââââââââââââââââââââ */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+    .chart-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .chart-title { font-size: 1em; font-weight: 700; color: #333; margin-bottom: 16px; }
+    .chart-canvas-wrap { position: relative; height: 220px; }
+
+    /* âââ Opportunities ââââââââââââââââââââââââââââââââââââ */
+    .opp-list { display: flex; flex-direction: column; gap: 8px; }
+    .opp-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      background: #f8faff; border-radius: 8px; border-left: 3px solid #e37400;
+    }
+    .opp-rank { font-size: 1.4em; font-weight: 800; color: #e37400; min-width: 48px; }
+    .opp-kw   { flex: 1; font-weight: 600; color: #333; }
+    .opp-stats { font-size: 0.82em; color: #666; text-align: right; }
+
+    /* âââ Sync info ââââââââââââââââââââââââââââââââââââââââ */
+    .sync-info {
+      text-align: center; color: #888; font-size: 0.85em; margin-top: 30px;
+      padding: 16px; background: white; border-radius: 10px; border: 1px dashed #d0d8e8;
+    }
+    .sync-info a { color: #1a73e8; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .filters input { min-width: unset; width: 100%; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1>♪ G Studio Analytics</h1>
-                <div class="subtitle">Real-time Financial, Social Media & Studio Metrics Dashboard</div>
-            </div>
-            <a href="crm.html" class="crm-link">👥 CRM</a>
-        </header>
 
-        <!-- Financial Metrics -->
-        <div class="section finance">
-            <div class="section-title">💰 Финансовая отчетность</div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Доход за сегодня</div>
-                    <div class="metric-value"><span class="currency">AED</span> —</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Доход за неделю</div>
-                    <div class="metric-value"><span class="currency">AED</span> —</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Доход за месяц</div>
-                    <div class="metric-value"><span class="currency">AED</span> —</div>
-                </div>
-            </div>
-        </div>
+<header>
+  <div class="header-left">
+    <h1>ð SEO Rank Tracker</h1>
+    <div class="sub">dubaimusicstudio.com Â· Google Search Console</div>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">ð Dashboard</a>
+    <a href="crm.html">ð¥ CRM</a>
+    <a href="royalties.html">ðµ Royalties</a>
+    <a href="seo-dashboard.html" class="active">ð SEO</a>
+  </nav>
+</header>
 
-        <!-- Personal Metrics -->
-        <div class="section">
-            <div class="section-title">👤 Personal (@dmcstyle / @georgeyukhanov)</div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@dmcstyle</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@georgeyukhanov</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">YouTube Views</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@georgeyukhanov</div>
-                </div>
-            </div>
-        </div>
+<div class="container">
 
-        <!-- G Studio Metrics -->
-        <div class="section">
-            <div class="section-title">🎙️ G Studio (@dubaimusicstudio / @gstudiodubai)</div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Instagram Followers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@dubaimusicstudio</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">TikTok Followers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@dubaimusicstudio</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">YouTube Subscribers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@dubaimusicstudio</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">X (Twitter) Followers</div>
-                    <div class="metric-value">—</div>
-                    <div class="platform">@gstudiodubai</div>
-                </div>
-            </div>
-        </div>
+  <!-- Loading / Error banners -->
+  <div id="loading-banner">
+    <div class="spinner"></div>
+    ÐÐ°Ð³ÑÑÐ¶Ð°ÐµÐ¼ Ð´Ð°Ð½Ð½ÑÐµ Ð¸Ð· Google Search Consoleâ¦
+  </div>
+  <div id="error-banner"></div>
 
-        <!-- SEO Metrics - WORKING NOW! -->
-        <div class="section seo">
-            <div class="section-title">🔍 SEO Dashboard (dubaimusicstudio.com)</div>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Total Keywords</div>
-                    <div class="metric-value">184</div>
-                    <div class="platform">Last 28 days</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Total Clicks</div>
-                    <div class="metric-value">22</div>
-                    <div class="platform">Last 28 days</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Total Impressions</div>
-                    <div class="metric-value">1939</div>
-                    <div class="platform">Last 28 days</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Avg CTR</div>
-                    <div class="metric-value">1.13%</div>
-                    <div class="platform">Click-through rate</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Avg Position</div>
-                    <div class="metric-value">15.21</div>
-                    <div class="platform">SERP rank</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-label">Keywords Indexed</div>
-                    <div class="metric-value">184</div>
-                    <div class="platform">In SERP</div>
-                </div>
-            </div>
-
-            <!-- Top Queries Table -->
-            <div style="margin-top: 30px;">
-                <h3 style="color: #1a73e8; margin-bottom: 15px; font-size: 1.2em;">📊 Top Queries (Requests you're found by)</h3>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
-                        <thead style="background: #e8f1ff; border-bottom: 2px solid #1a73e8;">
-                            <tr>
-                                <th style="padding: 12px; text-align: left; color: #1a73e8; font-weight: 600;">Query</th>
-                                <th style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">Position</th>
-                                <th style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">Clicks</th>
-                                <th style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">Impressions</th>
-                                <th style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">CTR</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 12px; color: #333;">music recording studio dubai</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">7.3</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">2</td>
-                                <td style="padding: 12px; text-align: center;">178</td>
-                                <td style="padding: 12px; text-align: center;">1.2%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9fafb;">
-                                <td style="padding: 12px; color: #333;">recording studio dubai</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">12.4</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">2</td>
-                                <td style="padding: 12px; text-align: center;">156</td>
-                                <td style="padding: 12px; text-align: center;">1.3%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 12px; color: #333;">music production dubai</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">18.7</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">142</td>
-                                <td style="padding: 12px; text-align: center;">0.7%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9fafb;">
-                                <td style="padding: 12px; color: #333;">vocal recording studio</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">22.1</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">98</td>
-                                <td style="padding: 12px; text-align: center;">1.0%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 12px; color: #333;">professional recording studio</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">25.3</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">87</td>
-                                <td style="padding: 12px; text-align: center;">1.1%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9fafb;">
-                                <td style="padding: 12px; color: #333;">music studio near me dubai</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">31.5</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">76</td>
-                                <td style="padding: 12px; text-align: center;">1.3%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 12px; color: #333;">song recording service</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">28.9</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">82</td>
-                                <td style="padding: 12px; text-align: center;">1.2%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9fafb;">
-                                <td style="padding: 12px; color: #333;">uae music production</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">19.2</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">71</td>
-                                <td style="padding: 12px; text-align: center;">1.4%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e0e0e0;">
-                                <td style="padding: 12px; color: #333;">mixing mastering service</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">35.7</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">64</td>
-                                <td style="padding: 12px; text-align: center;">1.6%</td>
-                            </tr>
-                            <tr style="background: #f9fafb;">
-                                <td style="padding: 12px; color: #333;">vocal coaching dubai</td>
-                                <td style="padding: 12px; text-align: center; color: #1a73e8; font-weight: 600;">42.3</td>
-                                <td style="padding: 12px; text-align: center; font-weight: 600;">1</td>
-                                <td style="padding: 12px; text-align: center;">52</td>
-                                <td style="padding: 12px; text-align: center;">1.9%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div style="margin-top: 20px; font-size: 0.9em; color: #1a73e8; text-align: center;">
-                📊 Updated: 7 Mar 2026, 17:56 GMT+4
-            </div>
-        </div>
-
-        <div class="last-update">
-            Last updated: 7 Mar 2026
-        </div>
+  <!-- 1. Overview metrics -->
+  <div class="section" id="section-overview" style="display:none">
+    <div class="section-title">
+      ð ÐÐ±Ð·Ð¾Ñ Ð·Ð° Ð¿Ð¾ÑÐ»ÐµÐ´Ð½Ð¸Ðµ 28 Ð´Ð½ÐµÐ¹
+      <span id="last-updated-text"></span>
     </div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">ÐÑÐµÐ³Ð¾ Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð²</div>
+        <div class="metric-value" id="ov-keywords">â</div>
+        <div class="metric-sub">ÐÐ»ÑÑÐµÐ²ÑÐµ ÑÐ»Ð¾Ð²Ð° Ð² SERP</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">ÐÐ»Ð¸ÐºÐ¸</div>
+        <div class="metric-value" id="ov-clicks">â</div>
+        <div class="metric-sub" id="ov-clicks-delta"></div>
+      </div>
+      <div class="metric-card orange">
+        <div class="metric-label">ÐÐ¾ÐºÐ°Ð·Ñ</div>
+        <div class="metric-value" id="ov-impressions">â</div>
+        <div class="metric-sub" id="ov-impr-delta"></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Ð¡ÑÐµÐ´Ð½Ð¸Ð¹ CTR</div>
+        <div class="metric-value" id="ov-ctr">â</div>
+        <div class="metric-sub">Click-through rate</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-label">Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ</div>
+        <div class="metric-value" id="ov-position">â</div>
+        <div class="metric-sub" id="ov-pos-delta"></div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-label">Ð ÑÐ¾Ð¿-10</div>
+        <div class="metric-value" id="ov-top10">â</div>
+        <div class="metric-sub">ÐÐ°Ð¿ÑÐ¾ÑÐ¾Ð² Ð½Ð° 1-Ð¹ ÑÑÑ.</div>
+      </div>
+    </div>
+
+    <!-- Position change summary -->
+  2 <div style="margin-top: 20px;">
+      <div style="font-size: 0.85em; color: #888; margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;">ÐÐ·Ð¼ÐµÐ½ÐµÐ½Ð¸Ñ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¹ vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´</div>
+      <div class="change-summary">
+        <div class="change-badge badge-up">â <span id="sum-up">0</span> Ð²ÑÑÐ¾ÑÐ»Ð¸</div>
+        <div class="change-badge badge-down">â <span id="sum-down">0</span> ÑÐ¿Ð°Ð»Ð¸</div>
+        <div class="change-badge badge-new">â <span id="sum-new">0</span> Ð½Ð¾Ð²ÑÑ</div>
+        <div class="change-badge badge-same">â <span id="sum-same">0</span> Ð±ÐµÐ· Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Charts -->
+  <div class="charts-grid" id="charts-grid" style="display:none">
+    <div class="chart-box">
+      <div class="chart-title">ð ÐÐ»Ð¸ÐºÐ¸ Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ñ â Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ°</div>
+      <div class="chart-canvas-wrap"><canvas id="chart-traffic"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">ð¯ Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ â Ð´Ð¸Ð½Ð°Ð¼Ð¸ÐºÐ°</div>
+      <div class="chart-canvas-wrap"><canvas id="chart-position"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 3. Keyword Rankings Table -->
+  <div class="section" id="section-keywords" style="display:none">
+    <div class="section-title">
+      ðï¸ ÐÐ»ÑÑÐµÐ²ÑÐµ ÑÐ»Ð¾Ð²Ð°
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <span class="filter-label">ÐÐ¾Ð¸ÑÐº:</span>
+      <input type="text" id="filter-search" placeholder="ÐÐ²ÐµÐ´Ð¸ÑÐµ ÐºÐ»ÑÑÐµÐ²Ð¾Ðµ ÑÐ»Ð¾Ð²Ð¾â¦" oninput="renderTable()">
+      <span class="filter-label">ÐÐ¾Ð·Ð¸ÑÐ¸Ñ:</span>
+      <select id="filter-pos" onchange="renderTable()">
+        <option value="all">ÐÑÐµ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸</option>
+        <option value="top10">Ð¢Ð¾Ð¿ 10</option>
+        <option value="11-20">11 â 20</option>
+        <option value="21-50">21 â 50</option>
+        <option value="50+">50+</option>
+      </select>
+      <span class="filter-label">Ð¡Ð¾ÑÑÐ¸ÑÐ¾Ð²ÐºÐ°:</span>
+      <select id="sort-by" onchange="renderTable()">
+        <option value="impressions">ÐÐ¾ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð¼</option>
+        <option value="clicks">ÐÐ¾ ÐºÐ»Ð¸ÐºÐ°Ð¼</option>
+        <option value="position">ÐÐ¾ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ â</option>
+        <option value="change">ÐÐ¾ ÑÐ¾ÑÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸</option>
+      </select>
+      <span id="kw-count"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="kw-table">
+        <thead>
+          <tr>
+     0      <th style="min-width:200px">ÐÐ°Ð¿ÑÐ¾Ñ</th>
+            <th style="text-align:center">ÐÐ¾Ð·Ð¸ÑÐ¸Ñ</th>
+            <th style="text-align:center">Î</th>
+            <th style="text-align:right">ÐÐ»Ð¸ÐºÐ¸</th>
+            <th style="text-align:right">ÐÐ¾ÐºÐ°Ð·Ñ</th>
+            <th style="text-align:right">CTR</th>
+          </tr>
+        </thead>
+        <tbody id="kw-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. Top Opportunities (pos 11-30, high impressions) -->
+  <div class="section" id="section-opps" style="display:none">
+    <div class="section-title">ð ÐÐ¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ÑÑÐ¸ ÑÐ¾ÑÑÐ° <span>Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ 11â30 Ñ Ð²ÑÑÐ¾ÐºÐ¸Ð¼Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð¼Ð¸ â Ð¿Ð¾ÑÐµÐ½ÑÐ¸Ð°Ð» Ð´Ð»Ñ ÑÐ¾Ð¿-10</span></div>
+    <div class="opp-list" id="opp-list"></div>
+  </div>
+
+  <!-- Sync info -->
+  <div class="sync-info" id="sync-info" style="display:none">
+    ÐÐ¾ÑÐ»ÐµÐ´Ð½ÐµÐµ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ: <strong id="sync-date">â</strong> &nbsp;Â·&nbsp;
+    ÐÐ°Ð½Ð½ÑÐµ: Google Search Console &nbsp;Â·&nbsp;
+    <a href="https://github.com/dmcstyle/gstudio-dashboard/actions" target="_blank">GitHub Actions â</a>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+/* ============================================================
+   CONFIG â Ð¿ÑÑÐ¼Ð¾Ð¹ REST API, Ð±ÐµÐ· Supabase SDK
+   ============================================================ */
+const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2eGtpaW14em1ubHlidnlhcG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2OTU1MDYsImV4cCI6MjA4ODI3MTUwNn0.xzJh-SbW9cqDTVsbumx2zPo5IkvJfLyrWa-339TBQl4';
+
+async function sbFetch(table, params = '') {
+  const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
+  const res = await fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+    }
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Supabase ${table}: ${res.status} ${text}`);
+  }
+  return res.json();
+}
+
+/* ============================================================
+   DEMO DATA â Ð¿Ð¾ÐºÐ°Ð·ÑÐ²Ð°ÐµÐ¼ ÐºÐ¾Ð³Ð´Ð° Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ (file://, CORS, offline)
+   ============================================================ */
+function buildDemoSnapshots() {
+  const kws = [
+    {keys:['dubai music studio'],       position:3.2,  clicks:187, impressions:2140, ctr:0.087},
+    {keys:['recording studio dubai'],   position:5.7,  clicks:143, impressions:1820, ctr:0.079},
+    {keys:['music production dubai'],   position:8.1,  clicks:92,  impressions:1350, ctr:0.068},
+    {keys:['studio recording near me'], position:12.4, clicks:48,  impressions:980,  ctr:0.049},
+    {keys:['dubai sound studio'],        position:6.3,  clicks:71,  impressions:870,  ctr:0.082},
+    {keys:['beat making studio dubai'],  position:18.2, clicks:19,  impressions:640,  ctr:0.030},
+    {keys:['music studio rental dubai'], position:9.8,  clicks:55,  impressions:590,  ctr:0.093},
+    {keys:['dubaimusicstudio'],          position:1.1,  clicks:204, impressions:510,  ctr:0.400},
+    {keys:['professional recording studio uae'], position:14.5, clicks:23, impressions:480, ctr:0.048},
+    {keys:['g studio dubai'],            position:2.4,  clicks:98,  impressions:420,  ctr:0.233},
+    {keys:['home recording studio setup dubai'], position:22.1, clicks:8, impressions:310, ctr:0.026},
+    {keys:['music mixing mastering dubai'], position:11.3, clicks:31, impressions:290, ctr:0.107},
+  ];
+  const prevKws = kws.map(k => ({...k, position: k.position + (Math.random()*4-1.5)}));
+  const base = { total_keywords:127, total_clicks:979, total_impressions:10400, avg_ctr:0.094, avg_position:8.7, data_json: JSON.stringify(kws) };
+  const now = Date.now();
+  return Array.from({length:8}, (_, i) => ({
+    ...base,
+    total_clicks:      Math.round(base.total_clicks      * (0.82 + i*0.026 + Math.random()*0.04)),
+    total_impressions: Math.round(base.total_impressions * (0.80 + i*0.03  + Math.random()*0.05)),
+    avg_position:      parseFloat((base.avg_position - i*0.15 + Math.random()*0.3).toFixed(2)),
+  2 avg_ctr:           parseFloat((base.avg_ctr + i*0.002).toFixed(5)),
+    data_json:         i === 7 ? JSON.stringify(kws) : JSON.stringify(prevKws),
+    created_at:        new Date(now - (7-i)*7*24*3600*1000).toISOString(),
+  })).reverse();
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let allKeywords = [];
+let snapshots   = [];
+let chartTraffic, chartPosition;
+let isDemoMode  = false;
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function init() {
+  let data = null;
+  try {
+    data = await sbFetch('seo_metrics', '?select=*&order=created_at.desc&limit=12');
+  } catch (err) {
+    console.warn('Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½, Ð²ÐºÐ»ÑÑÐ°ÐµÐ¼ Ð´ÐµÐ¼Ð¾-ÑÐµÐ¶Ð¸Ð¼:', err.message);
+  }
+
+  // Fallback: Ð´ÐµÐ¼Ð¾-Ð´Ð°Ð½Ð½ÑÐµ ÐµÑÐ»Ð¸ Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ Ð¸Ð»Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° Ð¿ÑÑÑÐ°Ñ
+  if (!data || data.length === 0) {
+    isDemoMode = true;
+    data = buildDemoSnapshots();
+    const eb = document.getElementById('error-banner');
+    eb.style.display = 'block';
+    eb.className = 'demo';
+    eb.innerHTML = `ð <strong>ÐÐµÐ¼Ð¾-ÑÐµÐ¶Ð¸Ð¼</strong> â Supabase Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½ (CORS Ð¿ÑÐ¸ Ð¾ÑÐºÑÑÑÐ¸Ð¸ ÑÐµÑÐµÐ· file://, Ð¸Ð»Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° ÐµÑÑ Ð½Ðµ Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð°).<br>
+      <small>ÐÐ°Ð¿ÑÑÑÐ¸ <code>sync-seo-to-supabase.js</code> Ð¸Ð»Ð¸ Ð¾ÑÐºÑÐ¾Ð¹ ÑÐµÑÐµÐ· Ð»Ð¾ÐºÐ°Ð»ÑÐ½ÑÐ¹ ÑÐµÑÐ²ÐµÑ (<code>npx serve .</code>) Ð´Ð»Ñ ÑÐµÐ°Ð»ÑÐ½ÑÑ Ð´Ð°Ð½Ð½ÑÑ.</small>`;
+  }
+
+  try {
+    snapshots = data;
+    const latest   = data[0];
+    const previous = data[1] || null;
+
+    // Parse keyword lists
+    const currKws = JSON.parse(latest.data_json || '[]');
+    const prevKws = previous ? JSON.parse(previous.data_json || '[]') : [];
+
+    // Build previous position map
+    const prevMap = {};
+    prevKws.forEach(row => { prevMap[row.keys[0]] = row.position; });
+
+    // Enrich
+    allKeywords = currKws.map(row => {
+      const kw       = row.keys[0];
+      const pos      = parseFloat(row.position) || 0;
+      const prevPos  = prevMap[kw] !== undefined ? parseFloat(prevMap[kw]) : null;
+      const delta    = prevPos !== null ? prevPos - pos : null; // positive = improved
+      return {
+        keyword:     kw,
+        position:    pos,
+        prevPos:     prevPos,
+        delta:       delta,
+        isNew:       prevPos === null,
+        clicks:      row.clicks || 0,
+        impressions: row.impressions || 0,
+        ctr:         row.ctr || 0,
+      };
+    });
+
+    populateOverview(latest, previous);
+    renderTable();
+    renderOpportunities();
+    renderCharts();
+
+    // Show sync date
+    const dt = new Date(latest.created_at);
+    const fmt = dt.toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    document.getElementById('last-updated-text').textContent = `ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾: ${fmt}`;
+    document.getElementById('sync-date').textContent = fmt;
+
+    // Show sections, hide loader
+    document.getElementById('loading-banner').style.display = 'none';
+    ['section-overview','charts-grid','section-keywords','section-opps','sync-info']
+      .forEach(id => document.getElementById(id).style.display = '');
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById('loading-banner').style.display = 'none';
+    const eb = document.getElementById('error-banner');
+    eb.style.display = 'block';
+    eb.innerHTML = `â ï¸ <strong>ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð´Ð°Ð½Ð½ÑÑ:</strong> ${err.message}<br>
+      <small>ÐÑÐ¾Ð²ÐµÑÑ, ÑÑÐ¾ ÑÐºÑÐ¸Ð¿Ñ <code>sync-seo-to-supabase.js</code> Ð·Ð°Ð¿ÑÑÐºÐ°Ð»ÑÑ Ð¸ ÑÐ°Ð±Ð»Ð¸ÑÐ° <code>seo_metrics</code> ÑÑÑÐµÑÑÐ²ÑÐµÑ Ð² Supabase.</small>`;
+  }
+}
+
+/* ============================================================
+   OVERVIEW
+   ============================================================ */
+function populateOverview(latest, previous) {
+  const fmt = n => n >= 1000 ? (n/1000).toFixed(1) + 'k' : String(n);
+  const fmtPos = p => p.toFixed(1);
+
+  document.getElementById('ov-keywords').textContent    = fmt(latest.total_keywords || 0);
+  document.getElementById('ov-clicks').textContent      = fmt(latest.total_clicks || 0);
+  document.getElementById('ov-impressions').textContent = fmt(latest.total_impressions || 0);
+  document.getElementById('ov-ctr').textContent         = ((latest.avg_ctr || 0)*100).toFixed(2) + '%';
+  document.getElementById('ov-position').textContent    = fmtPos(latest.avg_position || 0);
+
+  const top10 = allKeywords.filter(k => k.position <= 10).length;
+  document.getElementById('ov-top10').textContent = top10;
+
+  if (previous) {
+    const deltaClicks = (latest.total_clicks||0) - (previous.total_clicks||0);
+    const deltaImpr   = (latest.total_impressions||0) - (previous.total_impressions||0);
+    const deltaPos    = (latest.avg_position||0) - (previous.avg_position||0);
+    const arrow = (v, better='positive') => {
+      if (v === 0) return 'â';
+      const sign = v > 0 ? '+' : '';
+      const up = better === 'positive' ? v > 0 : v < 0;
+      return `<span style="color:${up?'#1e8e3e':'#d93025'}">${sign}${v}</span>`;
+    };
+    document.getElementById('ov-clicks-delta').innerHTML  = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaClicks)}`;
+    document.getElementById('ov-impr-delta').innerHTML    = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaImpr)}`;
+    document.getElementById('ov-pos-delta').innerHTML     = `vs Ð¿ÑÐ¾ÑÐ»ÑÐ¹ Ð¿ÐµÑÐ¸Ð¾Ð´: ${arrow(deltaPos.toFixed(1), 'negative')}`;
+  }
+
+  // Change summary
+  let up=0, down=0, newKw=0, same=0;
+  allKeywords.forEach(k => {
+    if (k.isNew) newKw++;
+    else if (k.delta === null || Math.abs(k.delta) < 0.5) same++;
+    else if (k.delta > 0) up++;
+    else down++;
+  });
+  document.getElementById('sum-up').textContent   = up;
+  document.getElementById('sum-down').textContent = down;
+  document.getElementById('sum-new').textContent  = newKw;
+  document.getElementById('sum-same').textContent = same;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+function renderTable() {
+  const search  = document.getElementById('filter-search').value.toLowerCase().trim();
+  const posF    = document.getElementById('filter-pos').value;
+  const sortBy  = document.getElementById('sort-by').value;
+
+  let list = allKeywords.filter(k => {
+    if (search && !k.keyword.toLowerCase().includes(search)) return false;
+  2 if (posF === 'top10'  && k.position > 10)  return false;
+    if (posF === '11-20'  && (k.position < 11 || k.position > 20)) return false;
+    if (posF === '21-50'  && (k.position < 21 || k.position > 50)) return false;
+    if (posF === '50+'    && k.position <= 50) return false;
+    return true;
+  });
+
+  list = list.sort((a, b) => {
+    if (sortBy === 'position')    return a.position - b.position;
+    if (sortBy === 'clicks')      return b.clicks - a.clicks;
+    if (sortBy === 'change')      return (b.delta||0) - (a.delta||0);
+    return b.impressions - a.impressions; // default
+  });
+
+  document.getElementById('kw-count').textContent = `ÐÐ¾ÐºÐ°Ð·Ð°Ð½Ð¾: ${list.length} Ð¸Ð· ${allKeywords.length}`;
+
+  const tbody = document.getElementById('kw-tbody');
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">ÐÐµÑ Ð´Ð°Ð½Ð½ÑÑ Ð¿Ð¾ ÑÐ¸Ð»ÑÑÑÐ°Ð¼</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(k => {
+    const posClass = k.position <= 10 ? 'pos-top' : k.position <= 20 ? 'pos-mid' : 'pos-low';
+    let changeHtml;
+    if (k.isNew) {
+      changeHtml = `<span class="change-new">NEW</span>`;
+    } else if (k.delta === null || Math.abs(k.delta) < 0.5) {
+      changeHtml = `<span class="change-same">â</span>`;
+    } else if (k.delta > 0) {
+      changeHtml = `<span class="change-up">â ${k.delta.toFixed(1)}</span>`;
+    } else {
+      changeHtml = `<span class="change-down">â ${Math.abs(k.delta).toFixed(1)}</span>`;
+    }
+
+    const ctrPct = (k.ctr * 100).toFixed(1) + '%';
+    const imprFmt = k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : k.impressions;
+
+    return `<tr>
+      <td class="kw-cell"><span class="kw-text">${escHtml(k.keyword)}</span></td>
+      <td class="pos-cell ${posClass}">${k.position.toFixed(1)}</td>
+      <td class="change-cell">${changeHtml}</td>
+      <td class="num-cell">${k.clicks}</td>
+      <td class="num-cell">${imprFmt}</td>
+      <td class="ctr-cell">${ctrPct}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   OPPORTUNITIES
+   ============================================================ */
+function renderOpportunities() {
+  const opps = allKeywords
+    .filter(k => k.position >= 11 && k.position <= 30)
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 6);
+
+  const list = document.getElementById('opp-list');
+  if (opps.length === 0) {
+    list.innerHTML = '<p style="color:#888;padding:10px">ÐÐµÑ ÐºÐ»ÑÑÐµÐ²ÑÑ ÑÐ»Ð¾Ð² Ð² Ð·Ð¾Ð½Ðµ ÑÐ¾ÑÑÐ° (Ð¿Ð¾Ð·Ð¸ÑÐ¸Ð¸ 11â30)</p>';
+    return;
+  }
+
+  list.innerHTML = opps.map(k => `
+    <div class="opp-item">
+      <div class="opp-rank">${k.position.toFixed(0)}</div>
+      <div class="opp-kw">${escHtml(k.keyword)}</div>
+      <div class="opp-stats">
+        ${k.impressions} Ð¿Ð¾ÐºÐ°Ð·Ð¾Ð²<br>
+        ${k.clicks} ÐºÐ»Ð¸ÐºÐ¾Ð² &middot; CTR ${(k.ctr*100).toFixed(1)}%
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+function renderCharts() {
+  const history = snapshots.slice().reverse(); // oldest first
+  const labels  = history.map(s => {
+    const d = new Date(s.created_at);
+    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+  });
+
+  // ââ Traffic chart ââ
+  const ctxT = document.getElementById('chart-traffic').getContext('2d');
+  if (chartTraffic) chartTraffic.destroy();
+  chartTraffic = new Chart(ctxT, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'ÐÐ»Ð¸ÐºÐ¸',
+          data: history.map(s => s.total_clicks || 0),
+          backgroundColor: 'rgba(26,115,232,0.7)',
+          borderRadius: 4, yAxisID: 'y',
+        },
+        {
+          label: 'ÐÐ¾ÐºÐ°Ð·Ñ',
+          data: history.map(s => s.total_impressions || 0),
+          type: 'line',
+          borderColor: '#e37400', backgroundColor: 'rgba(227,116,0,0.1)',
+          tension: 0.3, yAxisID: 'y1', pointRadius: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index' },
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'ÐÐ»Ð¸ÐºÐ¸' } },
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'ÐÐ¾ÐºÐ°Ð·Ñ' }, grid: { drawOnChartArea: false } }
+      }
+    }
+  });
+
+  // ââ Position chart ââ
+  const ctxP = document.getElementById('chart-position').getContext('2d');
+  if (chartPosition) chartPosition.destroy();
+  chartPosition = new Chart(ctxP, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Ð¡ÑÐµÐ´Ð½ÑÑ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ',
+        data: history.map(s => parseFloat((s.avg_position||0).toFixed(2))),
+        borderColor: '#7c4dff', backgroundColor: 'rgba(124,77,255,0.1)',
+        tension: 0.3, fill: true, pointRadius: 4, pointBackgroundColor: '#7c4dff',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { font: { size: 11 } } } },
+      scales: {
+        y: {
+          reverse: true, // Lower = better
+          title: { display: true, text: 'ÐÐ¾Ð·Ð¸ÑÐ¸Ñ (Ð½Ð¸Ð¶Ðµ = Ð»ÑÑÑÐµ)' }
+        }
+      }
+    }
+  });
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+init();
+</script>
 </body>
 </html>
