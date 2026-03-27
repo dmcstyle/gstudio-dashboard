@@ -376,7 +376,7 @@ function buildDemoSnapshots() {
     total_clicks:      Math.round(base.total_clicks      * (0.82 + i*0.026 + Math.random()*0.04)),
     total_impressions: Math.round(base.total_impressions * (0.80 + i*0.03  + Math.random()*0.05)),
     avg_position:      parseFloat((base.avg_position - i*0.15 + Math.random()*0.3).toFixed(2)),
-  2 avg_ctr:           parseFloat((base.avg_ctr + i*0.002).toFixed(5)),
+    avg_ctr:           parseFloat((base.avg_ctr + i*0.002).toFixed(5)),
     data_json:         i === 7 ? JSON.stringify(kws) : JSON.stringify(prevKws),
     created_at:        new Date(now - (7-i)*7*24*3600*1000).toISOString(),
   })).reverse();
@@ -524,7 +524,7 @@ function renderTable() {
 
   let list = allKeywords.filter(k => {
     if (search && !k.keyword.toLowerCase().includes(search)) return false;
-  2 if (posF === 'top10'  && k.position > 10)  return false;
+    if (posF === 'top10'  && k.position > 10)  return false;
     if (posF === '11-20'  && (k.position < 11 || k.position > 20)) return false;
     if (posF === '21-50'  && (k.position < 21 || k.position > 50)) return false;
     if (posF === '50+'    && k.position <= 50) return false;
