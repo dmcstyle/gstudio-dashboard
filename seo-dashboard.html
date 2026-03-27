@@ -128,8 +128,8 @@
       white-space: nowrap; cursor: pointer; user-select: none;
     }
     thead th:hover { background: #d2e3fc; }
-    thead th.sorted { color: #0d47a1; }
-    thead th .sort-icon { opacity: 0.4; margin-left: 4px; }
+    thead th.sorted { color: #0d47a1; background: #dceeff; }
+    thead th .sort-icon { opacity: 0.3; margin-left: 4px; font-style: normal; }
     thead th.sorted .sort-icon { opacity: 1; }
     tbody tr { border-bottom: 1px solid #f0f4ff; transition: background 0.1s; }
     tbody tr:hover { background: #f8faff; }
@@ -178,6 +178,37 @@
       .filters { flex-direction: column; align-items: stretch; }
       .filters input { min-width: unset; width: 100%; }
     }
+
+    /* ─── Tracked Keywords Section ───────────────────────── */
+    .page-tabs {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .page-tab {
+      padding: 7px 14px; border-radius: 20px; font-size: 0.85em; font-weight: 600;
+      cursor: pointer; border: 2px solid #e8f0fe; background: #f5f8ff; color: #555;
+      transition: all 0.18s;
+    }
+    .page-tab:hover { background: #e8f0fe; color: #1a73e8; border-color: #1a73e8; }
+    .page-tab.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+    .tracked-page-url {
+      font-size: 0.8em; color: #1a73e8; margin-bottom: 14px; font-style: italic;
+    }
+    .tracked-page-url a { color: #1a73e8; }
+    .tracked-stats {
+      display: flex; gap: 20px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .tracked-stat { font-size: 0.85em; color: #555; }
+    .tracked-stat strong { color: #1a73e8; }
+    #tracked-tbody td { padding: 9px 10px; border-bottom: 1px solid #f0f4ff; font-size: 0.88em; }
+    .pos-notranking { color: #aaa; font-style: italic; }
+    .rank-badge {
+      display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.82em; font-weight: 700;
+    }
+    .rank-top3  { background: #e6f4ea; color: #137333; }
+    .rank-top10 { background: #e8f0fe; color: #1a73e8; }
+    .rank-top20 { background: #fef3e2; color: #b06000; }
+    .rank-top50 { background: #fce8e6; color: #c62828; }
+    .rank-none  { background: #f5f5f5; color: #999; }
   </style>
 </head>
 <body>
@@ -297,14 +328,14 @@
 
     <div class="table-wrap">
       <table id="kw-table">
-        <thead>
+        <thead id="kw-thead">
           <tr>
-            <th style="min-width:200px">Запрос</th>
-            <th style="text-align:center">Позиция</th>
-            <th style="text-align:center">Δ</th>
-            <th style="text-align:right">Клики</th>
-            <th style="text-align:right">Показы</th>
-            <th style="text-align:right">CTR</th>
+            <th style="min-width:200px" onclick="setKwSort('keyword')">Запрос <i class="sort-icon">⇅</i></th>
+            <th style="text-align:center" onclick="setKwSort('position')">Позиция <i class="sort-icon">⇅</i></th>
+            <th style="text-align:center" onclick="setKwSort('delta')">Δ <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setKwSort('clicks')">Клики <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setKwSort('impressions')">Показы <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setKwSort('ctr')">CTR <i class="sort-icon">⇅</i></th>
           </tr>
         </thead>
         <tbody id="kw-tbody"></tbody>
@@ -314,8 +345,35 @@
 
   <!-- 4. Top Opportunities (pos 11-30, high impressions) -->
   <div class="section" id="section-opps" style="display:none">
-    <div class="section-title">🚀 Возможности роста <span>позиции 11–30 с высокими показами → потенциал для топ-10</span></div>
+    <div class="section-title">🚀 Возможности роста <span>позиции 11–30 с высоким показами →потенциал для топ-10</span></div>
     <div class="opp-list" id="opp-list"></div>
+  </div>
+
+  <!-- 5. Tracked Keywords by Page -->
+  <div class="section" id="section-tracked" style="display:none">
+    <div class="section-title">
+      🎯 Отслеживаемые запросы по страницам
+      <span>позиции ваших целевых ключей из Google Sheet</span>
+    </div>
+    <div class="page-tabs" id="page-tabs"></div>
+    <div class="tracked-page-url" id="tracked-url"></div>
+    <div class="tracked-stats" id="tracked-stats"></div>
+    <div class="table-wrap">
+      <table id="tracked-kw-table">
+        <thead id="tracked-thead">
+          <tr>
+            <th style="min-width:220px" onclick="setTrackedSort('keyword')">Запрос <i class="sort-icon">⇅</i></th>
+            <th style="text-align:center" onclick="setTrackedSort('position')">Позиция <i class="sort-icon">⇅</i></th>
+            <th style="text-align:center" onclick="setTrackedSort('delta')">Δ <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setTrackedSort('clicks')">Клики <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setTrackedSort('impressions')">Показы <i class="sort-icon">⇅</i></th>
+            <th style="text-align:right" onclick="setTrackedSort('ctr')">CTR <i class="sort-icon">⇅</i></th>
+            <th style="text-align:center">Статус</th>
+          </tr>
+        </thead>
+        <tbody id="tracked-tbody"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Sync info -->
@@ -355,21 +413,43 @@ async function sbFetch(table, params = '') {
    ============================================================ */
 function buildDemoSnapshots() {
   const kws = [
-    {keys:['dubai music studio'],       position:3.2,  clicks:187, impressions:2140, ctr:0.087},
-    {keys:['recording studio dubai'],   position:5.7,  clicks:143, impressions:1820, ctr:0.079},
-    {keys:['music production dubai'],   position:8.1,  clicks:92,  impressions:1350, ctr:0.068},
-    {keys:['studio recording near me'], position:12.4, clicks:48,  impressions:980,  ctr:0.049},
-    {keys:['dubai sound studio'],        position:6.3,  clicks:71,  impressions:870,  ctr:0.082},
-    {keys:['beat making studio dubai'],  position:18.2, clicks:19,  impressions:640,  ctr:0.030},
-    {keys:['music studio rental dubai'], position:9.8,  clicks:55,  impressions:590,  ctr:0.093},
-    {keys:['dubaimusicstudio'],          position:1.1,  clicks:204, impressions:510,  ctr:0.400},
-    {keys:['professional recording studio uae'], position:14.5, clicks:23, impressions:480, ctr:0.048},
-    {keys:['g studio dubai'],            position:2.4,  clicks:98,  impressions:420,  ctr:0.233},
-    {keys:['home recording studio setup dubai'], position:22.1, clicks:8, impressions:310, ctr:0.026},
-    {keys:['music mixing mastering dubai'], position:11.3, clicks:31, impressions:290, ctr:0.107},
+    // General
+    {keys:['dubai music studio'],              position:3.2,  clicks:187, impressions:2140, ctr:0.087},
+    {keys:['dubaimusicstudio'],                position:1.1,  clicks:204, impressions:510,  ctr:0.400},
+    {keys:['g studio dubai'],                  position:2.4,  clicks:98,  impressions:420,  ctr:0.233},
+    // Home page targets
+    {keys:['recording studio dubai'],          position:5.7,  clicks:143, impressions:1820, ctr:0.079},
+    {keys:['music production dubai'],          position:8.1,  clicks:92,  impressions:1350, ctr:0.068},
+    {keys:['professional studio dubai'],       position:14.2, clicks:34,  impressions:760,  ctr:0.045},
+    {keys:['music producer dubai'],            position:11.8, clicks:41,  impressions:680,  ctr:0.060},
+    {keys:['best music studio dubai'],         position:7.3,  clicks:62,  impressions:540,  ctr:0.115},
+    {keys:['dubai recording studio'],          position:6.1,  clicks:78,  impressions:890,  ctr:0.088},
+    {keys:['music recording studio dubai'],    position:9.5,  clicks:53,  impressions:720,  ctr:0.074},
+    // Vocal Recording targets
+    {keys:['vocal recording dubai'],           position:12.4, clicks:28,  impressions:480,  ctr:0.058},
+    {keys:['voice recording studio dubai'],    position:18.7, clicks:11,  impressions:310,  ctr:0.035},
+    {keys:['singing lessons dubai'],           position:24.3, clicks:6,   impressions:220,  ctr:0.027},
+    {keys:['vocal coaching dubai'],            position:31.2, clicks:3,   impressions:180,  ctr:0.017},
+    {keys:['best vocal studio dubai'],         position:22.1, clicks:7,   impressions:195,  ctr:0.036},
+    {keys:['vocal production dubai'],          position:28.4, clicks:4,   impressions:160,  ctr:0.025},
+    // Mixing & Mastering targets
+    {keys:['mixing mastering dubai'],          position:4.8,  clicks:95,  impressions:1240, ctr:0.077},
+    {keys:['audio mastering dubai'],           position:9.2,  clicks:47,  impressions:620,  ctr:0.076},
+    {keys:['music mixing dubai'],              position:13.6, clicks:22,  impressions:390,  ctr:0.056},
+    {keys:['professional mixing dubai'],       position:7.9,  clicks:58,  impressions:530,  ctr:0.109},
+    {keys:['mastering services dubai'],        position:11.1, clicks:33,  impressions:410,  ctr:0.080},
+    {keys:['mix engineer dubai'],              position:16.4, clicks:14,  impressions:280,  ctr:0.050},
+    // Music Production targets
+    {keys:['beat production dubai'],           position:19.3, clicks:9,   impressions:260,  ctr:0.035},
+    {keys:['music arrangement dubai'],         position:34.7, clicks:2,   impressions:140,  ctr:0.014},
+    {keys:['song production dubai'],           position:27.8, clicks:5,   impressions:190,  ctr:0.026},
+    {keys:['best music producer dubai'],       position:15.2, clicks:18,  impressions:320,  ctr:0.056},
+    // Music Marketing targets
+    {keys:['music marketing dubai'],           position:8.4,  clicks:44,  impressions:580,  ctr:0.076},
+    {keys:['music promotion dubai'],           position:12.7, clicks:25,  impressions:380,  ctr:0.066},
   ];
   const prevKws = kws.map(k => ({...k, position: k.position + (Math.random()*4-1.5)}));
-  const base = { total_keywords:127, total_clicks:979, total_impressions:10400, avg_ctr:0.094, avg_position:8.7, data_json: JSON.stringify(kws) };
+  const base = { total_keywords:284, total_clicks:1647, total_impressions:18700, avg_ctr:0.088, avg_position:9.4, data_json: JSON.stringify(kws) };
   const now = Date.now();
   return Array.from({length:8}, (_, i) => ({
     ...base,
@@ -381,6 +461,40 @@ function buildDemoSnapshots() {
     created_at:        new Date(now - (7-i)*7*24*3600*1000).toISOString(),
   })).reverse();
 }
+
+/* ============================================================
+   TARGET PAGES — all tracked keywords from Google Sheet
+   ============================================================ */
+const TARGET_PAGES = [
+  { name: 'Home', url: 'https://dubaimusicstudio.com/', keywords: [
+    'music recording studio dubai', 'recording studio dubai', 'music production dubai',
+    'professional studio dubai', 'vocal recording dubai', 'music producer dubai',
+    'best music studio dubai', 'dubai recording studio'
+  ]},
+  { name: 'Vocal Recording', url: 'https://dubaimusicstudio.com/vocal-recording/', keywords: [
+    'vocal recording dubai', 'voice recording studio dubai', 'singing lessons dubai',
+    'vocal coaching dubai', 'record vocals dubai', 'best vocal studio dubai',
+    'vocal production dubai', 'voice over studio dubai'
+  ]},
+  { name: 'Music Production', url: 'https://dubaimusicstudio.com/music-production/', keywords: [
+    'music production dubai', 'music producer dubai', 'beat production dubai',
+    'song creation dubai', 'music arrangement dubai', 'music composition dubai',
+    'song production dubai', 'music creation dubai', 'best music producer dubai'
+  ]},
+  { name: 'Mixing & Mastering', url: 'https://dubaimusicstudio.com/mixing-mastering/', keywords: [
+    'mixing mastering dubai', 'professional mixing dubai', 'audio mastering dubai',
+    'mixing engineering dubai', 'music mixing dubai', 'mastering services dubai',
+    'audio engineering dubai', 'mix engineer dubai'
+  ]},
+  { name: 'Recording Studio', url: 'https://dubaimusicstudio.com/recording-studio-dubai/', keywords: [
+    'recording studio dubai', 'professional recording studio dubai', 'best recording studio dubai',
+    'music studio dubai', 'professional studio dubai', 'music recording services dubai',
+    'recording studio services dubai', 'high quality recording studio dubai'
+  ]},
+  { name: 'Music Marketing', url: 'https://dubaimusicstudio.com/music-marketing/', keywords: [
+    'music marketing dubai', 'music promotion dubai', 'song promotion dubai', 'music publicity dubai'
+  ]},
+];
 
 /* ============================================================
    STATE
@@ -409,7 +523,7 @@ async function init() {
     eb.style.display = 'block';
     eb.className = 'demo';
     eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
-      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальных данных.</small>`;
+      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальныхданныхданнхданных.</small>`;
   }
 
   try {
@@ -446,6 +560,8 @@ async function init() {
     populateOverview(latest, previous);
     renderTable();
     renderOpportunities();
+    buildPageTabs();
+    renderTrackedKeywords(0);
     renderCharts();
 
     // Show sync date
@@ -456,7 +572,7 @@ async function init() {
 
     // Show sections, hide loader
     document.getElementById('loading-banner').style.display = 'none';
-    ['section-overview','charts-grid','section-keywords','section-opps','sync-info']
+    ['section-overview','charts-grid','section-keywords','section-opps','section-tracked','sync-info']
       .forEach(id => document.getElementById(id).style.display = '');
 
   } catch (err) {
@@ -464,7 +580,7 @@ async function init() {
     document.getElementById('loading-banner').style.display = 'none';
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
-    eb.innerHTML = `⚠️ <strong>Ошибка загрузки данных:</strong> ${err.message}<br>
+    eb.innerHTML = `⚠️ <strong>Ошибка загрузки данныхданнххданнххданнххданнхх:</strong> ${err.message}<br>
       <small>Проверь, что скрипт <code>sync-seo-to-supabase.js</code> запускался и таблица <code>seo_metrics</code> существует в Supabase.</small>`;
   }
 }
@@ -499,6 +615,7 @@ function populateOverview(latest, previous) {
     document.getElementById('ov-impr-delta').innerHTML    = `vs прошлый период: ${arrow(deltaImpr)}`;
     document.getElementById('ov-pos-delta').innerHTML     = `vs прошлый период: ${arrow(deltaPos.toFixed(1), 'negative')}`;
   }
+}
 
   // Change summary
   let up=0, down=0, newKw=0, same=0;
@@ -515,126 +632,118 @@ function populateOverview(latest, previous) {
 }
 
 /* ============================================================
-   TABLE
+   TABLE SORT STATE
    ============================================================ */
-function renderTable() {
-  const search  = document.getElementById('filter-search').value.toLowerCase().trim();
-  const posF    = document.getElementById('filter-pos').value;
-  const sortBy  = document.getElementById('sort-by').value;
+let kwSortField = 'impressions';
+let kwSortDir   = 'desc';
 
-  let list = allKeywords.filter(k => {
-    if (search && !k.keyword.toLowerCase().includes(search)) return false;
-    if (posF === 'top10'  && k.position > 10)  return false;
-    if (posF === '11-20'  && (k.position < 11 || k.position > 20)) return false;
-    if (posF === '21-50'  && (k.position < 21 || k.position > 50)) return false;
-    if (posF === '50+'    && k.position <= 50) return false;
-    return true;
-  });
+function setKwSort(field) {
+  if (kwSortField === field) {
+    kwSortDir = kwSortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    kwSortField = field;
+    kwSortDirH�Y[OOH	���][ۉ��Y[OOH	��^]�ܙ	��	�\����	�\���B����[�����ۈ�]��Y�ۙ�\�[ۂ��ۜ�X\H�[\�\��[ۜΉ�[\�\��[ۜ���X��Ή��X������][ێ����][ۉ�[N���[��I��^]�ܙ��[\�\��[ۜ������[\�\��[ۜ��N�ۜ��[H��[Y[���][[Y[��RY
+	��ܝX�I�NY�
+�[	��X\ٚY[JH�[��[YHHX\ٚY[N�[�\�X�J
+NB���[��[ۈ\]R���ܝXY\��
+H�ۜ��H��[Y[��]Y\�T�[X�ܐ[
+	����]XY	�N�ۜ��Y[�H���^]�ܙ	�	���][ۉ�	�[I�	��X����	�[\�\��[ۜ��	����N˙�ܑXX�
 
-  list = list.sort((a, b) => {
-    if (sortBy === 'position')    return a.position - b.position;
-    if (sortBy === 'clicks')      return b.clicks - a.clicks;
-    if (sortBy === 'change')      return (b.delta||0) - (a.delta||0);
-    return b.impressions - a.impressions; // default
-  });
+JHO���\��\�����J	��ܝY	��Y[��WHOOH���ܝ�Y[
+N�ۜ�X�ۈH�]Y\�T�[X�܊	˜�ܝZX�ۉ�NY�
+X�ۊHX�ۋ�^�۝[�H�Y[��WHOOH���ܝ�Y[�
+���ܝ\�OOH	�\����	������	���	�H�	���I�JNB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB�P�B�OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+��[��[ۈ�[�\�X�J
+H�ۜ��X\��H��[Y[���][[Y[��RY
+	ٚ[\�\�X\��	�K��[YK����\��\�J
+K��[J
+N�ۜ��шH��[Y[���][[Y[��RY
+	ٚ[\�\���K��[YN�ۜ����ܝH��[Y[���][[Y[��RY
+	��ܝX�I�K��[YN�����ۈ�[�[���Y��\��ܝ�Y�
+���ܝOOH���ܝ�Y[
+H���ܝ�Y[H���ܝOOH	��[��I��	�[I�����ܝ���ܝ\�H���ܝOOH	���][ۉ��	�\����	�\���B��]\�H[�^]�ܙ˙�[\��O�Y�
+�X\��	��Z˚�^]�ܙ����\��\�J
+K�[��Y\��X\��
+JH�]\���[�NY�
+�шOOH	��L	�	��˜��][ۈ�L
+H�]\���[�NY�
+�шOOH	�LKL�	�	��
+˜��][ۈLH˜��][ۈ��
+JH�]\���[�NY�
+�шOOH	̌KML	�	��
+˜��][ۈ�H˜��][ۈ�
+L
+JH�]\���[�NY�
+�шOOH	�L
+��	��˜��][ۈH
+L
+H�]\���[�N�]\���YNJN�\�H\���ܝ
 
-  document.getElementById('kw-count').textContent = `Показано: ${list.length} из ${allKeywords.length}`;
+K�HO�]�K��Y�
+���ܝ�Y[OOH	��^]�ܙ	�H��HHK��^]�ܙ���H���^]�ܙ�B�[�HY�
+���ܝ�Y[OOH	���][ۉ�H��HHK���][۟NNN���H����][۟NNN�B�[�HY�
+���ܝ�Y[OOH	�[I�H��HHK�[_���H��[_�B�[�HY�
+���ܝ�Y[OOH	��X����H��HHK��X������H���X����B�[�HY�
+���ܝ�Y[OOH	����H��HHK������H�����B�[�H��HHK�[\�\��[ۜ����H��[\�\��[ۜ��B�Y�
+\[و�HOOH	���[���H�]\�����ܝ\�OOH	�\�����K���[P��\\�J��H������[P��\\�J�JN�]\�����ܝ\�OOH	�\�����HH�����H�NJN�\]R���ܝXY\��
+N���[Y[���][[Y[��RY
+	���X��[�	�K�^�۝[�H4'�/�.�,4-�,4/t/��	�\��[��H4.4-�	�[�^]�ܙ˛[��X��ۜ���HH��[Y[���][[Y[��RY
+	���]��I�NY�
+\��[��OOH
+H��K�[��\�SH�����[�H����[OH�^X[Yێ��[�\��Y[�Ό����܎��ȏ�'t-t`�4-4,4/t/tb�aH4/�/�4a4.4.�c4`�`4,4/������]\��B����K�[��\�SH\��X\
+�O��ۜ����\��H˜��][ۈHL�	���]�	��˜��][ۈH��	���[ZY	��	���[���]�[��R[Y�
+˚\ә]�H�[��R[H�[��\��H��[��K[�]ȏ��U���[��H[�HY�
+˙[HOOH�[X]�X��˙[JH�JH�[��R[H�[��\��H��[��K\�[YH���%��[��H[�HY�
+˙[H�
+H�[��R[H�[��\��H��[��K]\����H	�˙[K�њ^Y
+J_O��[��H[�H�[��R[H�[��\��H��[��KY�ۈ�����	�X]�X��˙[JK�њ^Y
+J_O��[��B���ۜ����H
+˘��
+�L
+K�њ^Y
+JH
+�	�I��ۜ�[\��]H˚[\�\��[ۜ��HL�
+˚[\�\��[ۜ��L
+K�њ^Y
+JJ�����˚[\�\��[ۜ���]\������\��H���X�[���[��\��H���]^���\��[
+˚�^]�ܙ
+_O��[������\��H���X�[	����\��H���˜��][ۋ�њ^Y
+J_O����\��H��[��KX�[����[��R[O����\��H��[KX�[���˘�X���O����\��H��[KX�[���[\��]O����\��H���X�[������O������JK���[�	��NB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB��ԕS�UQTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+��[��[ۈ�[�\��ܝ[�]Y\�
+H�ۜ���H[�^]�ܙ��[\��O�˜��][ۈ�HLH	��˜��][ۈH�
+B���ܝ
 
-  const tbody = document.getElementById('kw-tbody');
-  if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных по фильтрам</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = list.map(k => {
-    const posClass = k.position <= 10 ? 'pos-top' : k.position <= 20 ? 'pos-mid' : 'pos-low';
-    let changeHtml;
-    if (k.isNew) {
-      changeHtml = `<span class="change-new">NEW</span>`;
-    } else if (k.delta === null || Math.abs(k.delta) < 0.5) {
-      changeHtml = `<span class="change-same">—</span>`;
-    } else if (k.delta > 0) {
-      changeHtml = `<span class="change-up">↑ ${k.delta.toFixed(1)}</span>`;
-    } else {
-      changeHtml = `<span class="change-down">↓ ${Math.abs(k.delta).toFixed(1)}</span>`;
-    }
-
-    const ctrPct = (k.ctr * 100).toFixed(1) + '%';
-    const imprFmt = k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : k.impressions;
-
-    return `<tr>
-      <td class="kw-cell"><span class="kw-text">${escHtml(k.keyword)}</span></td>
-      <td class="pos-cell ${posClass}">${k.position.toFixed(1)}</td>
-      <td class="change-cell">${changeHtml}</td>
-      <td class="num-cell">${k.clicks}</td>
-      <td class="num-cell">${imprFmt}</td>
-      <td class="ctr-cell">${ctrPct}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ============================================================
-   OPPORTUNITIES
-   ============================================================ */
-function renderOpportunities() {
-  const opps = allKeywords
-    .filter(k => k.position >= 11 && k.position <= 30)
-    .sort((a, b) => b.impressions - a.impressions)
-    .slice(0, 6);
-
-  const list = document.getElementById('opp-list');
-  if (opps.length === 0) {
-    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевых слов в зоне роста (позиции 11–30)</p>';
-    return;
-  }
-
-  list.innerHTML = opps.map(k => `
-    <div class="opp-item">
-      <div class="opp-rank">${k.position.toFixed(0)}</div>
-      <div class="opp-kw">${escHtml(k.keyword)}</div>
-      <div class="opp-stats">
-        ${k.impressions} показов<br>
-        ${k.clicks} кликов &middot; CTR ${(k.ctr*100).toFixed(1)}%
-      </div>
-    </div>
-  `).join('');
-}
-
-/* ============================================================
-   CHARTS
-   ============================================================ */
-function renderCharts() {
-  const history = snapshots.slice().reverse(); // oldest first
-  const labels  = history.map(s => {
-    const d = new Date(s.created_at);
-    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
-  });
-
-  // ── Traffic chart ──
-  const ctxT = document.getElementById('chart-traffic').getContext('2d');
-  if (chartTraffic) chartTraffic.destroy();
-  chartTraffic = new Chart(ctxT, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Клики',
-          data: history.map(s => s.total_clicks || 0),
-          backgroundColor: 'rgba(26,115,232,0.7)',
-          borderRadius: 4, yAxisID: 'y',
-        },
-        {
-          label: 'Показы',
-          data: history.map(s => s.total_impressions || 0),
-          type: 'line',
-          borderColor: '#e37400', backgroundColor: 'rgba(227,116,0,0.1)',
-          tension: 0.3, yAxisID: 'y1', pointRadius: 3,
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
+K�HO���[\�\��[ۜ�HK�[\�\��[ۜ�B���X�J
+�N��ۜ�\�H��[Y[���][[Y[��RY
+	��[\�	�NY�
+�˛[��OOH
+H\��[��\�SH	��[OH���܎���Y[�ΌL��'t-t`�4.�.�c�a�-t,�b�aH4`t.�/�,�4,�4-�/�/t-H4`4/�`t`�,
+4/�/�-�.4a�.4.Lx�$��
+O����]\��B��\��[��\�SH�˛X\
+�O��]��\��H��Z][H���]��\��H��\�[�ȏ��˜��][ۋ�њ^Y
+
+_O�]���]��\��H��Z�ȏ��\��[
+˚�^]�ܙ
+_O�]���]��\��H��\�]ȏ��	�˚[\�\��[ۜ�H4/�/�.�,4-�/�,��	�˘�X���_H4.�.�.4.�/�,�	�ZY����	�˘���L
+K�њ^Y
+J_IB��]����]���
+K���[�	��NB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB��T�OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+��[��[ۈ�[�\��\��
+H�ۜ�\�ܞHHۘ\��˜�X�J
+K��]�\��J
+N����\��\����ۜ�X�[�H\�ܞK�X\
+�O��ۜ�H�]�]J˘ܙX]Y�]
+N�]\������[Q]T��[��	ܝKT�I��^N�	̋YY�]	�[۝�	��ܝ	�JNJN���8� 8� �Y��X��\�8� 8� ��ۜ��H��[Y[���][[Y[��RY
+	��\�]�Y��X��K��]�۝^
+	̙	�NY�
+�\��Y��X�H�\��Y��X˙\���J
+N�\��Y��X�H�]��\�
+�\N�	ؘ\���]N�X�[��]\�]ΈX�[�	�&�.�.4.�.	��]N�\�ܞK�X\
+�O�˝�[��X���
+K��X��ܛ�[���܎�	ܙؘJ��LMK�̋��I���ܙ\��Y]\Έ
+P^\�Q�	�I��K�X�[�	�'�/�.�,4-�b���]N�\�ܞK�X\
+�O�˝�[�[\�\��[ۜ�
+K�\N�	�[�I���ܙ\���܎�	��L��	��X��ܛ�[���܎�	ܙؘJ���LM��JI��[��[ێ���P^\�Q�	�LI��[��Y]\Έ��B�B�K��[ۜΈ�\�ۜ�]e: true, maintainAspectRatio: false,
       interaction: { mode: 'index' },
       plugins: { legend: { labels: { font: { size: 11 } } } },
       scales: {
@@ -669,6 +778,146 @@ function renderCharts() {
       }
     }
   });
+}
+
+/* ============================================================
+   TRACKED KEYWORDS BY PAGE
+   ============================================================ */
+let activeTrackedPage = 0;
+let trackedSortField  = 'position';
+let trackedSortDir    = 'asc';
+
+function setTrackedSort(field) {
+  if (trackedSortField === field) {
+    trackedSortDir = trackedSortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    trackedSortField = field;
+    trackedSortDir   = field === 'position' || field === 'keyword' ? 'asc' : 'desc';
+  }
+  renderTrackedKeywords(activeTrackedPage);
+}
+
+function updateTrackedSortHeaders() {
+  const ths = document.querySelectorAll('#tracked-thead th');
+  const fields = ['keyword','position','delta','clicks','impressions','ctr',''];
+  ths.forEach((th, i) => {
+    if (!fields[i]) return;
+    th.classList.toggle('sorted', fields[i] === trackedSortField);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = fields[i] === trackedSortField ? (trackedSortDir === 'asc' ? '▲' : '▼') : '⇅';
+  });
+}
+
+function buildPageTabs() {
+  const tabsEl = document.getElementById('page-tabs');
+  tabsEl.innerHTML = TARGET_PAGES.map((p, i) =>
+    `<div class="page-tab${i===0?' active':''}" onclick="renderTrackedKeywords(${i})">${p.name}</div>`
+  ).join('');
+}
+
+function renderTrackedKeywords(pageIdx) {
+  activeTrackedPage = pageIdx;
+
+  // Update tab active state
+  document.querySelectorAll('.page-tab').forEach((el, i) => {
+    el.classList.toggle('active', i === pageIdx);
+  });
+
+  const page = TARGET_PAGES[pageIdx];
+
+  // URL link
+  document.getElementById('tracked-url').innerHTML =
+    `Страница: <a href="${page.url}" target="_blank">${page.url}</a>`;
+
+  // Build GSC lookup map
+  const gscMap = {};
+  allKeywords.forEach(k => { gscMap[k.keyword.toLowerCase()] = k; });
+
+  // Enrich keywords
+  const enriched = page.keywords.map(kw => {
+    const gsc = gscMap[kw.toLowerCase()] || null;
+    return {
+      keyword:     kw,
+      position:    gsc ? gsc.position    : null,
+      prevPos:     gsc ? gsc.prevPos     : null,
+      delta:       gsc ? gsc.delta       : null,
+      isNew:       gsc ? gsc.isNew       : false,
+      clicks:      gsc ? gsc.clicks      : 0,
+      impressions: gsc ? gsc.impressions : 0,
+      ctr:         gsc ? gsc.ctr         : 0,
+    };
+  });
+
+  // Stats
+  const ranking   = enriched.filter(k => k.position !== null);
+  const top10     = ranking.filter(k => k.position <= 10).length;
+  const top20     = ranking.filter(k => k.position > 10 && k.position <= 20).length;
+  const notRanking = enriched.length - ranking.length;
+  document.getElementById('tracked-stats').innerHTML = `
+    <div class="tracked-stat">Всего запросов: <strong>${enriched.length}</strong></div>
+    <div class="tracked-stat">Ранжируется: <strong>${ranking.length}</strong></div>
+    <div class="tracked-stat" style="color:#137333">Топ-10: <strong>${top10}</strong></div>
+    <div class="tracked-stat" style="color:#b06000">Топ-20: <strong>${top20}</strong></div>
+    <div class="tracked-stat" style="color:#999">Не в топ-100: <strong>${notRanking}</strong></div>
+  `;
+
+  // Sort enriched list
+  const sorted = [...enriched].sort((a, b) => {
+    let va, vb;
+    if (trackedSortField === 'keyword')   { va = a.keyword; vb = b.keyword; }
+    else if (trackedSortField === 'delta')       { va = a.delta||0; vb = b.delta||0; }
+    else if (trackedSortField === 'clicks')      { va = a.clicks; vb = b.clicks; }
+    else if (trackedSortField === 'impressions') { va = a.impressions; vb = b.impressions; }
+    else if (trackedSortField === 'ctr')         { va = a.ctr; vb = b.ctr; }
+    else { // position – nulls go to bottom
+      va = a.position !== null ? a.position : 9999;
+      vb = b.position !== null ? b.position : 9999;
+    }
+    if (typeof va === 'string') return trackedSortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return trackedSortDir === 'asc' ? va - vb : vb - va;
+  });
+  updateTrackedSortHeaders();
+
+  // Table
+  const tbody = document.getElementById('tracked-tbody');
+  tbody.innerHTML = sorted.map(k => {
+    const posStr = k.position !== null ? k.position.toFixed(1) : '—';
+    const posClass = k.position === null ? 'pos-notranking' : (k.position <= 10 ? 'pos-top' : k.position <= 20 ? 'pos-mid' : 'pos-low');
+
+    let changeHtml;
+    if (k.position === null) {
+      changeHtml = '<span class="change-same">—</span>';
+    } else if (k.isNew) {
+      changeHtml = '<span class="change-new">NEW</span>';
+    } else if (k.delta === null || Math.abs(k.delta) < 0.5) {
+      changeHtml = '<span class="change-same">—</span>';
+    } else if (k.delta > 0) {
+      changeHtml = `<span class="change-up">↑ ${k.delta.toFixed(1)}</span>`;
+    } else {
+      changeHtml = `<span class="change-down">↓ ${Math.abs(k.delta).toFixed(1)}</span>`;
+    }
+
+    let badge;
+    if (k.position === null)      badge = '<span class="rank-badge rank-none">не ранжируется</span>';
+    else if (k.position <= 3)     badge = '<span class="rank-badge rank-top3">Топ-3 🏆</span>';
+    else if (k.position <= 10)    badge = '<span class="rank-badge rank-top10">Топ-10 ✓</span>';
+    else if (k.position <= 20)    badge = '<span class="rank-badge rank-top20">Топ-20</span>';
+    else                          badge = '<span class="rank-badge rank-top50">Топ-50+</span>';
+
+    const ctrPct = k.ctr > 0 ? (k.ctr * 100).toFixed(1) + '%' : '—';
+    const imprFmt = k.impressions > 0 ? (k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : h.impressions) : '—';
+    const clicksFmt = k.clicks > 0 ? k.clicks : '—';
+
+    return `<tr>
+      <td class="kw-cell"><span class="kw-text">${escHtml(k.keyword)}</span></td>
+      <td class="pos-cell ${posClass}">${posStr}</td>
+      <td class="change-cell">${changeHtml}</td>
+      <td class="num-cell">${clicksFmt}</td>
+      <td class="num-cell">${imprFmt}</td>
+      <td class="ctr-cell">${ctrPct}</td>
+      <td style="text-align:center">${badge}</td>
+    </tr>`;
+  }).join('');
 }
 
 /* ============================================================
