@@ -90,7 +90,7 @@
         }
 
         .btn-secondary:hover {
-            background: #F9FAFB;
+            background: #F9FAGB;
             border-color: #D1D5DB;
         }
 
@@ -265,17 +265,17 @@
         }
 
         th.sortable::after {
-            content: ' â';
+            content: ' ⇅';
             opacity: 0.3;
         }
 
         th.sorted-asc::after {
-            content: ' â';
+            content: ' ↑';
             opacity: 1;
         }
 
         th.sorted-desc::after {
-            content: ' â';
+            content: ' ↓';
             opacity: 1;
         }
 
@@ -677,7 +677,7 @@
             <div class="header-actions">
                 <button class="btn-primary" id="addClientBtn">+ Add Client</button>
                 <a href="index.html" class="back-link">
-                    <span>â</span> Dashboard
+                    <span>←</span> Dashboard
                 </a>
             </div>
         </div>
@@ -731,7 +731,7 @@
                         <tr>
                             <td colspan="8">
                                 <div class="empty-state">
-                                    <div class="empty-state-icon">ð</div>
+                                    <div class="empty-state-icon">📊</div>
                                     <div class="empty-state-text">Loading clients...</div>
                                 </div>
                             </td>
@@ -807,10 +807,12 @@
                 <div class="form-group">
                     <label>Service</label>
                     <select name="service" required>
-                        <option value="">Select service</option>
-                        <option value="Hair">Hair</option>
-                        <option value="Nails">Nails</option>
-                        <option value="Makeup">Makeup</option>
+                        <option value="">Select service...</option>
+                        <option value="Recording">Recording (hourly)</option>
+                        <option value="Full Song">Full Song Production</option>
+                        <option value="Mix/Master">Mix/Master</option>
+                        <option value="Karaoke">Karaoke</option>
+                        <option value="Beat Sale">Beat Sale</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -820,7 +822,7 @@
                 </div>
                 <div class="form-group">
                     <label>Date</label>
-                    <input type="date" name="date" required>
+                    <input type="date" name="transaction_date" required>
                 </div>
                 <div class="form-group">
                     <label>Notes</label>
@@ -1019,7 +1021,7 @@
                     <tr>
                         <td colspan="8">
                             <div class="empty-state">
-                                <div class="empty-state-icon">ð</div>
+                                <div class="empty-state-icon">🔍</div>
                                 <div class="empty-state-text">No clients found</div>
                             </div>
                         </td>
@@ -1032,25 +1034,25 @@
                 const income = getClientIncome(client.id);
                 const typeLabel = client.type === 'client' ? 'Client' : 'Lead';
                 const typeClass = client.type === 'client' ? 'badge-client' : 'badge-lead';
-                const dateAdded = client.date_added ? formatDate(new Date(client.date_added)) : 'â';
-                const incomeText = client.type === 'client' ? `${income.toFixed(0)} AED` : 'â';
+                const dateAdded = client.date_added ? formatDate(new Date(client.date_added)) : '—';
+                const incomeText = client.type === 'client' ? `${income.toFixed(0)} AED` : '—';
 
                 return `
                     <tr onclick="openDetailsModal(${client.id})">
                         <td>${client.id}</td>
                         <td><strong>${client.name}</strong></td>
                         <td><span class="badge ${typeClass}">${typeLabel}</span></td>
-                        <td class="secondary">${client.phone || 'â'}</td>
-                        <td class="secondary">${client.source || 'â'}</td>
+                        <td class="secondary">${client.phone || '—'}</td>
+                        <td class="secondary">${client.source || '—'}</td>
                         <td class="income">${incomeText}</td>
                         <td class="secondary">${dateAdded}</td>
                         <td>
                             <div class="actions-cell">
                                 <button class="action-btn" onclick="event.stopPropagation(); openClientModal(${client.id});" title="Edit">
-                                    â
+                                    ✎
                                 </button>
                                 <button class="action-btn delete" onclick="event.stopPropagation(); deleteClient(${client.id});" title="Delete">
-                                    ð
+                                    🗑
                                 </button>
                             </div>
                         </td>
@@ -1080,7 +1082,7 @@
                     <div class="transaction-item">
                         <div class="transaction-info">
                             <div class="transaction-service">${t.service}</div>
-                            <div class="transaction-meta">${formatDate(new Date(t.date))}${t.notes ? ` â¢ ${t.notes}` : ''}</div>
+                            <div class="transaction-meta">${formatDate(new Date(t.transaction_date))}${t.notes ? ` • ${t.notes}` : ''}</div>
                         </div>
                         <div class="transaction-amount">${t.amount.toFixed(0)} AED</div>
                     </div>
@@ -1099,23 +1101,23 @@
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Income</div>
-                        <div class="detail-value">${client.type === 'client' ? `${income.toFixed(0)} AED` : 'â'}</div>
+                        <div class="detail-value">${client.type === 'client' ? `${income.toFixed(0)} AED` : '—'}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Phone</div>
-                        <div class="detail-value secondary">${client.phone || 'â'}</div>
+                        <div class="detail-value secondary">${client.phone || '—'}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Email</div>
-                        <div class="detail-value secondary">${client.email || 'â'}</div>
+                        <div class="detail-value secondary">${client.email || '—'}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Level</div>
-                        <div class="detail-value secondary">${client.level || 'â'}</div>
+                        <div class="detail-value secondary">${client.level || '—'}</div>
                     </div>
                     <div class="detail-item">
                         <div class="detail-label">Source</div>
-                        <div class="detail-value secondary">${client.source || 'â'}</div>
+                        <div class="detail-value secondary">${client.source || '—'}</div>
                     </div>
                     ${client.comments ? `
                         <div class="detail-item" style="grid-column: 1 / -1;">
@@ -1236,7 +1238,7 @@
         function openTransactionModal(clientId) {
             document.getElementById('transactionClientId').value = clientId;
             document.getElementById('transactionForm').reset();
-            document.getElementById('transactionForm').date.valueAsDate = new Date();
+            document.getElementById('transactionForm').transaction_date.valueAsDate = new Date();
             document.getElementById('transactionModal').classList.add('active');
         }
 
@@ -1252,7 +1254,7 @@
                 client_id: parseInt(formData.get('client_id')),
                 service: formData.get('service'),
                 amount: parseFloat(formData.get('amount')),
-                date: formData.get('date'),
+                transaction_date: formData.get('transaction_date'),
                 notes: formData.get('notes') || null
             };
 
