@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G Studio CRM</title>
+    <title>G Studio CRM v2</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -433,6 +433,91 @@
             color: #111827;
         }
 
+        /* Side Panel */
+        .side-panel-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+        }
+
+        .side-panel-backdrop.active {
+            display: block;
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 440px;
+            background: white;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-panel.active {
+            transform: translateX(0);
+        }
+
+        .side-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .side-panel-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .side-panel-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #9CA3AF;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .side-panel-close:hover {
+            color: #111827;
+        }
+
+        .side-panel-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .side-panel-section {
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .side-panel-section:last-child {
+            border-bottom: none;
+        }
+
         /* Forms */
         .form-group {
             margin-bottom: 20px;
@@ -497,31 +582,18 @@
             justify-content: flex-end;
         }
 
-        /* Details Modal */
-        .details-header {
+        /* Side Panel Actions */
+        .side-panel-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-top: 24px;
         }
 
-        .details-title {
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 32px;
-            padding-bottom: 32px;
-            border-bottom: 1px solid #F3F4F6;
-        }
-
+        /* Details Section */
         .detail-item {
             display: flex;
             flex-direction: column;
+            margin-bottom: 16px;
         }
 
         .detail-label {
@@ -543,9 +615,90 @@
             color: #6B7280;
         }
 
+        /* Contact Buttons */
+        .contact-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .contact-btn.whatsapp {
+            background: #DCF8C6;
+            color: #25D366;
+        }
+
+        .contact-btn.whatsapp:hover {
+            background: #C5F0A5;
+        }
+
+        .contact-btn.call {
+            background: #EEF2FF;
+            color: #6366F1;
+        }
+
+        .contact-btn.call:hover {
+            background: #E0E7FF;
+        }
+
+        /* Follow-up Indicator */
+        .follow-up-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .follow-up-dot.overdue {
+            background: #DC2626;
+        }
+
+        .follow-up-dot.today {
+            background: #F59E0B;
+        }
+
+        .follow-up-dot.upcoming {
+            background: #6366F1;
+        }
+
+        /* Follow-up Section in Side Panel */
+        .follow-up-display {
+            background: #F9FAFB;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .follow-up-display-date {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .follow-up-display-note {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
         /* Transactions Section */
         .transactions-section {
-            margin-top: 32px;
+            margin-top: 24px;
         }
 
         .section-title {
@@ -638,9 +791,6 @@
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .details-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 768px) {
@@ -656,6 +806,10 @@
 
             .modal {
                 padding: 24px;
+            }
+
+            .side-panel {
+                width: 100%;
             }
 
             th, td {
@@ -821,6 +975,12 @@
             padding: 10px 12px;
             background: #F9FAFB;
             border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .top-client-item:hover {
+            background: #F3F4F6;
         }
 
         .top-client-left {
@@ -865,6 +1025,56 @@
             font-size: 13px;
             text-align: center;
             padding: 40px 0;
+        }
+
+        /* Follow-ups Due Card */
+        .follow-ups-due-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .follow-up-item {
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid #E5E7EB;
+        }
+
+        .follow-up-item:hover {
+            background: #F3F4F6;
+        }
+
+        .follow-up-item.overdue {
+            border-left-color: #DC2626;
+        }
+
+        .follow-up-item.today {
+            border-left-color: #F59E0B;
+        }
+
+        .follow-up-item.upcoming {
+            border-left-color: #6366F1;
+        }
+
+        .follow-up-item-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .follow-up-item-date {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .follow-up-item-note {
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 4px;
         }
 
         @media (max-width: 1024px) {
@@ -912,6 +1122,10 @@
                     <div class="analytics-card-title">Recent Transactions</div>
                     <div class="recent-list" id="recentTransactions"></div>
                 </div>
+                <div class="analytics-card">
+                    <div class="analytics-card-title">Follow-ups Due</div>
+                    <div class="follow-ups-due-list" id="followUpsDue"></div>
+                </div>
                 <div class="analytics-card" style="grid-column: 1 / -1;">
                     <div class="analytics-card-title">Top 5 Clients by Revenue</div>
                     <div class="top-list" id="topClients"></div>
@@ -935,6 +1149,14 @@
                         <button class="pill active" data-filter="region" data-value="all">All</button>
                         <button class="pill" data-filter="region" data-value="ru">Russian</button>
                         <button class="pill" data-filter="region" data-value="intl">International</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <span class="filter-label">Status</span>
+                    <div class="filter-pills">
+                        <button class="pill active" data-filter="followup" data-value="all">All</button>
+                        <button class="pill" data-filter="followup" data-value="pending">Needs Follow-up</button>
                     </div>
                 </div>
 
@@ -976,14 +1198,16 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Side Panel Backdrop -->
+    <div class="side-panel-backdrop" id="sidePanelBackdrop"></div>
 
-    <!-- Client Details Modal -->
-    <div class="modal-backdrop" id="detailsModal">
-        <div class="modal relative">
-            <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
-            <div id="detailsContent"></div>
+    <!-- Side Panel -->
+    <div class="side-panel" id="sidePanel">
+        <div class="side-panel-header">
+            <div class="side-panel-title" id="sidePanelTitle"></div>
+            <button class="side-panel-close" onclick="closeSidePanel()">&times;</button>
         </div>
+        <div class="side-panel-content" id="sidePanelContent"></div>
     </div>
 
     <!-- Add/Edit Client Modal -->
@@ -997,8 +1221,8 @@
                     <input type="text" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label>Phone</label>
-                    <input type="tel" name="phone">
+                    <label class="required">Phone</label>
+                    <input type="tel" name="phone" required>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
@@ -1022,6 +1246,14 @@
                 <div class="form-group">
                     <label>Comments</label>
                     <textarea name="comments"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Follow-up Date</label>
+                    <input type="date" name="follow_up_date">
+                </div>
+                <div class="form-group">
+                    <label>Follow-up Note</label>
+                    <input type="text" name="follow_up_note" placeholder="e.g., Check project status">
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-secondary" onclick="closeClientModal()">Cancel</button>
@@ -1087,6 +1319,7 @@
         let filterState = {
             type: 'all',
             region: 'all',
+            followup: 'all',
             search: ''
         };
         let currentEditingClientId = null;
@@ -1157,10 +1390,10 @@
             // Transaction form
             document.getElementById('transactionForm').addEventListener('submit', saveTransaction);
 
+            // Close side panel on backdrop click
+            document.getElementById('sidePanelBackdrop').addEventListener('click', closeSidePanel);
+
             // Close modals on backdrop click
-            document.getElementById('detailsModal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) closeDetailsModal();
-            });
             document.getElementById('clientModal').addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) closeClientModal();
             });
@@ -1198,6 +1431,13 @@
                     if (filterState.region === 'intl' && isRussian) return false;
                 }
 
+                // Follow-up filter
+                if (filterState.followup !== 'all') {
+                    if (filterState.followup === 'pending' && !client.follow_up_date) {
+                        return false;
+                    }
+                }
+
                 // Search filter
                 if (filterState.search && !client.name.toLowerCase().includes(filterState.search)) {
                     return false;
@@ -1231,6 +1471,21 @@
 
             renderTable();
             renderAnalytics();
+        }
+
+        function getFollowUpStatus(followUpDate) {
+            if (!followUpDate) return null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const followUpDay = new Date(followUpDate);
+            followUpDay.setHours(0, 0, 0, 0);
+            const diffTime = followUpDay - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) return 'overdue';
+            if (diffDays === 0) return 'today';
+            if (diffDays <= 3) return 'upcoming';
+            return null;
         }
 
         function renderAnalytics() {
@@ -1323,10 +1578,42 @@
                 document.getElementById('recentTransactions').innerHTML = '<div class="analytics-empty">No transactions yet</div>';
             }
 
+            // Follow-ups Due
+            const clientsWithFollowUp = allClients
+                .filter(c => c.follow_up_date)
+                .map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    date: c.follow_up_date,
+                    note: c.follow_up_note,
+                    status: getFollowUpStatus(c.follow_up_date)
+                }))
+                .filter(c => c.status !== null)
+                .sort((a, b) => {
+                    const order = { overdue: 0, today: 1, upcoming: 2 };
+                    if (order[a.status] !== order[b.status]) {
+                        return order[a.status] - order[b.status];
+                    }
+                    return new Date(a.date) - new Date(b.date);
+                });
+
+            if (clientsWithFollowUp.length > 0) {
+                document.getElementById('followUpsDue').innerHTML = clientsWithFollowUp.map(c => `
+                    <div class="follow-up-item ${c.status}" onclick="openSidePanel(${c.id})">
+                        <div class="follow-up-item-name">${c.name}</div>
+                        <div class="follow-up-item-date">${formatDate(new Date(c.date))}</div>
+                        ${c.note ? `<div class="follow-up-item-note">${c.note}</div>` : ''}
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('followUpsDue').innerHTML = '<div class="analytics-empty">No follow-ups due</div>';
+            }
+
             // Top 5 Clients
             const clientRevenues = allClients
                 .filter(c => c.type === 'client')
                 .map(c => ({
+                    id: c.id,
                     name: c.name,
                     revenue: getClientIncome(c.id)
                 }))
@@ -1337,7 +1624,7 @@
                 document.getElementById('topClients').innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
                         ${clientRevenues.map((c, i) => `
-                            <div class="top-client-item">
+                            <div class="top-client-item" onclick="openSidePanel(${c.id})">
                                 <div class="top-client-left">
                                     <div class="top-client-rank">${i + 1}</div>
                                     <div class="top-client-name">${c.name}</div>
@@ -1367,6 +1654,31 @@
                 .reduce((sum, t) => sum + (t.amount || 0), 0);
         }
 
+        function getLastContactDate(clientId) {
+            const clientTransactions = allTransactions.filter(t => t.client_id === clientId);
+            if (clientTransactions.length === 0) return null;
+            const sorted = [...clientTransactions].sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
+            return sorted[0].transaction_date;
+        }
+
+        function daysAgoText(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            date.setHours(0, 0, 0, 0);
+            const diffTime = today - date;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return '1 day ago';
+            return `${diffDays} days ago`;
+        }
+
+        function cleanPhoneForWhatsApp(phone) {
+            if (!phone) return '';
+            return phone.replace(/[+\s\-()]/g, '');
+        }
+
         function renderTable() {
             const tbody = document.getElementById('tableBody');
 
@@ -1391,10 +1703,19 @@
                 const dateAdded = client.date_added ? formatDate(new Date(client.date_added)) : '—';
                 const incomeText = client.type === 'client' ? `${income.toFixed(0)} AED` : '—';
 
+                // Follow-up indicator
+                let followUpIndicator = '';
+                if (client.follow_up_date) {
+                    const status = getFollowUpStatus(client.follow_up_date);
+                    if (status) {
+                        followUpIndicator = `<span class="follow-up-dot ${status}"></span>`;
+                    }
+                }
+
                 return `
-                    <tr onclick="openDetailsModal(${client.id})">
+                    <tr onclick="openSidePanel(${client.id})">
                         <td>${client.id}</td>
-                        <td><strong>${client.name}</strong></td>
+                        <td><strong>${client.name}${followUpIndicator}</strong></td>
                         <td><span class="badge ${typeClass}">${typeLabel}</span></td>
                         <td class="secondary">${client.phone || '—'}</td>
                         <td class="secondary">${client.source || '—'}</td>
@@ -1422,7 +1743,7 @@
             return `${day}/${month}/${year}`;
         }
 
-        function openDetailsModal(clientId) {
+        function openSidePanel(clientId) {
             const client = allClients.find(c => c.id === clientId);
             if (!client) return;
 
@@ -1430,74 +1751,227 @@
             const income = getClientIncome(clientId);
             const typeLabel = client.type === 'client' ? 'Client' : 'Lead';
             const typeClass = client.type === 'client' ? 'badge-client' : 'badge-lead';
+            const lastContactDate = getLastContactDate(clientId);
 
-            const transactionsList = transactions.length > 0
-                ? transactions.map(t => `
-                    <div class="transaction-item">
-                        <div class="transaction-info">
-                            <div class="transaction-service">${t.service}</div>
-                            <div class="transaction-meta">${formatDate(new Date(t.transaction_date))}${t.notes ? ` • ${t.notes}` : ''}</div>
-                        </div>
-                        <div class="transaction-amount">${t.amount.toFixed(0)} AED</div>
-                    </div>
-                `).join('')
-                : '<div class="empty-state"><div class="empty-state-text">No transactions yet</div></div>';
+            // Build content
+            let html = '';
 
-            const detailsHTML = `
-                <div class="details-header">
-                    <div class="details-title">${client.name}</div>
-                </div>
-
-                <div class="details-grid">
+            // Type and Badge
+            html += `
+                <div class="side-panel-section">
                     <div class="detail-item">
                         <div class="detail-label">Type</div>
                         <div><span class="badge ${typeClass}">${typeLabel}</span></div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Income</div>
-                        <div class="detail-value">${client.type === 'client' ? `${income.toFixed(0)} AED` : '—'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Phone</div>
-                        <div class="detail-value secondary">${client.phone || '—'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Email</div>
-                        <div class="detail-value secondary">${client.email || '—'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Level</div>
-                        <div class="detail-value secondary">${client.level || '—'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Source</div>
-                        <div class="detail-value secondary">${client.source || '—'}</div>
-                    </div>
-                    ${client.comments ? `
-                        <div class="detail-item" style="grid-column: 1 / -1;">
-                            <div class="detail-label">Comments</div>
-                            <div class="detail-value">${client.comments}</div>
-                        </div>
-                    ` : ''}
-                </div>
-
-                <div class="transactions-section">
-                    <div class="flex" style="justify-content: space-between; margin-bottom: 16px;">
-                        <div class="section-title" style="margin-bottom: 0;">Transaction History</div>
-                        <button class="btn-primary btn-sm" onclick="openTransactionModal(${clientId})">+ Add</button>
-                    </div>
-                    <div class="transaction-list">
-                        ${transactionsList}
-                    </div>
                 </div>
             `;
 
-            document.getElementById('detailsContent').innerHTML = detailsHTML;
-            document.getElementById('detailsModal').classList.add('active');
+            // Source
+            if (client.source) {
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Source</div>
+                            <div class="detail-value secondary">${client.source}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Last Contact
+            if (lastContactDate) {
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Last Contact</div>
+                            <div class="detail-value">${formatDate(new Date(lastContactDate))}</div>
+                            <div class="detail-value secondary">${daysAgoText(lastContactDate)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Phone and Contact Buttons
+            if (client.phone) {
+                const phoneClean = cleanPhoneForWhatsApp(client.phone);
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value">${client.phone}</div>
+                            <div class="contact-buttons">
+                                <a href="https://wa.me/${phoneClean}" target="_blank" class="contact-btn whatsapp" title="Open WhatsApp">
+                                    📱 WhatsApp
+                                </a>
+                                <a href="tel:${client.phone}" class="contact-btn call" title="Call">
+                                    📞 Call
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Email
+            if (client.email) {
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value secondary">${client.email}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Level
+            if (client.level) {
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Level</div>
+                            <div class="detail-value secondary">${client.level}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Comments
+            if (client.comments) {
+                html += `
+                    <div class="side-panel-section">
+                        <div class="detail-item">
+                            <div class="detail-label">Comments</div>
+                            <div class="detail-value">${client.comments}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Follow-up Section
+            html += `
+                <div class="side-panel-section">
+                    <div style="margin-bottom: 12px;">
+                        <div class="section-title">Follow-up</div>
+                    </div>
+            `;
+
+            if (client.follow_up_date) {
+                const followUpStatus = getFollowUpStatus(client.follow_up_date);
+                html += `
+                    <div class="follow-up-display">
+                        <div class="follow-up-display-date">${formatDate(new Date(client.follow_up_date))}</div>
+                        ${client.follow_up_note ? `<div class="follow-up-display-note">${client.follow_up_note}</div>` : ''}
+                    </div>
+                    <button class="btn-secondary btn-sm" onclick="markFollowUpDone(${clientId})" style="width: 100%;">✓ Mark Done</button>
+                `;
+            } else {
+                html += `
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="followUpDate_${clientId}">
+                    </div>
+                    <div class="form-group">
+                        <label>Note</label>
+                        <input type="text" id="followUpNote_${clientId}" placeholder="e.g., Check project status">
+                    </div>
+                    <button class="btn-primary btn-sm" onclick="setFollowUp(${clientId})" style="width: 100%;">Set Follow-up</button>
+                `;
+            }
+
+            html += `</div>`;
+
+            // Transactions Section
+            html += `
+                <div class="side-panel-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div class="section-title" style="margin-bottom: 0;">Transaction History</div>
+                        <button class="btn-primary btn-sm" onclick="openTransactionModal(${clientId})">+ Add</button>
+                    </div>
+            `;
+
+            if (transactions.length > 0) {
+                html += `
+                    <div class="transaction-list">
+                        ${transactions.map(t => `
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-service">${t.service}</div>
+                                    <div class="transaction-meta">${formatDate(new Date(t.transaction_date))}${t.notes ? ` • ${t.notes}` : ''}</div>
+                                </div>
+                                <div class="transaction-amount">${t.amount.toFixed(0)} AED</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                html += `<div class="empty-state"><div class="empty-state-text">No transactions yet</div></div>`;
+            }
+
+            html += `</div>`;
+
+            // Edit button at bottom
+            html += `
+                <div class="side-panel-actions">
+                    <button class="btn-secondary" onclick="openClientModal(${clientId})" style="flex: 1;">Edit Client</button>
+                </div>
+            `;
+
+            document.getElementById('sidePanelTitle').textContent = client.name;
+            document.getElementById('sidePanelContent').innerHTML = html;
+            document.getElementById('sidePanel').classList.add('active');
+            document.getElementById('sidePanelBackdrop').classList.add('active');
         }
 
-        function closeDetailsModal() {
-            document.getElementById('detailsModal').classList.remove('active');
+        function closeSidePanel() {
+            document.getElementById('sidePanel').classList.remove('active');
+            document.getElementById('sidePanelBackdrop').classList.remove('active');
+        }
+
+        async function setFollowUp(clientId) {
+            const dateInput = document.getElementById(`followUpDate_${clientId}`);
+            const noteInput = document.getElementById(`followUpNote_${clientId}`);
+
+            if (!dateInput.value) {
+                alert('Please select a date');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('clients')
+                    .update({
+                        follow_up_date: dateInput.value,
+                        follow_up_note: noteInput.value || null
+                    })
+                    .eq('id', clientId);
+
+                if (error) throw error;
+                await loadData();
+                openSidePanel(clientId);
+            } catch (error) {
+                console.error('Error setting follow-up:', error);
+                alert('Error setting follow-up: ' + error.message);
+            }
+        }
+
+        async function markFollowUpDone(clientId) {
+            try {
+                const { error } = await supabaseClient
+                    .from('clients')
+                    .update({
+                        follow_up_date: null,
+                        follow_up_note: null
+                    })
+                    .eq('id', clientId);
+
+                if (error) throw error;
+                await loadData();
+                openSidePanel(clientId);
+            } catch (error) {
+                console.error('Error marking follow-up done:', error);
+                alert('Error marking follow-up done: ' + error.message);
+            }
         }
 
         function openClientModal(clientId = null) {
@@ -1515,6 +1989,8 @@
                     form.level.value = client.level || '';
                     form.source.value = client.source || '';
                     form.comments.value = client.comments || '';
+                    form.follow_up_date.value = client.follow_up_date || '';
+                    form.follow_up_note.value = client.follow_up_note || '';
                     document.getElementById('clientModalTitle').textContent = 'Edit Client';
                 }
             } else {
@@ -1540,7 +2016,9 @@
                 type: formData.get('type'),
                 level: formData.get('level') || null,
                 source: formData.get('source') || null,
-                comments: formData.get('comments') || null
+                comments: formData.get('comments') || null,
+                follow_up_date: formData.get('follow_up_date') || null,
+                follow_up_note: formData.get('follow_up_note') || null
             };
 
             try {
@@ -1581,7 +2059,7 @@
 
                 if (error) throw error;
 
-                closeDetailsModal();
+                closeSidePanel();
                 await loadData();
             } catch (error) {
                 console.error('Error deleting client:', error);
@@ -1621,8 +2099,8 @@
 
                 closeTransactionModal();
                 await loadData();
-                // Reopen details modal for the same client
-                openDetailsModal(data.client_id);
+                // Reopen side panel for the same client
+                openSidePanel(data.client_id);
             } catch (error) {
                 console.error('Error saving transaction:', error);
                 alert('Error saving transaction: ' + error.message);
@@ -1632,7 +2110,7 @@
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                closeDetailsModal();
+                closeSidePanel();
                 closeClientModal();
                 closeTransactionModal();
             }
