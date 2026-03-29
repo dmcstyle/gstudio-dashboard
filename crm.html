@@ -883,50 +883,55 @@
             margin-bottom: 20px;
         }
 
-        /* Bar Chart */
+        /* Bar Chart - Horizontal compact */
         .chart-container {
             display: flex;
-            align-items: flex-end;
+            flex-direction: column;
             gap: 8px;
-            height: 180px;
-            padding-top: 10px;
         }
 
         .chart-bar-group {
-            flex: 1;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 6px;
-            height: 100%;
-            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .chart-bar-label {
+            font-size: 12px;
+            color: #6B7280;
+            font-weight: 500;
+            min-width: 32px;
+            text-align: right;
+        }
+
+        .chart-bar-track {
+            flex: 1;
+            background: #F3F4F6;
+            border-radius: 6px;
+            height: 28px;
+            overflow: hidden;
         }
 
         .chart-bar {
-            width: 100%;
-            max-width: 40px;
+            height: 100%;
             background: #6366F1;
-            border-radius: 6px 6px 0 0;
-            min-height: 4px;
+            border-radius: 6px;
+            min-width: 4px;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .chart-bar:hover {
             background: #4F46E5;
         }
 
-        .chart-bar-label {
-            font-size: 11px;
-            color: #9CA3AF;
-            font-weight: 500;
+        .chart-bar-value {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            min-width: 50px;
         }
 
-        .chart-bar-value {
-            font-size: 10px;
-            color: #6B7280;
-            font-weight: 600;
-        }
+        /* old vertical chart-bar-value removed */
 
         /* Recent Transactions */
         .recent-list {
@@ -1547,9 +1552,9 @@
                     const monthIdx = parseInt(key.split('-')[1]) - 1;
                     return `
                         <div class="chart-bar-group">
-                            <div class="chart-bar-value">${val >= 1000 ? (val/1000).toFixed(1) + 'k' : val}</div>
-                            <div class="chart-bar" style="height: ${Math.max(pct, 3)}%;" title="${val.toLocaleString()} AED"></div>
                             <div class="chart-bar-label">${monthNames[monthIdx]}</div>
+                            <div class="chart-bar-track"><div class="chart-bar" style="width: ${Math.max(pct, 2)}%;" title="${val.toLocaleString()} AED"></div></div>
+                            <div class="chart-bar-value">${val >= 1000 ? (val/1000).toFixed(1) + 'k' : val} AED</div>
                         </div>
                     `;
                 }).join('');
