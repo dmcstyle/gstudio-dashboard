@@ -1082,6 +1082,52 @@
             margin-top: 4px;
         }
 
+        /* Temperature badges */
+        .temp-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Action items in Today's Actions */
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .action-item:hover { background: #F9FAFB; }
+        .action-item.priority-0 { border-left-color: #EF4444; background: #FEF2F2; }
+        .action-item.priority-1 { border-left-color: #F59E0B; background: #FFFBEB; }
+        .action-item.priority-2 { border-left-color: #8B5CF6; background: #F5F3FF; }
+        .action-item.priority-3,
+        .action-item.priority-4 { border-left-color: #3B82F6; }
+        .action-item.priority-5 { border-left-color: #6366F1; }
+        .action-item.priority-6 { border-left-color: #6B7280; }
+
+        .action-item-info { flex: 1; min-width: 0; }
+        .action-item-name { font-size: 13px; font-weight: 600; color: #111827; }
+        .action-item-text { font-size: 12px; color: #6B7280; margin-top: 2px; }
+        .action-item-wa {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #25D366;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .action-item-wa:hover { background: #1DA851; }
+
         @media (max-width: 1024px) {
             .kpi-row {
                 grid-template-columns: repeat(2, 1fr);
@@ -1128,8 +1174,8 @@
                     <div class="recent-list" id="recentTransactions"></div>
                 </div>
                 <div class="analytics-card">
-                    <div class="analytics-card-title">Follow-ups Due</div>
-                    <div class="follow-ups-due-list" id="followUpsDue"></div>
+                    <div class="analytics-card-title">📋 Today's Actions</div>
+                    <div class="actions-due-list" id="todaysActions"></div>
                 </div>
                 <div class="analytics-card" style="grid-column: 1 / -1;">
                     <div class="analytics-card-title">Top 5 Clients by Revenue</div>
@@ -1277,14 +1323,8 @@
                 <input type="hidden" name="client_id" id="transactionClientId" value="">
                 <div class="form-group">
                     <label>Service</label>
-                    <select name="service" required>
+                    <select name="service" required id="serviceSelect">
                         <option value="">Select service...</option>
-                        <option value="Recording">Recording (hourly)</option>
-                        <option value="Full Song">Full Song Production</option>
-                        <option value="Mix/Master">Mix/Master</option>
-                        <option value="Karaoke">Karaoke</option>
-                        <option value="Beat Sale">Beat Sale</option>
-                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1309,6 +1349,42 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ═══════════════════════════════════════════════
+        // REGIONAL CONFIG — change these when you move!
+        // ═══════════════════════════════════════════════
+        const CONFIG = {
+            currency: 'AED',
+            country: 'UAE',
+            locale: 'en-AE',
+            timezone: 'Asia/Dubai',
+            services: [
+                'Recording (hourly)',
+                   'Full Song Production',
+                'Mix/Master',
+                'Karaoke',
+                'Beat Sale',
+                'Other'
+            ],
+            // Client temperature thresholds (days since last contact)
+            temperature: {
+                hot: 7,      // contacted within 7 days
+                warm: 30,    // contacted within 30 days
+                cold: 90,    // contacted within 90 days
+                lost: 91     // 90+ days = lost
+            },
+            // Follow-up intervals for auto-suggestions
+            followUpRules: {
+                afterTransaction: 3,   // days after transaction → thank you
+                reEngageWarm: 14,      // warm client → suggest new service
+                reEngageCold: 30,      // cold client → "we miss you"
+                reActivateLost: 90     // lost client → special offer
+            }
+        };
+
+        function formatCurrency(amount) {
+            return `${amount.toLocaleString()} ${CONFIG.currency}`;
+        }
+
         // Supabase Setup
         const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_mqrVhh4fVtdk24SDIT1Fvg_ulYhrMIC';
@@ -1329,8 +1405,80 @@
         };
         let currentEditingClientId = null;
 
+        // ═══════════════════════════════════════════════
+        // CLIENT TEMPERATURE SYSTEM
+        // ═══════════════════════════════════════════════
+        function getClientTemperature(clientId) {
+            const lastDate = getLastContactDate(clientId);
+            if (!lastDate) return { status: 'new', label: 'New', color: '#8B5CF6', days: null };
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const last = new Date(lastDate);
+            last.setHours(0,0,0,0);
+            const days = Math.floor((today - last) / (1000*60*60*24));
+
+            if (days <= CONFIG.temperature.hot) return { status: 'hot', label: '🔥 Hot', color: '#EF4444', days };
+            if (days <= CONFIG.temperature.warm) return { status: 'warm', label: '☀️ Warm', color: '#F59E0B', days };
+            if (days <= CONFIG.temperature.cold) return { status: 'cold', label: '❄️ Cold', color: '#3B82F6', days };
+            return { status: 'lost', label: '💀 Lost', color: '#6B7280', days };
+        }
+
+        function getSuggestedAction(client) {
+            const temp = getClientTemperature(client.id);
+            const income = getClientIncome(client.id);
+            const txCount = allTransactions.filter(t => t.client_id === client.id).length;
+
+            if (client.follow_up_date) {
+                const status = getFollowUpStatus(client.follow_up_date);
+                if (status === 'overdue') return { action: 'overdue', text: 'Follow-up overdue!', priority: 0 };
+                if (status === 'today') return { action: 'today', text: 'Follow-up today', priority: 1 };
+            }
+
+            if (temp.status === 'new' && client.type === 'lead') {
+                return { action: 'contact_lead', text: 'First contact — introduce services', priority: 2 };
+            }
+            if (temp.status === 'hot' && temp.days <= CONFIG.followUpRules.afterTransaction) {
+                return { action: 'thank_you', text: 'Send thank-you message', priority: 3 };
+            }
+            if (temp.status === 'warm') {
+                return { action: 're_engage', text: 'Suggest a new service or session', priority: 4 };
+            }
+            if (temp.status === 'cold') {
+                return { action: 'win_back', text: 'Re-engage — "We miss you!"', priority: 5 };
+            }
+            if (temp.status === 'lost') {
+                return { action: 'reactivate', text: 'Reactivate with special offer', priority: 6 };
+            }
+            return null;
+        }
+
+        function getWhatsAppTemplate(client, actionType) {
+            const name = client.name.split(' ')[0];
+            const phone = cleanPhoneForWhatsApp(client.phone);
+            const templates = {
+                thank_you: `Hi ${name}! Thanks for your session at G Studio 🎶 Hope you loved the result! Let me know if you need anything else.`,
+                contact_lead: `Hi ${name}! This is G Studio 🎵 Would love to chat about what we can create together. When works best for you?`,
+                re_engage: `Hey ${name}! 👋 It's been a while since your last session. Got any new ideas? We'd love to work on something new with you!`,
+                win_back: `Hi ${name}! Long time no see! 🎤 We've got some cool new things going on at G Studio. Would love to catch up — interested?`,
+                reactivate: `Hey ${name}! 🎵 It's been a while! We'd love to have you back at G Studio. Got a special something for returning artists — interested?`,
+                overdue: `Hi ${name}! Just following up on our last conversation. How's everything going? 🎶`,
+                today: `Hi ${name}! Just checking in as planned. How are things? 🎵`
+            };
+            const text = templates[actionType] || templates.re_engage;
+            return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            // Populate services from config
+            const serviceSelect = document.getElementById('serviceSelect');
+            CONFIG.services.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                serviceSelect.appendChild(opt);
+            });
             loadData();
             setupEventListeners();
         });
@@ -1511,12 +1659,12 @@
             document.getElementById('kpiRow').innerHTML = `
                 <div class="kpi-card">
                     <div class="kpi-label">Total Revenue</div>
-                    <div class="kpi-value accent">${totalRevenue.toLocaleString()} AED</div>
+                    <div class="kpi-value accent">${formatCurrency(totalRevenue)}</div>
                     <div class="kpi-sub">${allTransactions.length} transactions</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">This Month</div>
-                    <div class="kpi-value">${monthRevenue.toLocaleString()} AED</div>
+                    <div class="kpi-value">${formatCurrency(monthRevenue)}</div>
                     <div class="kpi-sub">${thisMonth.length} transactions</div>
                 </div>
                 <div class="kpi-card">
@@ -1526,7 +1674,7 @@
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">Avg Check</div>
-                    <div class="kpi-value">${avgCheck.toFixed(0)} AED</div>
+                    <div class="kpi-value">${avgCheck.toFixed(0)} ${CONFIG.currency}</div>
                     <div class="kpi-sub">per transaction</div>
                 </div>
             `;
@@ -1553,8 +1701,8 @@
                     return `
                         <div class="chart-bar-group">
                             <div class="chart-bar-label">${monthNames[monthIdx]}</div>
-                            <div class="chart-bar-track"><div class="chart-bar" style="width: ${Math.max(pct, 2)}%;" title="${val.toLocaleString()} AED"></div></div>
-                            <div class="chart-bar-value">${val >= 1000 ? (val/1000).toFixed(1) + 'k' : val} AED</div>
+                            <div class="chart-bar-track"><div class="chart-bar" style="width: ${Math.max(pct, 2)}%;" title="${formatCurrency(val)}"></div></div>
+                            <div class="chart-bar-value">${val >= 1000 ? (val/1000).toFixed(1) + 'k' : val} ${CONFIG.currency}</div>
                         </div>
                     `;
                 }).join('');
@@ -1575,7 +1723,7 @@
                                 <div class="recent-item-service">${t.service}</div>
                                 <div class="recent-item-meta">${client ? client.name : 'Unknown'} &middot; ${formatDate(new Date(t.transaction_date))}</div>
                             </div>
-                            <div class="recent-item-amount">${t.amount.toFixed(0)} AED</div>
+                            <div class="recent-item-amount">${t.amount.toFixed(0)} ${CONFIG.currency}</div>
                         </div>
                     `;
                 }).join('');
@@ -1583,35 +1731,33 @@
                 document.getElementById('recentTransactions').innerHTML = '<div class="analytics-empty">No transactions yet</div>';
             }
 
-            // Follow-ups Due
-            const clientsWithFollowUp = allClients
-                .filter(c => c.follow_up_date)
-                .map(c => ({
-                    id: c.id,
-                    name: c.name,
-                    date: c.follow_up_date,
-                    note: c.follow_up_note,
-                    status: getFollowUpStatus(c.follow_up_date)
-                }))
-                .filter(c => c.status !== null)
-                .sort((a, b) => {
-                    const order = { overdue: 0, today: 1, upcoming: 2 };
-                    if (order[a.status] !== order[b.status]) {
-                        return order[a.status] - order[b.status];
-                    }
-                    return new Date(a.date) - new Date(b.date);
-                });
+            // Today's Actions — smart follow-up suggestions
+            const actionItems = allClients
+                .map(c => {
+                    const suggestion = getSuggestedAction(c);
+                    if (!suggestion) return null;
+                    const temp = getClientTemperature(c.id);
+                    return { client: c, ...suggestion, temp };
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.priority - b.priority)
+                .slice(0, 10);
 
-            if (clientsWithFollowUp.length > 0) {
-                document.getElementById('followUpsDue').innerHTML = clientsWithFollowUp.map(c => `
-                    <div class="follow-up-item ${c.status}" onclick="openSidePanel(${c.id})">
-                        <div class="follow-up-item-name">${c.name}</div>
-                        <div class="follow-up-item-date">${formatDate(new Date(c.date))}</div>
-                        ${c.note ? `<div class="follow-up-item-note">${c.note}</div>` : ''}
-                    </div>
-                `).join('');
+            if (actionItems.length > 0) {
+                document.getElementById('todaysActions').innerHTML = actionItems.map(item => {
+                    const waLink = item.client.phone ? getWhatsAppTemplate(item.client, item.action) : null;
+                    return `
+                        <div class="action-item priority-${item.priority}" onclick="openSidePanel(${item.client.id})">
+                            <div class="action-item-info">
+                                <div class="action-item-name">${item.client.name} <span class="temp-badge" style="background:${item.temp.color}20;color:${item.temp.color}">${item.temp.label}</span></div>
+                                <div class="action-item-text">${item.text}${item.temp.days !== null ? ' · ' + item.temp.days + 'd ago' : ''}</div>
+                            </div>
+                            ${waLink ? `<a href="${waLink}" target="_blank" class="action-item-wa" onclick="event.stopPropagation()">📱 Write</a>` : ''}
+                        </div>
+                    `;
+                }).join('');
             } else {
-                document.getElementById('followUpsDue').innerHTML = '<div class="analytics-empty">No follow-ups due</div>';
+                document.getElementById('todaysActions').innerHTML = '<div class="analytics-empty">All caught up! No actions needed 🎉</div>';
             }
 
             // Top 5 Clients
@@ -1634,7 +1780,7 @@
                                     <div class="top-client-rank">${i + 1}</div>
                                     <div class="top-client-name">${c.name}</div>
                                 </div>
-                                <div class="top-client-amount">${c.revenue.toLocaleString()} AED</div>
+                                <div class="top-client-amount">${formatCurrency(c.revenue)}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -1692,7 +1838,7 @@
                     <tr>
                         <td colspan="8">
                             <div class="empty-state">
-                                <div class="empty-state-icon">🔍</div>
+                                <div class="empty-state-icon">📍</div>
                                 <div class="empty-state-text">No clients found</div>
                             </div>
                         </td>
@@ -1706,9 +1852,10 @@
                 const typeLabel = client.type === 'client' ? 'Client' : 'Lead';
                 const typeClass = client.type === 'client' ? 'badge-client' : 'badge-lead';
                 const dateAdded = client.date_added ? formatDate(new Date(client.date_added)) : '—';
-                const incomeText = client.type === 'client' ? `${income.toFixed(0)} AED` : '—';
+                const incomeText = client.type === 'client' ? `${income.toFixed(0)} ${CONFIG.currency}` : '—';
 
-                // Follow-up indicator
+                // Temperature + Follow-up indicator
+                const temp = getClientTemperature(client.id);
                 let followUpIndicator = '';
                 if (client.follow_up_date) {
                     const status = getFollowUpStatus(client.follow_up_date);
@@ -1716,11 +1863,12 @@
                         followUpIndicator = `<span class="follow-up-dot ${status}"></span>`;
                     }
                 }
+                const tempBadge = `<span class="temp-badge" style="background:${temp.color}20;color:${temp.color};margin-left:6px;">${temp.label}</span>`;
 
                 return `
                     <tr onclick="openSidePanel(${client.id})">
                         <td>${client.id}</td>
-                        <td><strong>${client.name}${followUpIndicator}</strong></td>
+                        <td><strong>${client.name}${followUpIndicator}</strong>${tempBadge}</td>
                         <td><span class="badge ${typeClass}">${typeLabel}</span></td>
                         <td class="secondary">${client.phone || '—'}</td>
                         <td class="secondary">${client.source || '—'}</td>
@@ -1761,12 +1909,19 @@
             // Build content
             let html = '';
 
-            // Type and Badge
+            // Temperature
+            const temp = getClientTemperature(clientId);
+            const suggestion = getSuggestedAction(client);
+
+            // Type, Badge and Temperature
             html += `
                 <div class="side-panel-section">
-                    <div class="detail-item">
-                        <div class="detail-label">Type</div>
-                        <div><span class="badge ${typeClass}">${typeLabel}</span></div>
+                    <div class="detail-item" style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <div class="detail-label">Type</div>
+                            <span class="badge ${typeClass}">${typeLabel}</span>
+                        </div>
+                        <span class="temp-badge" style="background:${temp.color}20;color:${temp.color};font-size:13px;padding:4px 12px;">${temp.label}${temp.days !== null ? ' · ' + temp.days + 'd' : ''}</span>
                     </div>
                 </div>
             `;
@@ -1805,7 +1960,7 @@
                             <div class="detail-label">Phone</div>
                             <div class="detail-value">${client.phone}</div>
                             <div class="contact-buttons">
-                                <a href="https://wa.me/${phoneClean}" target="_blank" class="contact-btn whatsapp" title="Open WhatsApp">
+                                <a href="${suggestion ? getWhatsAppTemplate(client, suggestion.action) : 'https://wa.me/' + phoneClean}" target="_blank" class="contact-btn whatsapp" title="Open WhatsApp with smart message">
                                     📱 WhatsApp
                                 </a>
                                 <a href="tel:${client.phone}" class="contact-btn call" title="Call">
@@ -1813,6 +1968,16 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+                `;
+            }
+
+            // Suggested Action Banner
+            if (suggestion) {
+                html += `
+                    <div class="side-panel-section" style="background:${temp.color}10;border-radius:8px;padding:12px;">
+                        <div style="font-size:12px;font-weight:600;color:${temp.color};margin-bottom:4px;">💡 Suggested Action</div>
+                        <div style="font-size:13px;color:#374151;">${suggestion.text}</div>
                     </div>
                 `;
             }
@@ -1904,7 +2069,7 @@
                                     <div class="transaction-service">${t.service}</div>
                                     <div class="transaction-meta">${formatDate(new Date(t.transaction_date))}${t.notes ? ` • ${t.notes}` : ''}</div>
                                 </div>
-                                <div class="transaction-amount">${t.amount.toFixed(0)} AED</div>
+                                <div class="transaction-amount">${t.amount.toFixed(0)} ${CONFIG.currency}</div>
                             </div>
                         `).join('')}
                     </div>
