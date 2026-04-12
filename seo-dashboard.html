@@ -165,6 +165,22 @@
     .opp-kw   { flex: 1; font-weight: 600; color: #333; }
     .opp-stats { font-size: 0.82em; color: #666; text-align: right; }
 
+    /* ─── SEMrush section ───────────────────────────────── */
+    .semrush-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .semrush-tab {
+      padding: 7px 18px; border-radius: 20px; font-size: 0.88em; font-weight: 600;
+      cursor: pointer; background: #f0f4ff; color: #555; border: 1px solid #dde6f5;
+      transition: all .2s;
+    }
+    .semrush-tab.active { background: #ff6b35; color: white; border-color: #ff6b35; }
+    .semrush-meta { font-size: 0.8em; color: #999; margin-bottom: 12px; }
+    .semrush-meta span { background: #fff3e0; color: #e37400; padding: 2px 8px;
+      border-radius: 10px; font-weight: 600; margin-right: 6px; }
+    .kd-bar { display: inline-block; width: 36px; height: 7px; border-radius: 4px;
+      vertical-align: middle; margin-right: 4px; }
+    .vol-pill { font-size: 0.8em; background: #e8f0fe; color: #1a73e8;
+      padding: 1px 7px; border-radius: 8px; font-weight: 600; }
+
     /* ─── Sync info ──────────────────────────────────────── */
     .sync-info {
       text-align: center; color: #888; font-size: 0.85em; margin-top: 30px;
@@ -345,7 +361,7 @@
 
   <!-- 4. Top Opportunities (pos 11-30, high impressions) -->
   <div class="section" id="section-opps" style="display:none">
-    <div class="section-title">🚀 Возможности роста <span>позиции 11–30 с высоким показами →потенциал для топ-10</span></div>
+    <div class="section-title">🚀 Возможности роста <span>позиции 11–30 с высокими показами → потенциал для топ-10</span></div>
     <div class="opp-list" id="opp-list"></div>
   </div>
 
@@ -376,13 +392,41 @@
     </div>
   </div>
 
+  <!-- SEMrush Rankings -->
+  <div class="section" id="section-semrush" style="display:none">
+    <h2>📊 SEMrush — Органические позиции</h2>
+    <div class="semrush-tabs">
+      <div class="semrush-tab active" onclick="showSemrushDb('ae')">🇦🇪 ОАЭ (AE)</div>
+      <div class="semrush-tab" onclick="showSemrushDb('us')">🇺🇸 США (US)</div>
+    </div>
+    <div class="semrush-meta" id="semrush-meta"></div>
+    <div style="overflow-x:auto">
+      <table id="semrush-table" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="background:#f5f8ff; font-size:0.83em; color:#555;">
+            <th style="padding:10px 12px; text-align:left; min-width:200px;">Ключевое слово</th>
+            <th style="padding:10px 8px; text-align:center;">Позиция</th>
+            <th style="padding:10px 8px; text-align:center;">Объём</th>
+            <th style="padding:10px 8px; text-align:center;">KD%</th>
+            <th style="padding:10px 12px; text-align:left;">URL</th>
+            <th style="padding:10px 8px; text-align:center;">Обновлено</th>
+          </tr>
+        </thead>
+        <tbody id="semrush-tbody"></tbody>
+      </table>
+    </div>
+    <p style="font-size:0.78em;color:#aaa;margin-top:10px;">
+      ⚠️ Данные собранысостяют данныхгу�rerush Free (показывает 10 из ~19 ключей).
+      Дата снапшота: <strong>11 апр 2026</strong>.
+    </p>
+  </div>
+
   <!-- Sync info -->
   <div class="sync-info" id="sync-info" style="display:none">
-    Последнее обновление: <strong id="sync-date">—</strong> &nbsp;·&nbsp;
+    Po\последнеед: <strong id="sync-date">—</strong> &nbsp;·&nbsp;
     Данные: Google Search Console &nbsp;·&nbsp;
     <a href="https://github.com/dmcstyle/gstudio-dashboard/actions" target="_blank">GitHub Actions →</a>
   </div>
-
 </div><!-- /container -->
 
 <script>
@@ -415,7 +459,7 @@ function buildDemoSnapshots() {
   const kws = [
     // General
     {keys:['dubai music studio'],              position:3.2,  clicks:187, impressions:2140, ctr:0.087},
-    {keys:['dubaimusicstudio'],                position:1.1,  clicks:204, impressions:510,  ctr:0.400},
+    {keys:['dubaimusicstudio'],                position:1.1,  clicks:204, impressions5510,  ctr:0.400},
     {keys:['g studio dubai'],                  position:2.4,  clicks:98,  impressions:420,  ctr:0.233},
     // Home page targets
     {keys:['recording studio dubai'],          position:5.7,  clicks:143, impressions:1820, ctr:0.079},
@@ -522,8 +566,8 @@ async function init() {
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
     eb.className = 'demo';
-    eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
-      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальныхданныхданнхданных.</small>`;
+    eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблицб ещё не заполнена).<br>
+      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальныхгданные.</small>`;
   }
 
   try {
@@ -532,14 +576,14 @@ async function init() {
     const previous = data[1] || null;
 
     // Parse keyword lists
-    const currKws = JSON.parse(latest.data_json || '[]');
+    const currK]s = JSON.parse(latest.data_json || '[]');
     const prevKws = previous ? JSON.parse(previous.data_json || '[]') : [];
 
     // Build previous position map
     const prevMap = {};
     prevKws.forEach(row => { prevMap[row.keys[0]] = row.position; });
 
-    // Enrich
+    // Enrich  
     allKeywords = currKws.map(row => {
       const kw       = row.keys[0];
       const pos      = parseFloat(row.position) || 0;
@@ -563,6 +607,7 @@ async function init() {
     buildPageTabs();
     renderTrackedKeywords(0);
     renderCharts();
+    renderSemrushTable();
 
     // Show sync date
     const dt = new Date(latest.created_at);
@@ -572,7 +617,7 @@ async function init() {
 
     // Show sections, hide loader
     document.getElementById('loading-banner').style.display = 'none';
-    ['section-overview','charts-grid','section-keywords','section-opps','section-tracked','sync-info']
+    ['section-overview','charts-grid','section-keywords','section-opps','section-tracked','section-semrush','sync-info']
       .forEach(id => document.getElementById(id).style.display = '');
 
   } catch (err) {
@@ -580,7 +625,7 @@ async function init() {
     document.getElementById('loading-banner').style.display = 'none';
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
-    eb.innerHTML = `⚠️ <strong>Ошибка загрузки данныхданнххданнххданнххданнхх:</strong> ${err.message}<br>
+    eb.innerHTML = `⚠️ <strong>Ошибка загрузки данных:</strong> ${err.message}<br>
       <small>Проверь, что скрипт <code>sync-seo-to-supabase.js</code> запускался и таблица <code>seo_metrics</code> существует в Supabase.</small>`;
   }
 }
@@ -615,7 +660,6 @@ function populateOverview(latest, previous) {
     document.getElementById('ov-impr-delta').innerHTML    = `vs прошлый период: ${arrow(deltaImpr)}`;
     document.getElementById('ov-pos-delta').innerHTML     = `vs прошлый период: ${arrow(deltaPos.toFixed(1), 'negative')}`;
   }
-}
 
   // Change summary
   let up=0, down=0, newKw=0, same=0;
@@ -642,113 +686,163 @@ function setKwSort(field) {
     kwSortDir = kwSortDir === 'desc' ? 'asc' : 'desc';
   } else {
     kwSortField = field;
-    kwSortDirH�Y[OOH	���][ۉ��Y[OOH	��^]�ܙ	��	�\����	�\���B����[�����ۈ�]��Y�ۙ�\�[ۂ��ۜ�X\H�[\�\��[ۜΉ�[\�\��[ۜ���X��Ή��X������][ێ����][ۉ�[N���[��I��^]�ܙ��[\�\��[ۜ������[\�\��[ۜ��N�ۜ��[H��[Y[���][[Y[��RY
-	��ܝX�I�NY�
-�[	��X\ٚY[JH�[��[YHHX\ٚY[N�[�\�X�J
-NB���[��[ۈ\]R���ܝXY\��
-H�ۜ��H��[Y[��]Y\�T�[X�ܐ[
-	����]XY	�N�ۜ��Y[�H���^]�ܙ	�	���][ۉ�	�[I�	��X����	�[\�\��[ۜ��	����N˙�ܑXX�
+    kwSortDir   = field === 'position' || field === 'keyword' ? 'asc' : 'desc';
+  }
+  // sync dropdown to avoid confusion
+  const map = { impressions:'impressions', clicks:'clicks', position:'position', delta:'change', keyword:'impressions', ctr:'impressions' };
+  const sel = document.getElementById('sort-by');
+  if (sel && map[field]) sel.value = map[field];
+  renderTable();
+}
 
-JHO���\��\�����J	��ܝY	��Y[��WHOOH���ܝ�Y[
-N�ۜ�X�ۈH�]Y\�T�[X�܊	˜�ܝZX�ۉ�NY�
-X�ۊHX�ۋ�^�۝[�H�Y[��WHOOH���ܝ�Y[�
-���ܝ\�OOH	�\����	������	���	�H�	���I�JNB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB�P�B�OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
-��[��[ۈ�[�\�X�J
-H�ۜ��X\��H��[Y[���][[Y[��RY
-	ٚ[\�\�X\��	�K��[YK����\��\�J
-K��[J
-N�ۜ��шH��[Y[���][[Y[��RY
-	ٚ[\�\���K��[YN�ۜ����ܝH��[Y[���][[Y[��RY
-	��ܝX�I�K��[YN�����ۈ�[�[���Y��\��ܝ�Y�
-���ܝOOH���ܝ�Y[
-H���ܝ�Y[H���ܝOOH	��[��I��	�[I�����ܝ���ܝ\�H���ܝOOH	���][ۉ��	�\����	�\���B��]\�H[�^]�ܙ˙�[\��O�Y�
-�X\��	��Z˚�^]�ܙ����\��\�J
-K�[��Y\��X\��
-JH�]\���[�NY�
-�шOOH	��L	�	��˜��][ۈ�L
-H�]\���[�NY�
-�шOOH	�LKL�	�	��
-˜��][ۈLH˜��][ۈ��
-JH�]\���[�NY�
-�шOOH	̌KML	�	��
-˜��][ۈ�H˜��][ۈ�
-L
-JH�]\���[�NY�
-�шOOH	�L
-��	��˜��][ۈH
-L
-H�]\���[�N�]\���YNJN�\�H\���ܝ
+function updateKwSortHeaders() {
+  const ths = document.querySelectorAll('#kw-thead th');
+  const fields = ['keyword','position','delta','clicks','impressions','ctr'];
+  ths.forEach((th, i) => {
+    th.classList.toggle('sorted', fields[i] === kwSortField);
+    const icon = th.querySelector('.sort-icon');
+    if (icon) icon.textContent = fields[i] === kwSortField ? (kwSortDir === 'asc' ? '▲' : '▼') : '⇅';
+  });
+}
 
-K�HO�]�K��Y�
-���ܝ�Y[OOH	��^]�ܙ	�H��HHK��^]�ܙ���H���^]�ܙ�B�[�HY�
-���ܝ�Y[OOH	���][ۉ�H��HHK���][۟NNN���H����][۟NNN�B�[�HY�
-���ܝ�Y[OOH	�[I�H��HHK�[_���H��[_�B�[�HY�
-���ܝ�Y[OOH	��X����H��HHK��X������H���X����B�[�HY�
-���ܝ�Y[OOH	����H��HHK������H�����B�[�H��HHK�[\�\��[ۜ����H��[\�\��[ۜ��B�Y�
-\[و�HOOH	���[���H�]\�����ܝ\�OOH	�\�����K���[P��\\�J��H������[P��\\�J�JN�]\�����ܝ\�OOH	�\�����HH�����H�NJN�\]R���ܝXY\��
-N���[Y[���][[Y[��RY
-	���X��[�	�K�^�۝[�H4'�/�.�,4-�,4/t/��	�\��[��H4.4-�	�[�^]�ܙ˛[��X��ۜ���HH��[Y[���][[Y[��RY
-	���]��I�NY�
-\��[��OOH
-H��K�[��\�SH�����[�H����[OH�^X[Yێ��[�\��Y[�Ό����܎��ȏ�'t-t`�4-4,4/t/tb�aH4/�/�4a4.4.�c4`�`4,4/������]\��B����K�[��\�SH\��X\
-�O��ۜ����\��H˜��][ۈHL�	���]�	��˜��][ۈH��	���[ZY	��	���[���]�[��R[Y�
-˚\ә]�H�[��R[H�[��\��H��[��K[�]ȏ��U���[��H[�HY�
-˙[HOOH�[X]�X��˙[JH�JH�[��R[H�[��\��H��[��K\�[YH���%��[��H[�HY�
-˙[H�
-H�[��R[H�[��\��H��[��K]\����H	�˙[K�њ^Y
-J_O��[��H[�H�[��R[H�[��\��H��[��KY�ۈ�����	�X]�X��˙[JK�њ^Y
-J_O��[��B���ۜ����H
-˘��
-�L
-K�њ^Y
-JH
-�	�I��ۜ�[\��]H˚[\�\��[ۜ��HL�
-˚[\�\��[ۜ��L
-K�њ^Y
-JJ�����˚[\�\��[ۜ���]\������\��H���X�[���[��\��H���]^���\��[
-˚�^]�ܙ
-_O��[������\��H���X�[	����\��H���˜��][ۋ�њ^Y
-J_O����\��H��[��KX�[����[��R[O����\��H��[KX�[���˘�X���O����\��H��[KX�[���[\��]O����\��H���X�[������O������JK���[�	��NB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB��ԕS�UQTOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
-��[��[ۈ�[�\��ܝ[�]Y\�
-H�ۜ���H[�^]�ܙ��[\��O�˜��][ۈ�HLH	��˜��][ۈH�
-B���ܝ
+/* ============================================================
+   TABLE
+   ============================================================ */
+function renderTable() {
+  const search  = document.getElementById('filter-search').value.toLowerCase().trim();
+  const posF    = document.getElementById('filter-pos').value;
+  const dropSort = document.getElementById('sort-by').value;
+  // dropdown can also trigger sort
+  if (dropSort !== kwSortField) {
+    kwSortField = dropSort === 'change' ? 'delta' : dropSort;
+    kwSortDir   = dropSort === 'position' ? 'asc' : 'desc';
+  }
 
-K�HO���[\�\��[ۜ�HK�[\�\��[ۜ�B���X�J
-�N��ۜ�\�H��[Y[���][[Y[��RY
-	��[\�	�NY�
-�˛[��OOH
-H\��[��\�SH	��[OH���܎���Y[�ΌL��'t-t`�4.�.�c�a�-t,�b�aH4`t.�/�,�4,�4-�/�/t-H4`4/�`t`�,
-4/�/�-�.4a�.4.Lx�$��
-O����]\��B��\��[��\�SH�˛X\
-�O��]��\��H��Z][H���]��\��H��\�[�ȏ��˜��][ۋ�њ^Y
-
-_O�]���]��\��H��Z�ȏ��\��[
-˚�^]�ܙ
-_O�]���]��\��H��\�]ȏ��	�˚[\�\��[ۜ�H4/�/�.�,4-�/�,��	�˘�X���_H4.�.�.4.�/�,�	�ZY����	�˘���L
-K�њ^Y
-J_IB��]����]���
-K���[�	��NB��ʈOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOB��T�OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
-��[��[ۈ�[�\��\��
-H�ۜ�\�ܞHHۘ\��˜�X�J
-K��]�\��J
-N����\��\����ۜ�X�[�H\�ܞK�X\
-�O��ۜ�H�]�]J˘ܙX]Y�]
-N�]\������[Q]T��[��	ܝKT�I��^N�	̋YY�]	�[۝�	��ܝ	�JNJN���8� 8� �Y��X��\�8� 8� ��ۜ��H��[Y[���][[Y[��RY
-	��\�]�Y��X��K��]�۝^
-	̙	�NY�
-�\��Y��X�H�\��Y��X˙\���J
-N�\��Y��X�H�]��\�
-�\N�	ؘ\���]N�X�[��]\�]ΈX�[�	�&�.�.4.�.	��]N�\�ܞK�X\
-�O�˝�[��X���
-K��X��ܛ�[���܎�	ܙؘJ��LMK�̋��I���ܙ\��Y]\Έ
-P^\�Q�	�I��K�X�[�	�'�/�.�,4-�b���]N�\�ܞK�X\
-�O�˝�[�[\�\��[ۜ�
-K�\N�	�[�I���ܙ\���܎�	��L��	��X��ܛ�[���܎�	ܙؘJ���LM��JI��[��[ێ���P^\�Q�	�LI��[��Y]\Έ��B�B�K��[ۜΈ�\�ۜ�]e: true, maintainAspectRatio: false,
+  let list = allKeywords.filter(k => {
+    if (search && !k.keyword.toLowerCase().includes(search)) return false;
+    if (posF === 'top10'  && k.position > 10)  return false;
+    if (posF === '11-20'  && (k.position < 11 || k.position > 20)) return false;
+    if (posF === '21-50'  && (k.position < 21 || k.position > 50)) return false;
+    if (posF === '50+'    && k.position <= 50) return false;
+    return true;
+  });
+
+  list = list.sort((a, b) => {
+    let va, vb;
+    if (kwSortField === 'keyword')  { va = a.keyword; vb = b.keyword; }
+    else if (kwSortField === 'position') { va = a.position||999; vb = b.position||999; }
+    else if (kwSortField === 'delta')    { va = a.delta||0; vb = b.delta||0; }
+    else if (kwSortField === 'clicks')   { va = a.clicks; vb = b.clicks; }
+    else if (kwSortField === 'ctr')      { va = a.ctr; vb = b.ctr; }
+    else { va = a.impressions; vb = b.impressions; }
+    if (typeof va === 'string') return kwSortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return kwSortDir === 'asc' ? va - vb : vb - va;
+  });
+
+  updateKwSortHeaders();
+
+  document.getElementById('kw-count').textContent = `Показано: ${list.length} из ${allKeywords.length}`;
+
+  const tbody = document.getElementById('kw-tbody');
+  if (list.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных� пои фильтрам</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = list.map(k => {
+    const posClass = k.position <= 10 ? 'pos-top' : k.position <= 20 ? 'pos-mid' : 'pos-low';
+    let changeHtml;
+    if (k.isNew) {
+      changeHtml = `<span class="change-new">NEW</span>`;
+    } else if (k.delta === null || Math.abs(k.delta) < 0.5) {
+      changeHtml = `<span class="change-same">—</span>`;
+    } else if (k.delta > 0) {
+      changeHtml = `<span class="change-up">↑ ${k.delta.toFixed(1)}</span>`;
+    } else {
+      changeHtml = `<span class="change-down">↓ ${Math.abs(k.delta).toFixed(1)}</span>`;
+    }
+
+    const ctrPct = (k.ctr * 100).toFixed(1) + '%';
+    const imprFmt = k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : k.impressions;
+
+    return `<tr>
+      <td class="kw-cell"><span class="kw-text">${escHtml(k.keyword)}</span></td>
+      <td class="pos-cell ${posClass}">${k.position.toFixed(1)}</td>
+      <td class="change-cell">${changeHtml}</td>
+      <td class="num-cell">${k.clicks}</td>
+      <td class="num-cell">${imprFmt}</td>
+      <td class="ctr-cell">${ctrPct}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============================================================
+   OPPORTUNITIES
+   ============================================================ */
+function renderOpportunities() {
+  const opps = allKeywords
+    .filter(k => k.position >= 11 && k.position <= 30)
+    .sort((a, b) => b.impressions - a.impressions)
+    .slice(0, 6);
+
+  const list = document.getElementById('opp-list');
+  if (opps.length === 0) {
+    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевых слов в зоне роста (позиции 11–30)</p>';
+    return;
+  }
+
+  list.innerHTML = opps.map(k => `
+    <div class="opp-item">
+      <div class="opp-rank">${k.position.toFixed(0)}</div>
+      <div class="opp-kw">${escHtml(k.keyword)}</div>
+      <div class="opp-stats">
+        ${k.impressions} показов<br>
+        ${k.clicks} кликов &middot; CTR ${(k.ctr*100).toFixed(1)}%
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+function renderCharts() {
+  const history = snapshots.slice().reverse(); // oldest first
+  const labels  = history.map(s => {
+    const d = new Date(s.created_at);
+    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short' });
+  });
+
+  // ── Traffic chart ──
+  const ctxT = document.getElementById('chart-traffic').getContext('2d');
+  if (chartTraffic) chartTraffic.destroy();
+  chartTraffic = new Chart(ctxT, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Клики',
+          data: history.map(s => s.total_clicks || 0),
+          backgroundColor: 'rgba(26,115,232,0.7)',
+          borderRadius: 4, yAxisID: 'y',
+        },
+        {
+          label: 'Показы',
+          data: history.map(s => s.total_impressions || 0),
+          type: 'line',
+          borderColor: '#e37400', backgroundColor: 'rgba(227,116,0,0.1)',
+          tension: 0.3, yAxisID: 'y1', pointRadius: 3,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index' },
       plugins: { legend: { labels: { font: { size: 11 } } } },
       scales: {
         y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'Клики' } },
-        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Показы' }, grid: { drawOnChartArea: false } }
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'ПоказЋ' }, grid: { drawOnChartArea: false } }
       }
     }
   });
@@ -905,7 +999,7 @@ function renderTrackedKeywords(pageIdx) {
     else                          badge = '<span class="rank-badge rank-top50">Топ-50+</span>';
 
     const ctrPct = k.ctr > 0 ? (k.ctr * 100).toFixed(1) + '%' : '—';
-    const imprFmt = k.impressions > 0 ? (k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : h.impressions) : '—';
+    const imprFmt = k.impressions > 0 ? (k.impressions >= 1000 ? (k.impressions/1000).toFixed(1)+'k' : k.impressions) : '—';
     const clicksFmt = k.clicks > 0 ? k.clicks : '—';
 
     return `<tr>
@@ -921,6 +1015,76 @@ function renderTrackedKeywords(pageIdx) {
 }
 
 /* ============================================================
+   SEMRUSH DATA (снапшот 11 апр 2026)
+   ============================================================ */
+const SEMRUSH_DATA = {
+  ae: {
+    label: '🇦🇪 ОАЭ (AE)', total: 19, visible: 10,
+    keywords: [
+      { kw:'music recording studio in dubai', pos:7,  vol:110, kd:22, url:'dubaimusicstudio.com/',                        updated:'Mar 11' },
+      { kw:'music recording studio',          pos:4,  vol:50,  kd:28, url:'dubaimusicstudio.com/',                        updated:'Mar 17' },
+      { kw:'best recording studio in dubai',  pos:10, vol:70,  kd:33, url:'dubaimusicstudio.com/',                        updated:'Mar 13' },
+      { kw:'music recording studio near me',  pos:19, vol:30,  kd:6,  url:'dubaimusicstudio.com/',                        updated:'Mar 23' },
+      { kw:'music studios near me',           pos:72, vol:480, kd:11, url:'dubaimusicstudio.com/',                        updated:'Apr 06' },
+      { kw:'voice recording studio in dubai', pos:82, vol:50,  kd:43, url:'dubaimusicstudio.com/recording-studio-in-dubai/', updated:'Mar 17' },
+      { kw:'audio recording studio near me',  pos:83, vol:40,  kd:32, url:'dubaimusicstudio.com/recording-studio-in-dubai/', updated:'Mar 20' },
+      { kw:'music recording studio in dubai', pos:44, vol:110, kd:22, url:'dubaimusicstudio.com/recording-studio-in-dubai/', updated:'Mar 11' },
+      { kw:'music recording studio in dubai', pos:94, vol:110, kd:22, url:'dubaimusicstudio.com/mixing-mastering/',        updated:'Mar 11' },
+      { kw:'best recording studio in dubai',  pos:87, vol:70,  kd:33, url:'dubaimusicstudio.com/vocalrecording/',          updated:'Mar 13' },
+    ]
+  },
+  us: {
+    label: '🇺🇸 США (US)', total: 11, visible: 10,
+    keywords: [
+      { kw:'dubai recording studio',           pos:4,  vol:40, kd:17, url:'dubaimusicstudio.com/',                            updated:'Feb 22' },
+      { kw:'best recording studio in dubai',   pos:10, vol:40, kd:40, url:'dubaimusicstudio.com/',                            updated:'Apr 07' },
+      { kw:'music studio in dubai',            pos:11, vol:40, kd:21, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
+      { kw:'audio recording studio in dubai',  pos:13, vol:40, kd:26, url:'dubaimusicstudio.com/',                            updated:'Feb 28' },
+      { kw:'sound recording studio dubai',     pos:13, vol:40, kd:34, url:'dubaimusicstudio.com/',                            updated:'Mar 20' },
+      { kw:'recording studios in dubai',       pos:18, vol:50, kd:11, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
+      { kw:'recording studios in dubai',       pos:20, vol:50, kd:11, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
+      { kw:'dubai recording studio',           pos:10, vol:40, kd:17, url:'dubaimusicstudio.com/',                            updated:'Feb 22' },
+      { kw:'music studio in dubai',            pos:42, vol:40, kd:21, url:'dubaimusicstudio.com/recording-studio-in-dubai/',  updated:'Mar 08' },
+      { kw:'music studio in dubai',            pos:51, vol:40, kd:21, url:'dubaimusicstudio.com/mixing-mastering/',            updated:'Mar 08' },
+    ]
+  }
+};
+
+let activeSemrushDb = 'ae';
+
+function showSemrushDb(db) {
+  activeSemrushDb = db;
+  document.querySelectorAll('.semrush-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && db === 'ae') || (i === 1 && db === 'us'));
+  });
+  renderSemrushTable();
+}
+
+function renderSemrushTable() {
+  const d = SEMRUSH_DATA[activeSemrushDb];
+  document.getElementById('semrush-meta').innerHTML =
+    `<span>Всего ключей: ${d.total}</span> показано ${d.visible} (Free план) &nbsp;·&nbsp; ${d.label}`;
+
+  const tbody = document.getElementById('semrush-tbody');
+  tbody.innerHTML = d.keywords.map(k => {
+    const posClass = k.pos <= 3 ? 'pos-top' : k.pos <= 10 ? 'pos-top' : k.pos <= 20 ? 'pos-mid' : 'pos-low';
+    const kdColor  = k.kd < 20 ? '#1e8e3e' : k.kd < 40 ? '#e37400' : '#d93025';
+    const shortUrl = '/' + (k.url.split('/').slice(1).join('/') || '');
+    return `<tr style="border-bottom:1px solid #f0f4ff;">
+      <td style="padding:10px 12px; font-weight:500; color:#333;">${escHtml(k.kw)}</td>
+      <td style="padding:10px 8px; text-align:center;"><span class="pos-cell ${posClass}">${k.pos}</span></td>
+      <td style="padding:10px 8px; text-align:center;"><span class="vol-pill">${k.vol >= 1000 ? (k.vol/1000).toFixed(1)+'k' : k.vol}</span></td>
+      <td style="padding:10px 8px; text-align:center;">
+        <span class="kd-bar" style="background:${kdColor};opacity:0.3;width:${k.kd/2}px;"></span>
+        <span style="color:${kdColor};font-weight:600;font-size:0.85em;">${k.kd}%</span>
+      </td>
+      <td style="padding:10px 12px; font-size:0.8em; color:#666;">${escHtml(shortUrl)}</td>
+      <td style="padding:10px 8px; text-align:center; font-size:0.8em; color:#999;">${k.updated}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ===================================================
    UTILS
    ============================================================ */
 function escHtml(str) {
