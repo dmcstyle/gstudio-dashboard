@@ -441,9 +441,8 @@ async function sbFetch(table, params = '') {
   const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 10000);
-  let res;
   try {
-    res = await fetch(url, {
+    const res = await fetch(url, {
       signal: ctrl.signal,
       headers: {
         'apikey': SUPABASE_KEY,
@@ -451,14 +450,14 @@ async function sbFetch(table, params = '') {
         'Content-Type': 'application/json',
       }
     });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Supabase ${table}: ${res.status} ${text}`);
+    }
+    return await res.json();
   } finally {
     clearTimeout(timer);
   }
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Supabase ${table}: ${res.status} ${text}`);
-  }
-  return res.json();
 }
 
 /* ============================================================
