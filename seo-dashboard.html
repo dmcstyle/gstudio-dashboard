@@ -416,17 +416,18 @@
       </table>
     </div>
     <p style="font-size:0.78em;color:#aaa;margin-top:10px;">
-      ⚠️ Данные собранысостяют данныхгу�rerush Free (показывает 10 из ~19 ключей).
+      ⚠️ Данные собраны вручную из SEMrush Free (показывает 10 из ~19 ключей).
       Дата снапшота: <strong>11 апр 2026</strong>.
     </p>
   </div>
 
   <!-- Sync info -->
   <div class="sync-info" id="sync-info" style="display:none">
-    Po\последнеед: <strong id="sync-date">—</strong> &nbsp;·&nbsp;
+    Последнее обновление: <strong id="sync-date">—</strong> &nbsp;·&nbsp;
     Данные: Google Search Console &nbsp;·&nbsp;
     <a href="https://github.com/dmcstyle/gstudio-dashboard/actions" target="_blank">GitHub Actions →</a>
   </div>
+
 </div><!-- /container -->
 
 <script>
@@ -467,18 +468,18 @@ function buildDemoSnapshots() {
   const kws = [
     // General
     {keys:['dubai music studio'],              position:3.2,  clicks:187, impressions:2140, ctr:0.087},
-    {keys:['dubaimusicstudio'],                position:1.1,  clicks:204, impressions5510,  ctr:0.400},
-    {keys:['g studio dubai'],                  position:2.4,  clicks:98,  impressions:420,  ctr:0.233},
+    {keys:['dubaimusicstudio'],                position:1.1,  clicks:204, impressions:510,  ctr:0.400},
+    {keys:['g studio dubai'],                  position:2.4,  clicks:98,  impressions;420,  ctr:0.233},
     // Home page targets
     {keys:['recording studio dubai'],          position:5.7,  clicks:143, impressions:1820, ctr:0.079},
     {keys:['music production dubai'],          position:8.1,  clicks:92,  impressions:1350, ctr:0.068},
     {keys:['professional studio dubai'],       position:14.2, clicks:34,  impressions:760,  ctr:0.045},
-    {keys:['music producer dubai'],            position:11.8, clicks:41,  impressions:680,  ctr:0.060},
+    {keys:['music producer dubai'],            position:11.8, clicks:41,  impressions;680,  ctr:0.060},
     {keys:['best music studio dubai'],         position:7.3,  clicks:62,  impressions:540,  ctr:0.115},
     {keys:['dubai recording studio'],          position:6.1,  clicks:78,  impressions:890,  ctr:0.088},
-    {keys:['music recording studio dubai'],    position:9.5,  clicks:53,  impressions:720,  ctr:0.074},
+    {keys:['music recording studio dubai'],    position:9.5,  clicks:53,  impressions;720,  ctr:0.074},
     // Vocal Recording targets
-    {keys:['vocal recording dubai'],           position:12.4, clicks:28,  impressions:480,  ctr:0.058},
+    {keys:['vocal recording dubai'],           position:12.4, clicks:28,  impressions;480,  ctr:0.058},
     {keys:['voice recording studio dubai'],    position:18.7, clicks:11,  impressions:310,  ctr:0.035},
     {keys:['singing lessons dubai'],           position:24.3, clicks:6,   impressions:220,  ctr:0.027},
     {keys:['vocal coaching dubai'],            position:31.2, clicks:3,   impressions:180,  ctr:0.017},
@@ -486,10 +487,10 @@ function buildDemoSnapshots() {
     {keys:['vocal production dubai'],          position:28.4, clicks:4,   impressions:160,  ctr:0.025},
     // Mixing & Mastering targets
     {keys:['mixing mastering dubai'],          position:4.8,  clicks:95,  impressions:1240, ctr:0.077},
-    {keys:['audio mastering dubai'],           position:9.2,  clicks:47,  impressions:620,  ctr:0.076},
+    {keys:['audio mastering dubai'],           position:9.2,  clicks:47,  impressions;620,  ctr:0.076},
     {keys:['music mixing dubai'],              position:13.6, clicks:22,  impressions:390,  ctr:0.056},
     {keys:['professional mixing dubai'],       position:7.9,  clicks:58,  impressions:530,  ctr:0.109},
-    {keys:['mastering services dubai'],        position:11.1, clicks:33,  impressions:410,  ctr:0.080},
+    {keys:['mastering services dubai'],        position:11.1, clicks:33,  impressions;410,  ctr:0.080},
     {keys:['mix engineer dubai'],              position:16.4, clicks:14,  impressions:280,  ctr:0.050},
     // Music Production targets
     {keys:['beat production dubai'],           position:19.3, clicks:9,   impressions:260,  ctr:0.035},
@@ -497,7 +498,7 @@ function buildDemoSnapshots() {
     {keys:['song production dubai'],           position:27.8, clicks:5,   impressions:190,  ctr:0.026},
     {keys:['best music producer dubai'],       position:15.2, clicks:18,  impressions:320,  ctr:0.056},
     // Music Marketing targets
-    {keys:['music marketing dubai'],           position:8.4,  clicks:44,  impressions:580,  ctr:0.076},
+    {keys:['music marketing dubai'],           position:8.4,  clicks:44,  impressions;580,  ctr:0.076},
     {keys:['music promotion dubai'],           position:12.7, clicks:25,  impressions:380,  ctr:0.066},
   ];
   const prevKws = kws.map(k => ({...k, position: k.position + (Math.random()*4-1.5)}));
@@ -574,8 +575,8 @@ async function init() {
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
     eb.className = 'demo';
-    eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблицб ещё не заполнена).<br>
-      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальныхгданные.</small>`;
+    eb.innerHTML = `📊 <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
+      <small>Запусти <code>sync-seo-to-supabase.js</code> или открой(через локальный сервер (<code>npx serve .</code>) для реальных данных.</small>`;
   }
 
   try {
@@ -584,14 +585,14 @@ async function init() {
     const previous = data[1] || null;
 
     // Parse keyword lists
-    const currK]s = JSON.parse(latest.data_json || '[]');
+    const currKws = JSON.parse(latest.data_json || '[]');
     const prevKws = previous ? JSON.parse(previous.data_json || '[]') : [];
 
     // Build previous position map
     const prevMap = {};
     prevKws.forEach(row => { prevMap[row.keys[0]] = row.position; });
 
-    // Enrich  
+    // Enrich
     allKeywords = currKws.map(row => {
       const kw       = row.keys[0];
       const pos      = parseFloat(row.position) || 0;
@@ -649,7 +650,7 @@ function populateOverview(latest, previous) {
   document.getElementById('ov-clicks').textContent      = fmt(latest.total_clicks || 0);
   document.getElementById('ov-impressions').textContent = fmt(latest.total_impressions || 0);
   document.getElementById('ov-ctr').textContent         = ((latest.avg_ctr || 0)*100).toFixed(2) + '%';
-  document.getElementById('ov-position').textContent    = fmtPos(latest.avg_position || 0);
+  document.getElementById('ov-position').textContent    = fmtPor(latest.avg_position || 0);
 
   const top10 = allKeywords.filter(k => k.position <= 10).length;
   document.getElementById('ov-top10').textContent = top10;
@@ -749,11 +750,11 @@ function renderTable() {
 
   updateKwSortHeaders();
 
-  document.getElementById('kw-count').textContent = `Показано: ${list.length} из ${allKeywords.length}`;
+  document.getElementById('kw-count').textContent = `Показанп: ${list.length} из ${allKeywords.length}`;
 
   const tbody = document.getElementById('kw-tbody');
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных� пои фильтрам</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных по фильтрам</td></tr>`;
     return;
   }
 
@@ -795,7 +796,7 @@ function renderOpportunities() {
 
   const list = document.getElementById('opp-list');
   if (opps.length === 0) {
-    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевых слов в зоне роста (позиции 11–30)</p>';
+    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевыхслов в зоне роста позиции р(11–30)</p>';
     return;
   }
 
@@ -805,7 +806,7 @@ function renderOpportunities() {
       <div class="opp-kw">${escHtml(k.keyword)}</div>
       <div class="opp-stats">
         ${k.impressions} показов<br>
-        ${k.clicks} кликов &middot; CTR ${(k.ctr*100).toFixed(1)}%
+        ${k.clicks}кликов &middot; CTR ${(k.ctr*100).toFixed(1)}%
       </div>
     </div>
   `).join('');
@@ -850,7 +851,7 @@ function renderCharts() {
       plugins: { legend: { labels: { font: { size: 11 } } } },
       scales: {
         y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'Клики' } },
-        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'ПоказЋ' }, grid: { drawOnChartArea: false } }
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Показы' }, grid: { drawOnChartArea: false } }
       }
     }
   });
@@ -1092,7 +1093,7 @@ function renderSemrushTable() {
   }).join('');
 }
 
-/* ===================================================
+/* ============================================================
    UTILS
    ============================================================ */
 function escHtml(str) {
