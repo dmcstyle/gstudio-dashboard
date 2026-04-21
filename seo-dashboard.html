@@ -114,7 +114,7 @@
     }
     .btn-primary { background: #1a73e8; color: white; }
     .btn-primary:hover { background: #1557b0; }
-    .btn-secondary { background: #f0f4ff; color: #1a73e8; border: 1.5px solid #a73e8; }
+    .btn-secondary { background: #f0f4ff; color: #1a73e8; border: 1.5px solid #1a73e8; }
     .btn-secondary:hover { background: #e8f0fe; }
     #kw-count { font-size: 0.85em; color: #888; margin-left: auto; }
 
@@ -135,13 +135,13 @@
     tbody tr:hover { background: #f8faff; }
     tbody td { padding: 11px 14px; color: #333; }
     .kw-cell { max-width: 280px; }
-    .kW-text { font-weight: 500; }
+    .kw-text { font-weight: 500; }
     .pos-cell { text-align: center; font-weight: 700; font-size: 1.1em; }
     .pos-top   { color: #1e8e3e; }
     .pos-mid   { color: #e37400; }
     .pos-low   { color: #888; }
     .change-cell { text-align: center; white-space: nowrap; }
-    .change-up    { color: #1e8e3e; font-weight: 700; }
+    .change-up   { color: #1e8e3e; font-weight: 700; }
     .change-down { color: #d93025; font-weight: 700; }
     .change-new  { background: #1a73e8; color: white; font-size: 0.75em; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
     .change-same { color: #aaa; }
@@ -231,14 +231,14 @@
 
 <header>
   <div class="header-left">
-    <h1>\uD83D\uDD0D SEO Rank Tracker</h1>
+    <h1>&#x1F50D; SEO Rank Tracker</h1>
     <div class="sub">dubaimusicstudio.com · Google Search Console</div>
   </div>
   <nav class="nav-links">
-    <a href="index.html">\uD83D\uDCCA Dashboard</a>
-    <a href="crm.html">\uD83D\uDC65 CRM</a>
-    <a href="royalties.html">\uD83C\uDFB5 Royalties</a>
-    <a href="seo-dashboard.html" class="active">\uD83D\uDD0D SEO</a>
+    <a href="index.html">&#x1F4CA; Dashboard</a>
+    <a href="crm.html">&#x1F465; CRM</a>
+    <a href="royalties.html">&#x1F3B5; Royalties</a>
+    <a href="seo-dashboard.html" class="active">&#x1F50D; SEO</a>
   </nav>
 </header>
 
@@ -254,7 +254,7 @@
   <!-- 1. Overview metrics -->
   <div class="section" id="section-overview" style="display:none">
     <div class="section-title">
-      \uD83D\uDCC8 Обзор за последние 28 дней
+      &#x1F4C8; Обзор за последние 28 дней
       <span id="last-updated-text"></span>
     </div>
     <div class="metrics-grid">
@@ -284,7 +284,7 @@
         <div class="metric-sub" id="ov-pos-delta"></div>
       </div>
       <div class="metric-card green">
-        <div class="metric-label">В тоЯ-10</div>
+        <div class="metric-label">В топ-10</div>
         <div class="metric-value" id="ov-top10">—</div>
         <div class="metric-sub">Запросов на 1-й стр.</div>
       </div>
@@ -297,7 +297,7 @@
         <div class="change-badge badge-up">↑ <span id="sum-up">0</span> выросли</div>
         <div class="change-badge badge-down">↓ <span id="sum-down">0</span> упали</div>
         <div class="change-badge badge-new">★ <span id="sum-new">0</span> новых</div>
-        <div class="change-badge badge-same">— <span id="sum-same">0</span> безизменений</div>
+        <div class="change-badge badge-same">— <span id="sum-same">0</span> без изменений</div>
       </div>
     </div>
   </div>
@@ -305,11 +305,11 @@
   <!-- 2. Charts -->
   <div class="charts-grid" id="charts-grid" style="display:none">
     <div class="chart-box">
-      <div class="chart-title">\uD83D\uDCCA Клики и показы — динамика</div>
+      <div class="chart-title">&#x1F4CA; Клики и показы — динамика</div>
       <div class="chart-canvas-wrap"><canvas id="chart-traffic"></canvas></div>
     </div>
     <div class="chart-box">
-      <div class="chart-title">\uD83C\uDFAF Средняя позиция — динамика</div>
+      <div class="chart-title">&#x1F3AF; Средняя позиция — динамика</div>
       <div class="chart-canvas-wrap"><canvas id="chart-position"></canvas></div>
     </div>
   </div>
@@ -317,7 +317,7 @@
   <!-- 3. Keyword Rankings Table -->
   <div class="section" id="section-keywords" style="display:none">
     <div class="section-title">
-      \uD83D\uDDDD️ Ключевые слова
+      &#x1F5DD;️ Ключевые слова
     </div>
 
     <!-- Filters -->
@@ -361,14 +361,14 @@
 
   <!-- 4. Top Opportunities (pos 11-30, high impressions) -->
   <div class="section" id="section-opps" style="display:none">
-    <div class="section-title">\uD83D\uDE80 Возможности роста <span>позиции 11–30 с высокими показами → потенциал для топ-10</span></div>
+    <div class="section-title">&#x1F680; Возможности роста <span>позиции 11–30 с высокими показамм → потенциал для топ-10</span></div>
     <div class="opp-list" id="opp-list"></div>
   </div>
 
   <!-- 5. Tracked Keywords by Page -->
   <div class="section" id="section-tracked" style="display:none">
     <div class="section-title">
-      \uD83C\uDFAF Отслеживаемые запросы по страницам
+      &#x1F3AF; Отслеживаемые запросы по страницам
       <span>позиции ваших целевых ключей из Google Sheet</span>
     </div>
     <div class="page-tabs" id="page-tabs"></div>
@@ -394,10 +394,10 @@
 
   <!-- SEMrush Rankings -->
   <div class="section" id="section-semrush" style="display:none">
-    <h2>\uD83D\uDCCA SEMrush — Органические позицим</h2>
+    <h2>&#x1F4CA; SEMrush — Органические позиции</h2>
     <div class="semrush-tabs">
-      <div class="semrush-tab active" onclick="showSemrushDb('ae')">\uD83C\uDDE6\uD83C\uDDEA ОАЭ (AE)</div>
-      <div class="semrush-tab" onclick="showSemrushDb('us')">\uD83C\uDDFA\uD83C\uDDF8 США (US)</div>
+      <div class="semrush-tab active" onclick="showSemrushDb('ae')">&#x1F1E6;&#x1F1EA; ОАЭ (AE)</div>
+      <div class="semrush-tab" onclick="showSemrushDb('us')">&#x1F1FA;&#x1F1F8; США (US)</div>
     </div>
     <div class="semrush-meta" id="semrush-meta"></div>
     <div style="overflow-x:auto">
@@ -435,7 +435,7 @@
    CONFIG — прямой REST API, без Supabase SDK
    ============================================================ */
 const SUPABASE_URL = 'https://tvxkiimxzmnlybvyapnk.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2eGtpaW14em1ubHlidnlhaG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2OTU1MDYsImV4cCI6MjA4ODI3MTUwNn0.xzJh-SbW9cqDTVsbumx2zPo5IkvJfLyrWa-339TBQl4';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR2eGtpaW14em1ubHlidnlhcG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2OTU1MDYsImV4cCI6MjA4ODI3MTUwNn0.xzJh-SbW9cqDTVsbumx2zPo5IkvJfLyrWa-339TBQl4';
 
 async function sbFetch(table, params = '') {
   const url = `${SUPABASE_URL}/rest/v1/${table}${params}`;
@@ -574,7 +574,7 @@ async function init() {
     const eb = document.getElementById('error-banner');
     eb.style.display = 'block';
     eb.className = 'demo';
-    eb.innerHTML = `\uD83D\uDCCA <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
+    eb.innerHTML = `&#x1F4CA; <strong>Демо-режим</strong> — Supabase недоступен (CORS при открытии через file://, или таблица ещё не заполнена).<br>
       <small>Запусти <code>sync-seo-to-supabase.js</code> или открой через локальный сервер (<code>npx serve .</code>) для реальных данных.</small>`;
   }
 
@@ -649,7 +649,7 @@ function populateOverview(latest, previous) {
   document.getElementById('ov-clicks').textContent      = fmt(latest.total_clicks || 0);
   document.getElementById('ov-impressions').textContent = fmt(latest.total_impressions || 0);
   document.getElementById('ov-ctr').textContent         = ((latest.avg_ctr || 0)*100).toFixed(2) + '%';
-  document.getElementById('ov-position').textContent    = fmtPor(latest.avg_position || 0);
+  document.getElementById('ov-position').textContent    = fmtPos(latest.avg_position || 0);
 
   const top10 = allKeywords.filter(k => k.position <= 10).length;
   document.getElementById('ov-top10').textContent = top10;
@@ -697,7 +697,7 @@ function setKwSort(field) {
     kwSortDir   = field === 'position' || field === 'keyword' ? 'asc' : 'desc';
   }
   // sync dropdown to avoid confusion
-  const map = { impressions: 'impressions', clicks: 'clicks', position: 'position', delta: 'change', keyword: 'impressions', ctr: 'impressions' };
+  const map = { impressions:'impressions', clicks:'clicks', position:'position', delta:'change', keyword:'impressions', ctr:'impressions' };
   const sel = document.getElementById('sort-by');
   if (sel && map[field]) sel.value = map[field];
   renderTable();
@@ -705,11 +705,11 @@ function setKwSort(field) {
 
 function updateKwSortHeaders() {
   const ths = document.querySelectorAll('#kw-thead th');
-  const fields = ['keyword', 'position', 'delta', 'clicks', 'impressions', 'ctr'];
+  const fields = ['keyword','position','delta','clicks','impressions','ctr'];
   ths.forEach((th, i) => {
     th.classList.toggle('sorted', fields[i] === kwSortField);
     const icon = th.querySelector('.sort-icon');
-    if (icon) icon.textContent = fields[i] === kwSortField ? (kwSortDir === 'asc' ? '▰' : '╮') : '⇅';
+    if (icon) icon.textContent = fields[i] === kwSortField ? (kwSortDir === 'asc' ? '▲' : '▼') : '⇅';
   });
 }
 
@@ -753,7 +753,7 @@ function renderTable() {
 
   const tbody = document.getElementById('kw-tbody');
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данныхпо фильтрам</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#888;">Нет данных по фильтрам</td></tr>`;
     return;
   }
 
@@ -795,14 +795,13 @@ function renderOpportunities() {
 
   const list = document.getElementById('opp-list');
   if (opps.length === 0) {
-    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевыхслов в зоне роста (позиции 11–30)</p>';
+    list.innerHTML = '<p style="color:#888;padding:10px">Нет ключевых слов в зоне роста (позиции 11–30)</p>';
     return;
   }
 
   list.innerHTML = opps.map(k => `
     <div class="opp-item">
       <div class="opp-rank">${k.position.toFixed(0)}</div>
-
       <div class="opp-kw">${escHtml(k.keyword)}</div>
       <div class="opp-stats">
         ${k.impressions} показов<br>
@@ -851,7 +850,7 @@ function renderCharts() {
       plugins: { legend: { labels: { font: { size: 11 } } } },
       scales: {
         y:  { beginAtZero: true, position: 'left',  title: { display: true, text: 'Клики' } },
-        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Пок֝зы' }, grid: { drawOnChartArea: false } }
+        y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Показы' }, grid: { drawOnChartArea: false } }
       }
     }
   });
@@ -902,50 +901,6 @@ function setTrackedSort(field) {
 
 function updateTrackedSortHeaders() {
   const ths = document.querySelectorAll('#tracked-thead th');
-  const fields = ['keyword', 'position', 'delta', 'clicks', 'impressions', 'ctr', ''];
-  ths.forEach((th, i) => {
-    if (!fields[i]) return;
-    th.classList.toggle('sorted', fields[i] === trackedSortField);
-    const icon = th.querySelector('.sort-icon');
-    if (icon) icon.textContent = fields[i] === trackedSortField ? (trackedSortDir === 'asc' ? '▲' : '▼') : '⇅';
-  });
-}
-
-function buildPageTabs() {
-  const tabsEl = document.getElementById('page-tabs');
-  tabsEl.innerHTML = TARGET_PAGES.map((p, i) =>
-    `<div class="page-tab${i === 0 ? ' active' : ''}" onclick="renderTrackedKeywords(${i})">${p.name}</div>`
-  ).join('');
-}
-
-function renderTrackedKeywords(pageIdx) {
-  activeTrackedPage = pageIdx;
-
-  // Update tab active state
-  document.querySelectorAll('.page-tab').forEach((el, i) => {
-    el.classList.toggle('active', i === pageIdx);
-  });
-
-  const page = TARGET_PAGES[pageIdx];
-
-  // URL link
-  document.getElementById('tracked-url').innerHTML =
-    `Страница: <a href="${page.url}" target="_blank">${page.url}</a>`;
-
-  // Build GSC lookup map
-  const gscMap = {};
-  allKeywords.forEach(k => { gscMap[k.keyword.toLowerCase()] = k; });
-
-  // Enrich kdSortDir = trackedSortDir === 'desc' ? 'asc' : 'desc';
-  } else {
-    trackedSortField = field;
-    trackedSortDir   = field === 'position' || field === 'keyword' ? 'asc' : 'desc';
-  }
-  renderTrackedKeywords(activeTrackedPage);
-}
-
-function updateTrackedSortHeaders() {
-  const ths = document.querySelectorAll('#tracked-thead th');
   const fields = ['keyword','position','delta','clicks','impressions','ctr',''];
   ths.forEach((th, i) => {
     if (!fields[i]) return;
@@ -984,14 +939,14 @@ function renderTrackedKeywords(pageIdx) {
   const enriched = page.keywords.map(kw => {
     const gsc = gscMap[kw.toLowerCase()] || null;
     return {
-      keyword:      kw,
-      position:     gsc ? gsc.position     : null,
-      prevPos:      gsc ? gsc.prevPos      : null,
-      delta:        gsc ? gsc.delta        : null,
-      isNew:        gsc ? gsc.isNew        : false,
-      clicks:       gsc ? gsc.clicks       : 0,
-      impressions:  gsc ? gsc.impressions  : 0,
-      ctr:          gsc ? gsc.ctr          : 0,
+      keyword:     kw,
+      position:    gsc ? gsc.position    : null,
+      prevPos:     gsc ? gsc.prevPos     : null,
+      delta:       gsc ? gsc.delta       : null,
+      isNew:       gsc ? gsc.isNew       : false,
+      clicks:      gsc ? gsc.clicks      : 0,
+      impressions: gsc ? gsc.impressions : 0,
+      ctr:         gsc ? gsc.ctr         : 0,
     };
   });
 
@@ -1046,7 +1001,7 @@ function renderTrackedKeywords(pageIdx) {
 
     let badge;
     if (k.position === null)      badge = '<span class="rank-badge rank-none">не ранжируется</span>';
-    else if (k.position <= 3)     badge = '<span class="rank-badge rank-top3">Топ-3 \uD83C\uDFC6</span>';
+    else if (k.position <= 3)     badge = '<span class="rank-badge rank-top3">Топ-3 &#x1F3C6;</span>';
     else if (k.position <= 10)    badge = '<span class="rank-badge rank-top10">Топ-10 ✓</span>';
     else if (k.position <= 20)    badge = '<span class="rank-badge rank-top20">Топ-20</span>';
     else                          badge = '<span class="rank-badge rank-top50">Топ-50+</span>';
@@ -1072,7 +1027,7 @@ function renderTrackedKeywords(pageIdx) {
    ============================================================ */
 const SEMRUSH_DATA = {
   ae: {
-    label: '\uD83C\uDDE6\uD83C\uDDEA ОАЭ (AE)', total: 19, visible: 10,
+    label: '&#x1F1E6;&#x1F1EA; ОАЭ (AE)', total: 19, visible: 10,
     keywords: [
       { kw:'music recording studio in dubai', pos:7,  vol:110, kd:22, url:'dubaimusicstudio.com/',                        updated:'Mar 11' },
       { kw:'music recording studio',          pos:4,  vol:50,  kd:28, url:'dubaimusicstudio.com/',                        updated:'Mar 17' },
@@ -1087,7 +1042,7 @@ const SEMRUSH_DATA = {
     ]
   },
   us: {
-    label: '\uD83C\uDDFA\uD83C\uDDF8 США (US)', total: 11, visible: 10,
+    label: '&#x1F1FA;&#x1F1F8; США (US)', total: 11, visible: 10,
     keywords: [
       { kw:'dubai recording studio',           pos:4,  vol:40, kd:17, url:'dubaimusicstudio.com/',                            updated:'Feb 22' },
       { kw:'best recording studio in dubai',   pos:10, vol:40, kd:40, url:'dubaimusicstudio.com/',                            updated:'Apr 07' },
@@ -1095,7 +1050,7 @@ const SEMRUSH_DATA = {
       { kw:'audio recording studio in dubai',  pos:13, vol:40, kd:26, url:'dubaimusicstudio.com/',                            updated:'Feb 28' },
       { kw:'sound recording studio dubai',     pos:13, vol:40, kd:34, url:'dubaimusicstudio.com/',                            updated:'Mar 20' },
       { kw:'recording studios in dubai',       pos:18, vol:50, kd:11, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
-      { kw:'recording studios in dubai',       pos:8, vol:50, kd:11, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
+      { kw:'recording studios in dubai',       pos:20, vol:50, kd:11, url:'dubaimusicstudio.com/',                            updated:'Mar 08' },
       { kw:'dubai recording studio',           pos:10, vol:40, kd:17, url:'dubaimusicstudio.com/',                            updated:'Feb 22' },
       { kw:'music studio in dubai',            pos:42, vol:40, kd:21, url:'dubaimusicstudio.com/recording-studio-in-dubai/',  updated:'Mar 08' },
       { kw:'music studio in dubai',            pos:51, vol:40, kd:21, url:'dubaimusicstudio.com/mixing-mastering/',            updated:'Mar 08' },
