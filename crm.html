@@ -822,7 +822,8 @@
             }
         }
 
-        /* Analytics Section */
+        .quick-actions-bar{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;padding:0 40px}.quick-form-card{background:white;border-radius:12px;padding:20px 24px;border:1px solid #F3F4F6}.quick-form-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}.quick-form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}.quick-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}.quick-field label{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.5px}.quick-field input,.quick-field select{padding:8px 10px;border:1px solid #E5E7EB;border-radius:8px;font-size:13px;font-family:Inter,sans-serif}.quick-field input:focus,.quick-field select:focus{outline:none;border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}.quick-form-row .btn-primary{padding:8px 18px;font-size:13px;white-space:nowrap;height:36px}.quick-success{display:none;color:#10B981;font-size:13px;font-weight:500;margin-top:8px}.quick-success.show{display:block}
+/* Analytics Section */
         .analytics-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1160,7 +1161,36 @@
             </div>
         </div>
 
-        <!-- Main Content -->
+        
+    <!-- Quick Actions Bar -->
+    <div class="quick-actions-bar">
+      <div class="quick-form-card">
+        <h3>⚡ Quick Add Lead</h3>
+        <form id="quickLeadForm" onsubmit="quickAddLead(event)">
+          <div class="quick-form-row">
+            <div class="quick-field"><label>Name</label><input type="text" id="qlName" placeholder="Name" required></div>
+            <div class="quick-field"><label>Phone</label><input type="tel" id="qlPhone" placeholder="+971..." required></div>
+            <div class="quick-field"><label>Source</label><select id="qlSource"><option value="WhatsApp">WhatsApp</option><option value="Instagram">Instagram</option><option value="Referral">Referral</option><option value="Walk-in">Walk-in</option><option value="Other">Other</option></select></div>
+            <button type="submit" class="btn-primary">+ Add</button>
+          </div>
+          <div class="quick-success" id="qlSuccess">✅ Lead added!</div>
+        </form>
+      </div>
+      <div class="quick-form-card">
+        <h3>💰 Quick Add Payment</h3>
+        <form id="quickPaymentForm" onsubmit="quickAddPayment(event)">
+          <div class="quick-form-row">
+            <div class="quick-field"><label>Client</label><select id="qpClient" required><option value="">Select client...</option></select></div>
+            <div class="quick-field"><label>Service</label><select id="qpService" required><option value="">Select...</option></select></div>
+            <div class="quick-field" style="max-width:110px"><label>Amount</label><input type="number" id="qpAmount" placeholder="0" step="0.01" required></div>
+            <div class="quick-field" style="max-width:140px"><label>Session Date</label><input type="date" id="qpSessionDate"></div>
+            <button type="submit" class="btn-primary">+ Add</button>
+          </div>
+          <div class="quick-success" id="qpSuccess">✅ Payment recorded!</div>
+        </form>
+      </div>
+    </div>
+    <!-- Main Content -->
         <div class="main">
             <!-- Analytics -->
             <div class="analytics-section" id="analyticsSection">
@@ -1335,6 +1365,10 @@
                     <label>Date</label>
                     <input type="date" name="transaction_date" required>
                 </div>
+                    <div class="form-group">
+                        <label>Session Date (if booking)</label>
+                        <input type="date" name="session_date" id="transSessionDate">
+                    </div>
                 <div class="form-group">
                     <label>Notes</label>
                     <textarea name="notes"></textarea>
@@ -1503,6 +1537,7 @@
                 allTransactions = transactions || [];
 
                 applyFilters();
+            populateQuickForms();
             } catch (error) {
                 console.error('Error loading data:', error);
                 alert('Error loading data: ' + error.message);
@@ -2257,6 +2292,7 @@
                 service: formData.get('service'),
                 amount: parseFloat(formData.get('amount')),
                 transaction_date: formData.get('transaction_date'),
+                    session_date: formData.get('session_date') || null,
                 notes: formData.get('notes') || null
             };
 
@@ -2277,6 +2313,39 @@
             }
         }
 
+        
+        function populateQuickForms() {
+            var qp = document.getElementById('qpClient');
+            var cl = allClients.filter(function(c){return c.type==='client'}).sort(function(a,b){return a.name.localeCompare(b.name)});
+            qp.innerHTML = '<option value="">Select client...</option>' + cl.map(function(c){return '<option value="'+c.id+'">'+((c.name||"").replace(/</g,"&lt;"))+'</option>'}).join('');
+            var qs = document.getElementById('qpService');
+            qs.innerHTML = '<option value="">Select...</option>' + CONFIG.services.map(function(s){return '<option value="'+s+'">'+s+'</option>'}).join('');
+            document.getElementById('qpSessionDate').value = new Date().toISOString().split('T')[0];
+        }
+        async function quickAddLead(e) {
+            e.preventDefault();
+            var nm=document.getElementById('qlName').value.trim(), ph=document.getElementById('qlPhone').value.trim(), sr=document.getElementById('qlSource').value;
+            if(!nm||!ph)return;
+            try {
+                var r=await supabaseClient.from('clients').insert([{name:nm,phone:ph,type:'lead',source:sr,date_added:new Date().toISOString().split('T')[0]}]);
+                if(r.error)throw r.error;
+                var m=document.getElementById('qlSuccess');m.classList.add('show');setTimeout(function(){m.classList.remove('show')},2500);
+                document.getElementById('quickLeadForm').reset(); await loadData();
+            }catch(err){alert('Error: '+err.message)}
+        }
+        async function quickAddPayment(e) {
+            e.preventDefault();
+            var ci=document.getElementById('qpClient').value, sv=document.getElementById('qpService').value, am=document.getElementById('qpAmount').value, sd=document.getElementById('qpSessionDate').value;
+            if(!ci||!sv||!am)return;
+            var today=new Date().toISOString().split('T')[0];
+            try {
+                var r=await supabaseClient.from('transactions').insert([{client_id:parseInt(ci),service:sv,amount:parseFloat(am),transaction_date:today,session_date:sd||null,notes:sd?('Session: '+sd):null}]);
+                if(r.error)throw r.error;
+                var m=document.getElementById('qpSuccess');m.classList.add('show');setTimeout(function(){m.classList.remove('show')},2500);
+                document.getElementById('qpClient').value='';document.getElementById('qpService').value='';document.getElementById('qpAmount').value='';document.getElementById('qpSessionDate').value=today;
+                await loadData();
+            }catch(err){alert('Error: '+err.message)}
+        }
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
